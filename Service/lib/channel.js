@@ -88,9 +88,9 @@ const ch = {
     consume: (queue, func) => {
         if(_ch) { _ch.consume(queue, func) }
     },
-    send: (queue, payload) => {
+    send: (queue, payload, opt) => {
         print("send to " + queue)
-        return _ch ? _ch.sendToQueue(queue, Buffer.from(payload)) : '';
+        return _ch ? _ch.sendToQueue(queue, Buffer.from(payload), opt) : '';
     },
     ack : (msg) => { return _ch.ack(msg)},
     bind: (queue, ex, target) => { _ch.bindQueue(queue, ex, target) },

@@ -1,21 +1,22 @@
-// process.chdir(__dirname);
-// require('app-module-path').addPath(__dirname);
-// require('lib/common')
+process.chdir(__dirname);
+require('app-module-path').addPath(__dirname);
+require('lib/common')
 
-// let mq = require('lib/channel');
-// let ready = mq.open()
+let mq = require('lib/channel');
+let ready = mq.open()
 
-// ready.then(() => {
-//     // _.forEach([1,2,3,4,5], r => {
-//     //     mq.send("test", Buffer.from(r.toString))
-//     // });
-//     console.log("mail service start")
-//     mq.consume('mail', (rs) => {
-//         console.log(rs)
-//     })
-// }).catch(e => {
-//     print(e)
-// })
+let consumer = () => {
+    ready.then((ch) => {
+        console.log("mail service start")
+        mq.consume('mail', (msg) => {
+            console.log(msg)
+            mq.ack(msg)
+        })
+    }).catch(e => {
+        print(e)
+    })
+}
+
 // console.log(Math.floor(Math.random() * 10000) + 1)
 
 // let amqp = require("amqplib/callback_api")
@@ -30,19 +31,28 @@
 //         });
 //         // Note: on Node 6 Buffer.from(msg) should be used
 //         ch.sendToQueue(q, new Buffer('Hello World!'));
-//         console.log(" [x] Sent 'Hello World!'");
+//         console.log(" [x] Sent 'Hello World!'");c
 //     });
 // });
 
-console.log("send post")
-var request = require('request');
-
-request.post(
-    'http://localhost:9759/email',
-    { json: { to: 'value' } },
-    function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body)
+let sendPost = () => {
+    let request = require('request');
+    console.log("send post")
+    request.post(
+        'http://localhost:9759/code',
+        { form : 'hdh0926@naver.com' },
+        (error, response, body) => {
+            if (!error && response.statusCode == 200) {
+                // console.log("res", response, response.statusCode);
+                // console.log(body)
+            }
         }
-    }
-);
+    );
+    setTimeout(() => {
+        sendPost()
+    }, 30000);
+}
+
+
+sendPost();
+// consumer();

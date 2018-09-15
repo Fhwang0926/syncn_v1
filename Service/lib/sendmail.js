@@ -4,6 +4,7 @@
 const nodemailer = require('nodemailer');
 const smtpPool = require('nodemailer-smtp-pool');
 const fs = require('fs');
+const auth_url = 'http://syncn.club:9759/code/'
 let auth_html = '';
 // smtpPool는 smtp서버를 사용하기 위한 모듈로
 // transporter객체를 만드는 nodemailer의 createTransport메소드의 인자로 사용된다.
@@ -38,37 +39,18 @@ fs.readFile('mail_format/auth.html', (err, data) => {
     
 });
 let mail = {
-    send_login: (to, code) => {
+    send_auth: (to, code) => {
 
-        let code = Math.floor(Math.random() * 10000) + 1;
-        let auth_html = auth_html.replace('%code%', code)
-        
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
-            subject : 'SyncN Notify auth code(this code remove to after 5 min)', //expire get from nconf
-            html: auth_html,
+            subject : 'SyncN Notify auth URL(this code remove to after 5 min)', //expire get from nconf
+            html: auth_html.replace('%code%', auth_url+code),
             //text
         };
 
-        return mail.send(mailOptions)    
-        
-        
-    },
-    send_auth: (to, text) => {
-        
-        auth_html = auth_html.replace('%code%', code)
-        const mailOptions = {
-            from : 'syncn2018 < syncn2018@gmail.com >',
-            to,
-            subject : 'SyncN Notify Auth Link(this code remove to after 5 min)',
-            html : text,
-            // text,
-        };
         return mail.send(mailOptions)
     },
-
-    
     send : (info) => {
         if (!info.from.length) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!info.subject.length) { info.subject = 'SyncN Notify' }

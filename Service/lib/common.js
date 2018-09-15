@@ -4,7 +4,7 @@ global.config = require('nconf')
 
 
 let moment = require("moment");
-global.time = () => {
+global.timestamp = () => {
     return moment().unix()
 }
 global.time = () => {
@@ -18,7 +18,7 @@ config.argv().env().file({
     file: 'config.json'
 });
 
-let debug = config.get("debug")
+global.debug = config.get("debug")
 
 
 global.print = (title, content = '') => { if (debug) { console.log(title, content); } }
