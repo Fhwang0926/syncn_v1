@@ -56,6 +56,7 @@ let get = (req, res) => {
     else {
         auth[code].status = true;
         console.log("auth!!!!!, " + code, auth[code] )
+        //create client queue
     }
     // output message
 
