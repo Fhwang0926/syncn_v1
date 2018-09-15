@@ -1,0 +1,15 @@
+{
+  "db" : {
+    "host" : "syncn",
+    "name": "syncn",
+    "id": "syncn",
+    "pw": "syncn"
+  },
+  "mq": {
+    "host": "syncn",
+    "vhost": "syncn",
+    "id": "syncn",
+    "pw": "syncn"
+  },
+  "init" : false
+}

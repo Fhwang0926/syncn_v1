@@ -1,0 +1,19 @@
+{
+    "version" : "1.0.0",
+    "description": "Mail service",
+    "debug": true,
+    "mq" : {
+        "host": "jis5376.iptime.org",
+        "port": "5672",
+        "vhost": "syncn",
+        "pw": "syncn",
+        "id": "syncn"
+    },
+    "mail": {
+        "queue" : "mail",
+        "host": "syncn.club",
+        "port": "587",
+        "pw": "syncn",
+        "id": "syncn"
+    }
+}
