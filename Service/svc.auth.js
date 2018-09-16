@@ -8,6 +8,7 @@ let forge = require('node-forge')
 let regx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,5}$/i;
 let auth = {}
 let auth_link = '';
+let auth_exfire = 1000 * 60 * 3; // expire 3 min
 
 fs.readFile('mail_format/auth_link.html', (err, data) => {
     if (err) throw err;
@@ -18,20 +19,20 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 let auth_cleaner = () => {
     print('auth cleaner running', auth)
     _.forEach(_.keys(auth), key => {
-        if (auth[key].expire < timestamp() || auth[key].status) { auth = _.omit(auth, [key]) }
+        if (auth[key].expire < timestamp()) { auth = _.omit(auth, [key]) }
     })
-    // setTimeout(() => {
-    //     auth_cleaner()
-    // }, 10000);
+    setTimeout(() => {
+        auth_cleaner()
+    }, auth_exfire/3 );
 }
 
 let auth_generator = (email) => {
     let sha256_email = forge.md.sha256.create().update(email).update(email.split("@")[0]);
     let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}.${timestamp()}`;
     let otp = forge.md.md5.create().update(sha256_email + timestamp()).digest().toHex();
-    auth[otp] = { msg_id: '', status: false, expire: timestamp() + (1000 * 60 * 5), info: { q: queue_name, id: queue_name + timestamp(), pw: otp }} // expire 5 min
-    auth[otp].msg_id = forge.md.md5.create().update(timestamp()).digest().toHex();
-    print("auth gen ok", auth[otp].msg_id);
+    let id = forge.md.md5.create().update(queue_name).digest().toHex();
+    auth[otp] = { status: false, expire: timestamp() + auth_exfire, info: { q: queue_name, id: id, pw: otp }} // expire 5 min
+    print("auth gen ok", otp);
     return otp;
 }
 
@@ -64,7 +65,7 @@ let post = (req, res) => {
             });
             
             res.writeHead(200, {'Content-Type': 'application/json'})
-            res.end(JSON.stringify(_.assign(_.pick(req, ['headers', 'method', 'url']), { body: auth[otp].msg_id })))
+            res.end(JSON.stringify(_.assign(_.pick(req, ['headers', 'method', 'url']), { res : 'ok.'+otp })))
 
 
         } catch (e) {
@@ -78,27 +79,34 @@ let post = (req, res) => {
 
 let get = (req, res) => {
     try {
-        if (req.url.indexOf('/code/') == -1) { return; }
-        let code = req.url.split("/")[2];
-        
-        if (!auth[code]) {
-            res.writeHead(404);
-            res.write("Auth timeout so, expired this link"); }
-        else if (code == auth[code].mes_id) {
-            if (auth[code].status) {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write(auth[code].info);
-                console.log("auth!!!!!, " + code, auth[code])
-                mq.publish("cmd", "account", JSON.stringify(_.pick(auth[code], ['id', 'pw', 'q'])))
-            }else { 
-                res.writeHead(404, { 'Content-Type': 'application/text' });
-                res.write("chk_e");
+        let code = req.url.split("/");
+        if (code[1] == 'code') { // md5
+            if (_.has(auth, code[2])) {
+                res.writeHead(200); res.write(auth_link);
+                auth['ok.' + code[2]] = { info: auth[code[2]].info, status: true, expire: timestamp() + auth_exfire } // expire 3 min
+                auth = _.omit(auth, code[2])
+                console.log(auth['ok.' + code[2]], "222")
+            } else {
+                res.writeHead(404);
+                res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
-        else if (_.has(auth, code)) { res.writeHead(200); res.write(auth_link); auth[code].status = true; }
-        else { res.writeHead(404); return; }
-        res.end();    
+        if (code[1] == 'account') { // ok.md5
+            if (_.has(auth, code[2]) && auth[code[2]].status) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({ res: auth[code[2]].info }));
+                
+                print("auth!!!!!, " + code[2], JSON.stringify(auth[code[2]]))
+                auth = _.omit(auth, code[2])
+                mq.publish("cmd", "account", JSON.stringify(_.pick(auth[code[2]], ['id', 'pw', 'q']))) //send account service
+            } else {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({ e: "Check Email auth URL, Or maybe it was expireded" }));
+            }
+        }
+        res.end();  
     } catch (e) {
+        console.log(e)
         res.writeHead(404);
         res.end();
     }
@@ -113,7 +121,7 @@ let get = (req, res) => {
 
 mq.open().then((ch) => {
     let http = require('http');
-    let middleware = http.createServer('/code', (req, res) => {
+    let middleware = http.createServer('/', (req, res) => {
         switch (req.method) {
             case 'POST':
                 post(req, res);
@@ -125,7 +133,7 @@ mq.open().then((ch) => {
         
             default:
                 print("check attacking using http")
-                // mq.send("mail", '', { type: "notice", headers: { to: email } }) // using cmd
+                mq.send("mail", '', { type: "notice", headers: { to: nconf.get('manager') } }) // using cmd
                 break;
         }
             

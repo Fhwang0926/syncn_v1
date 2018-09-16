@@ -13,12 +13,12 @@ ready.then((ch) => {
         console.log(info)
         let add_user = spawnSync('rabbitmqctl', ['add_user', info.id, info.pw]);
         let set_permissions = spawnSync('rabbitmqctl', ['set_permissions', "-p", "/syncn", info.id, info.q, info.q]);
-        console.log(`stderr: ${add_user.stderr.toString()}`);
-        console.log(`stdout: ${add_user.stdout.toString()}`);
-        console.log(`stderr: ${set_permissions.stderr.toString()}`);
-        console.log(`stdout: ${set_permissions.stdout.toString()}`);
+        // console.log(`stderr: ${add_user.stderr.toString()}`);
+        // console.log(`stdout: ${add_user.stdout.toString()}`);
+        // console.log(`stderr: ${set_permissions.stderr.toString()}`);
+        // console.log(`stdout: ${set_permissions.stdout.toString()}`);
         print("created user")
-        mq.ack(msg)
+        ch.ack(msg)
     })
 }).catch(e => {
     print(e)

@@ -2,6 +2,7 @@
     "version" : "1.0.0",
     "description": "Mail service",
     "debug": true,
+    "manager": "bluehdh0926@gmail.com",
     "mq" : {
         "host": "localhost",
         "port": "5672",

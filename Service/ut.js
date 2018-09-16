@@ -34,23 +34,25 @@ let consumer = () => {
 //         console.log(" [x] Sent 'Hello World!'");c
 //     });
 // });
-
+let request = require('request');
 let sendPost = () => {
-    let request = require('request');
+    
     console.log("send post")
-    request.post(
-        'http://localhost:9759/code',
-        { form : 'hdh0926@naver.com' },
-        (error, response, body) => {
-            if (!error && response.statusCode == 200) {
-                // console.log("res", response, response.statusCode);
-                console.log(body)
-            }
-        }
-    );
-    setTimeout(() => {
-        sendPost()
-    }, 30000);
+    request.post('http://localhost:9759/code/', { form : 'hdh0926@naver.com' }, (e, res, body) => {
+        
+        body = JSON.parse(body);
+        console.log(res.statusCode, body)
+        let url = 'http://localhost:9759/account/' + body.res;
+        console.log("url : ", url)
+        let auth = () => request.get(url, (e, res, body) => {
+            body = JSON.parse(body);
+            console.log(res.statusCode, body);
+            setTimeout(auth, 3000);
+        });
+        auth();
+    });
+    
+    
 }
 
 
