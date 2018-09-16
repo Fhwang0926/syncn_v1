@@ -7,7 +7,7 @@ let ready = mq.open()
 const { spawnSync } = require('child_process')
 ready.then((ch) => {
     console.log("account service start")
-    mq.consume('account', (msg) => {
+    ch.consume('account', (msg) => {
         
         let info = JSON.parse(msg.content.toString());
         console.log(info)

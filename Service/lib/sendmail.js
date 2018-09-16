@@ -30,22 +30,24 @@ const transporter = nodemailer.createTransport(smtpPool({
     tls: {
         rejectUnauthorize: false,
     },
-    maxConnections: 5,
-    maxMessages: 10,
+    maxConnections: 10,
+    maxMessages: 20,
 }));
+
 fs.readFile('mail_format/auth.html', (err, data) => {
     if (err) throw err;
     auth_html = data.toString();
     
 });
+
 let mail = {
     send_auth: (to, code) => {
-
+        
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
             subject : 'SyncN Notify auth URL(this code remove to after 5 min)', //expire get from nconf
-            html: auth_html.replace('%code%', auth_url+code),
+            html: auth_html.replace(/%code%/g, auth_url+code),
             //text
         };
 
@@ -65,7 +67,7 @@ let mail = {
                     // need replace logger or using pm2
                 }
     
-                err ? resolve(false) : resolve(true);
+                err ? resolve(false) : resolve(res);
             });
         })
         

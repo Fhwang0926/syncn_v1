@@ -44,7 +44,7 @@ let sendPost = () => {
         (error, response, body) => {
             if (!error && response.statusCode == 200) {
                 // console.log("res", response, response.statusCode);
-                // console.log(body)
+                console.log(body)
             }
         }
     );
