@@ -25,11 +25,11 @@ const ch = {
             if (_ch) {
                 return _ch
             }
-            let host = config.get("mq:host") || 'localhost';
-            let port = config.get("mq:port") || '5672';
-            let id = config.get("mq:id") || 'test';
-            let pw = config.get("mq:pw") || 'test';
-            let vhost = config.get("mq:vhost") || '';
+            let host = config.get("remote_mq:host") || config.get("mq:host");
+            let port = config.get("remote_mq:port") || config.get("mq:port");
+            let id = config.get("remote_mq:id") || config.get("mq:id");
+            let pw = config.get("remote_mq:pw") || config.get("mq:pw");
+            let vhost = config.get("remote_mq:vhost") || config.get("mq:vhost");
             let set_protocol = `amqp://${id}:${pw}@${host}:${port}/${vhost}`
             print("AMQP : "+set_protocol)
             try {

@@ -19,8 +19,9 @@ let auth_cleaner = () => {
 
 let auth_generator = (email) => {
     let sha256_email = forge.md.sha256.create().update(email).update(email.split("@")[0]);
-    let md5_email = forge.md.md5.create().update(sha256_email+timestamp()).digest().toHex();
-    auth[md5_email] = { status: false, expire: timestamp() + (1000 * 60 * 5) } // expire 5 min
+    let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}.${timestamp()}`;
+    let otp = forge.md.md5.create().update(sha256_email + timestamp()).digest().toHex();
+    auth[otp] = { status: false, expire: timestamp() + (1000 * 60 * 5), q: queue_name, id: queue_name + timestamp(), pw: otp } // expire 5 min
     return md5_email;
 }
 
@@ -54,9 +55,9 @@ let get = (req, res) => {
     let code = req.url.split("/")[2];
     if (!auth[code]) { return; }
     else {
-        auth[code].status = true;
         console.log("auth!!!!!, " + code, auth[code] )
-        //create client queue
+        // mq.publish("cmd", "", JSON.stringify(_.pick(auth[code], ['id', 'pw', 'q'])))
+        auth[code].status = true;
     }
     // output message
 

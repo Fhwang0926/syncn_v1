@@ -3,6 +3,13 @@
     "description": "Mail service",
     "debug": true,
     "mq" : {
+        "host": "localhost",
+        "port": "5672",
+        "vhost": "test",
+        "pw": "test",
+        "id": "test"
+    },
+    "remote_mq": {
         "host": "jis5376.iptime.org",
         "port": "5672",
         "vhost": "syncn",
