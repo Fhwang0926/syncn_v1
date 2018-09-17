@@ -22,9 +22,9 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
     auth_link = data.toString();
 
 });
-
+// has bug not expired
 let auth_cleaner = () => {
-    print('auth cleaner running', auth)
+    print('auth cleaner running, client cnt : ', _.keys(auth).length)
     _.forEach(_.keys(auth), key => {
         if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
