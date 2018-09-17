@@ -1,7 +1,7 @@
 import pika
 import json
 
-class MqConnection():
+class MQ():
     def __init__(self):
         with open("Setting.syncn", 'r') as configfile:
             self.ServerData = json.load(configfile)
@@ -51,4 +51,10 @@ class MqConnection():
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     Connection = MqConnection()
+=======
+    Connection = MQ()
+    Connection.SendQueue("hello","hello","What the fuck!")
+    Connection.ReceiveQueue("hello")
+>>>>>>> 85184b737569c272e270f7c96addb2bfeea366ed
