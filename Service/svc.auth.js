@@ -1,14 +1,21 @@
 process.chdir(__dirname);
 require('app-module-path').addPath(__dirname);
 require('lib/common')
-let fs = require('fs')
-let mq = require('lib/channel');
-let mail = require('lib/sendmail');
-let forge = require('node-forge')
-let regx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,5}$/i;
+
+const fs = require('fs')
+const mq = require('lib/channel');
+const mail = require('lib/sendmail');
+const forge = require('node-forge')
+const rabbit = require('axios').create({
+    baseURL: 'http://' + config.get('mq:host') + ':9999/api',
+    timeout : 2000,
+    auth: { username: config.get('mq:id'), password: config.get('mq:pw') }
+})
+
+const regx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,5}$/i;
 let auth = {}
 let auth_link = '';
-let auth_exfire = 1000 * 60 * 3; // expire 3 min
+const auth_exfire = 1000 * 60 * 3; // expire 3 min
 
 fs.readFile('mail_format/auth_link.html', (err, data) => {
     if (err) throw err;
@@ -19,11 +26,11 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 let auth_cleaner = () => {
     print('auth cleaner running', auth)
     _.forEach(_.keys(auth), key => {
-        if (auth[key].expire < timestamp()) { auth = _.omit(auth, [key]) }
+        if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
     setTimeout(() => {
         auth_cleaner()
-    }, auth_exfire/3 );
+    }, 3000 );
 }
 
 let auth_generator = (email) => {
@@ -77,28 +84,40 @@ let post = (req, res) => {
     });
 }
 
-let get = (req, res) => {
+let get = async (req, res) => {
     try {
         let code = req.url.split("/");
         if (code[1] == 'code') { // md5
             if (_.has(auth, code[2])) {
                 res.writeHead(200); res.write(auth_link);
-                auth['ok.' + code[2]] = { info: auth[code[2]].info, status: true, expire: timestamp() + auth_exfire } // expire 3 min
-                auth = _.omit(auth, code[2])
-                console.log(auth['ok.' + code[2]], "222")
+                auth[code[2]].status = true;
+                auth['ok.' + code[2]] = { info: auth[code[2]].info, status: false, expire: timestamp() + auth_exfire } // expire 3 min
+                
+                console.log(auth['ok.' + code[2]])
             } else {
                 res.writeHead(404);
                 res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
         if (code[1] == 'account') { // ok.md5
-            if (_.has(auth, code[2]) && auth[code[2]].status) {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write(JSON.stringify({ res: auth[code[2]].info }));
+            if (_.has(auth, code[2])) {
+                let account = auth[code[2]].info;
+                print("auth!!!!!, " + code[2], JSON.stringify(account))
+
+                // let perm = {
+                //     configure: `^client-${rs_c.license}\\..*`,
+                //     write: `^(client-${rs_c.license}\\..*|api)`,
+                //     read: `^(client-${rs_c.license}.*|cmd)`,
+                // };
+                await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : '' })
+                    // .then(() => rabbit.put(`/permissions/${config.get('mq:vhost')}/${rs_c.license}`, perm))
+                    // .then(() => rabbit.put(`/exchanges/${config.get('mq:vhost')}/${account.q}`, { type: 'fanout', durable: true }))
+                    .catch(() => { throw new Error('MQ error'); })
                 
-                print("auth!!!!!, " + code[2], JSON.stringify(auth[code[2]]))
-                auth = _.omit(auth, code[2])
-                mq.publish("cmd", "account", JSON.stringify(_.pick(auth[code[2]], ['id', 'pw', 'q']))) //send account service
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({ res: account }));
+                auth[code[2]].status = true;
             } else {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
                 res.write(JSON.stringify({ e: "Check Email auth URL, Or maybe it was expireded" }));
@@ -133,7 +152,7 @@ mq.open().then((ch) => {
         
             default:
                 print("check attacking using http")
-                mq.send("mail", '', { type: "notice", headers: { to: nconf.get('manager') } }) // using cmd
+                mq.send("mail", '', { type: "notice", headers: { to: config.get('manager') } }) // using cmd
                 break;
         }
             

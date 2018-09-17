@@ -47,7 +47,7 @@ let mail = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
             subject : 'SyncN Notify auth URL(this code remove to after 5 min)', //expire get from nconf
-            html: auth_html.replace(/%code%/g, auth_url+code),
+            html: auth_html.replace(/%code%/g, auth_url + code),
             //text
         };
 
