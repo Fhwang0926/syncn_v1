@@ -1,28 +1,45 @@
 import pika
-
+import json
 
 class MqConnection():
     def __init__(self):
-        pass
-    def SendQueue(self, QueueName, RoutingKey,Message, exchange='',):
-        self.SendConnection = pika.BlockingConnection(pika.URLParameters('amqp://jis:suck0818@jis5376.iptime.org'))
-        self.SendChannel = self.SendConnection.channel()
-        self.SendChannel.queue_declare(queue=QueueName)
-        self.SendChannel.basic_publish(exchange=exchange,
-                              routing_key=RoutingKey,
-                              body=Message)
+        with open("Setting.syncn", 'r') as configfile:
+            self.ServerData = json.load(configfile)
+        self.QueueName = self.ServerData['q']
+        self.Userid = self.ServerData['id']
+        self.Userpw = self.ServerData['pw']
+        self.RoutingKey = ''
+        self.Message = ""
+        self.exchange = ""
 
-        print(" [x] Sent %r" % Message)
+    def SendQueue(self):
+        self.SendConnection = pika.BlockingConnection(pika.URLParameters('amqp://' ,
+                                                                         + self.Userid ,
+                                                                         + ":",
+                                                                         + self.Userpw,
+                                                                         + '@jis5376.iptime.org'))
+        self.SendChannel = self.SendConnection.channel()
+        self.SendChannel.queue_declare(queue=self.QueueName)
+        self.SendChannel.basic_publish(exchange=self.exchange,
+                              routing_key=self.RoutingKey,
+                              body=self.Message)
+
+        print(" [x] Sent %r" % self.Message)
         self.SendConnection.close()
 
 
-    def ReceiveQueue(self, QueueName):
-        self.ReceiveConnection = pika.BlockingConnection(pika.URLParameters('amqp://jis:suck0818@jis5376.iptime.org'))
+
+    def ReceiveQueue(self):
+        self.ReceiveConnection = pika.BlockingConnection(pika.URLParameters('amqp://' ,
+                                                                         + self.Userid ,
+                                                                         + ":",
+                                                                         + self.Userpw,
+                                                                         + '@jis5376.iptime.org'))
         self.ReceiveChannel = self.ReceiveConnection.channel()
-        self.ReceiveChannel.queue_declare(queue=QueueName)
+        self.ReceiveChannel.queue_declare(queue=self.QueueName)
 
         self.ReceiveChannel.basic_consume(self.callback,
-                              queue=QueueName,
+                              queue=self.QueueName,
                               )
         print(' [*] Wationg for messages. To exit press CTRL+C')
         self.ReceiveChannel.start_consuming()
@@ -35,5 +52,3 @@ class MqConnection():
 
 if __name__ == '__main__':
     Connection = MqConnection()
-    Connection.SendQueue("hello","hello","What the fuck!")
-    Connection.ReceiveQueue("hello")

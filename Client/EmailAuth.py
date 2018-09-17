@@ -21,26 +21,28 @@ class EmailCert():
             return
 
         if self.Post.status_code == 200:
-            self.ResponseBody = self.Post.json()['body']
+            self.ResponseBody = self.Post.json()['res']
             # print(self.Post.status_code)
-            print(self.Post.json()['body'])
+            # self.ResponseBody = self.ResponseBody.split(".")
+            print(self.Post.json()['res'])
 
         else:
             print(self.Post.status_code)
             print("Check your network!")
             return
 
-        time.sleep(3)
+        # time.sleep(3)
         self.ReceiveCheckCode()
 
     # Authentication URL confirm message
     def ReceiveCheckCode(self):
-        self.ReceiveConfirmMessage= requests.get(url=self.url + "/code/account." + self.ResponseBody)
-        # self.ReceiveConfirmMessage= requests.get(url=self.url)
-        # self.ReceiveConfirmMessage= requests.get(url=self.url,params=self.ResponseBody)
+        self.ReceiveConfirmMessage= requests.get(url=self.url + "/account/" + self.ResponseBody)
         print(self.ReceiveConfirmMessage.url)
         if self.ReceiveConfirmMessage.status_code == 200:
-            print(self.ReceiveConfirmMessage.status_code)
+            self.ConfigData = (self.ReceiveConfirmMessage.json()['res'])
+
+            with open("Setting.syncn", 'w') as settingfile:
+                json.dump(self.ConfigData, settingfile)
             print(self.ReceiveConfirmMessage.text)
         else:
             print(self.ReceiveConfirmMessage.status_code)
