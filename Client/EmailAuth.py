@@ -37,16 +37,16 @@ class EmailCert():
     # Authentication URL confirm message
     def ReceiveCheckCode(self):
         self.ReceiveConfirmMessage= requests.get(url=self.url + "/account/" + self.ResponseBody)
-        print(self.ReceiveConfirmMessage.url)
+        # print(self.ReceiveConfirmMessage.url)
         if self.ReceiveConfirmMessage.status_code == 200:
             self.ConfigData = (self.ReceiveConfirmMessage.json()['res'])
 
             with open("Setting.syncn", 'w') as settingfile:
                 json.dump(self.ConfigData, settingfile)
-            print(self.ReceiveConfirmMessage.text)
+            # print(self.ReceiveConfirmMessage.text)
         else:
             print(self.ReceiveConfirmMessage.status_code)
-            print(self.ReceiveConfirmMessage.text)
+            # print(self.ReceiveConfirmMessage.text)
             print("Check your Email and Certify by URL Link")
 
 if __name__ == '__main__':

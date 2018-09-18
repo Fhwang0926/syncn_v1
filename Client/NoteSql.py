@@ -1,5 +1,5 @@
 import sqlite3
-import pydash as _
+# import pydash as _
 import uuid
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
 
@@ -56,7 +56,7 @@ class noteSql():
 
 def main():
     dao = noteSql(
-        "C:\\Users\\hdh09\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
+        "C:\\Users\\전인석\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
     print(dao.read())
 
 
