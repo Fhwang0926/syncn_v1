@@ -1,0 +1,11 @@
+{
+  "apps": [
+        {
+            "name": "Service Auth",
+            "script": "Service/svc/auth.js",
+            "watch": false,
+            "env": {
+            "NODE_ENV": "production"
+        }
+    }]
+}
