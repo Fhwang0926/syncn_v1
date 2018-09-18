@@ -1,5 +1,6 @@
 import pika
 import json
+# import NoteSql
 
 class MQ():
     def __init__(self):
@@ -8,16 +9,14 @@ class MQ():
         self.QueueName = self.ServerData['q']
         self.Userid = self.ServerData['id']
         self.Userpw = self.ServerData['pw']
-        self.RoutingKey = ''
-        self.Message = ""
+        self.RoutingKey = self.QueueName
+        self.Message = "test"
         self.exchange = ""
 
     def SendQueue(self):
-        self.SendConnection = pika.BlockingConnection(pika.URLParameters('amqp://' ,
-                                                                         + self.Userid ,
-                                                                         + ":",
-                                                                         + self.Userpw,
-                                                                         + '@jis5376.iptime.org'))
+        self.url = 'amqp://' + self.Userid + ":" + self.Userpw + '@jis5376.iptime.org/syncn'
+        # self.url = 'amqp://' + "jis" + ":" + "suck0818" + '@jis5376.iptime.org'
+        self.SendConnection = pika.BlockingConnection(pika.URLParameters(self.url))
         self.SendChannel = self.SendConnection.channel()
         self.SendChannel.queue_declare(queue=self.QueueName)
         self.SendChannel.basic_publish(exchange=self.exchange,
@@ -30,31 +29,25 @@ class MQ():
 
 
     def ReceiveQueue(self):
-        self.ReceiveConnection = pika.BlockingConnection(pika.URLParameters('amqp://' ,
-                                                                         + self.Userid ,
-                                                                         + ":",
-                                                                         + self.Userpw,
-                                                                         + '@jis5376.iptime.org'))
+
+        self.ReceiveConnection = pika.BlockingConnection(pika.URLParameters(self.url))
         self.ReceiveChannel = self.ReceiveConnection.channel()
         self.ReceiveChannel.queue_declare(queue=self.QueueName)
 
-        self.ReceiveChannel.basic_consume(self.callback,
-                              queue=self.QueueName,
-                              )
+        def callback(ch, method, properties, body):
+            print(" [x] Received %r" % body)
+
+        self.ReceiveChannel.basic_consume(callback, queue=self.QueueName, no_ack=True)
+
         print(' [*] Wationg for messages. To exit press CTRL+C')
         self.ReceiveChannel.start_consuming()
 
-    def callback(self,ch, method, properties, body):
-        print(" [x] Received %r" % body)
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    Connection = MqConnection()
-=======
     Connection = MQ()
-    Connection.SendQueue("hello","hello","What the fuck!")
-    Connection.ReceiveQueue("hello")
->>>>>>> 85184b737569c272e270f7c96addb2bfeea366ed
+    Connection.SendQueue()
+    Connection.ReceiveQueue()
+
