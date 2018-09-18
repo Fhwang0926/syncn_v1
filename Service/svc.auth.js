@@ -110,15 +110,16 @@ let get = (req, res) => {
                 rabbit.get(`/queues/${vhost}`).then(async rs => {
                     let q_list = _.map(rs.data, r => r.name)
                     if(_.find(q_list, account.q)) { return; }
-                    await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : '' })
-                    await rabbit.put(`/permissions/${vhost}/${account.id}`, {
-                        configure : '',
-                        write : account.id,
-                        read : account.id,
+                    await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : 'None' }).then(() =>{
+                        rabbit.put(`/permissions/${vhost}/${account.id}`, {
+                            configure: '',
+                            write: `(${account.id}|msg)`,
+                            read: `(${account.id}|cmd)`,
+                        })
                     })
-                    .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "auto_delete":false,"durable":true }))
-                    .then(() => rabbit.post(`/bindings/${vhost}/e/msg/q/${account.q}`, {"routing_key":account.q,"arguments":{}}))
-                    .then(() => rabbit.post(`/bindings/${vhost}/e/cmd/q/${account.q}`, {"routing_key":account.q,"arguments":{}}))
+                    .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/msg/q/${account.q}`, {"routing_key":account.q }))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/cmd/q/${account.q}`, {"routing_key":account.q }))
                     .catch((e) => { console.log(e); throw new Error('MQ error'); })
                 })
                 
