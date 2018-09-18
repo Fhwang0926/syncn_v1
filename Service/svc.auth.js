@@ -24,7 +24,7 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 });
 // has bug not expired
 let auth_cleaner = () => {
-    print('auth cleaner running, client cnt : ', _.keys(auth).length)
+    console.log('auth cleaner running, client cnt : ', _.keys(auth).length, _.keys(auth))
     _.forEach(_.keys(auth), key => {
         if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
@@ -36,9 +36,10 @@ let auth_cleaner = () => {
 let auth_generator = (email) => {
     let sha256_email = forge.md.sha256.create().update(email).update(email.split("@")[0]);
     let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}.${timestamp()}`;
-    let otp = forge.md.md5.create().update(sha256_email + timestamp()).digest().toHex();
     let id = forge.md.md5.create().update(queue_name).digest().toHex();
-    auth[otp] = { status: false, expire: timestamp() + auth_exfire, info: { q: queue_name, id: id, pw: otp }} // expire 5 min
+    let pw = forge.md.md5.create().update(sha256_email + timestamp()).digest().toHex();
+    let otp = forge.md.md5.create().update(email).update(timestamp()).digest().toHex()
+    auth[otp] = { status: false, expire: timestamp() + auth_exfire, info: { q: queue_name, id: id, pw: pw }} // expire 5 min
     print("auth gen ok", otp);
     return otp;
 }
@@ -103,16 +104,27 @@ let get = async (req, res) => {
             if (_.has(auth, code[2])) {
                 let account = auth[code[2]].info;
                 print("auth!!!!!, " + code[2], JSON.stringify(account))
-
-                // let perm = {
-                //     configure: `^client-${rs_c.license}\\..*`,
-                //     write: `^(client-${rs_c.license}\\..*|api)`,
-                //     read: `^(client-${rs_c.license}.*|cmd)`,
-                // };
+                const vhost  = config.get('mq:vhost');
+                // 큐 생성 및 exchange, cmd 바인딩
+                rabbit.get(`/queues/${vhost}`).then(rs => {
+                    _.forEach(rs, r => {
+                        console.log("12312312", r[0], r.name)
+                    })
+                })
+                return;
                 await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : '' })
-                    // .then(() => rabbit.put(`/permissions/${config.get('mq:vhost')}/${rs_c.license}`, perm))
-                    // .then(() => rabbit.put(`/exchanges/${config.get('mq:vhost')}/${account.q}`, { type: 'fanout', durable: true }))
-                    .catch(() => { throw new Error('MQ error'); })
+                await rabbit.put(`/permissions/${vhost}/${account.id}`, {
+                    configure : '',
+                    write : account.id,
+                    read : account.id,
+                  })
+                .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "auto_delete":false,"durable":true }))
+                .then(() => {
+                    rabbit.put(`/bindings/${vhost}/e/msg/q/${account.q}/`)
+                    //{"routing_key":"c."+account.q,"arguments":{}
+                })
+                // .then(() => rabbit.put(`/bindings/${config.get('mq:vhost')}/e/cmd/q/${account.q}/`, {"routing_key":"c."+account.q,"arguments":{}}))
+                .catch((e) => { console.log(e); throw new Error('MQ error'); })
                 
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -138,6 +150,34 @@ let get = async (req, res) => {
     })
 }
 
+let remove = async (req, res) => {
+    try {
+        let code = req.url.split("/");
+        if (code[1] == 'account') { // ok.md5
+                await rabbit.delete(`/bindings/${config.get('mq:vhost')}/e/msg/q/${info.q}/`) // it maybe will remove code
+                await rabbit.delete(`/bindings/${config.get('mq:vhost')}/e/cmd/q/${info.q}/`)
+                await rabbit.delete(`/queues/${config.get('mq:vhost')}/${info.q}`) // delete queue
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({ res: "OK" }));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify({ e: "URL Request failed" }));
+        }
+        
+    } catch (e) {
+        console.log(e)
+        res.writeHead(404);
+        res.write(JSON.stringify({ e : 'MQ error' }));
+    }
+    res.end();
+    req.on('socket', (s) => {
+        s.setTimeout(3);
+        s.on('timeout', () => {
+            req.abort();
+        });
+    })
+}
+
 mq.open().then((ch) => {
     let http = require('http');
     let middleware = http.createServer('/', (req, res) => {
@@ -149,7 +189,11 @@ mq.open().then((ch) => {
             case 'GET':
                 get(req, res);
                 break;
-        
+
+            case 'DELETE':
+                remove(req, res);
+                break;
+
             default:
                 print("check attacking using http")
                 mq.send("mail", '', { type: "notice", headers: { to: config.get('manager') } }) // using cmd
