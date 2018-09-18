@@ -35,8 +35,8 @@ let auth_cleaner = () => {
 
 let auth_generator = (email) => {
     let sha256_email = forge.md.sha256.create().update(email).update(email.split("@")[0]);
-    let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}.${timestamp()}`;
-    let id = forge.md.md5.create().update(queue_name).digest().toHex();
+    let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}`;
+    let id = forge.md.md5.create().update(queue_name+timestamp()).digest().toHex();
     let pw = forge.md.md5.create().update(sha256_email + timestamp()).digest().toHex();
     let otp = forge.md.md5.create().update(email).update(timestamp()).digest().toHex()
     auth[otp] = { status: false, expire: timestamp() + auth_exfire, info: { q: queue_name, id: id, pw: pw }} // expire 5 min
@@ -85,7 +85,7 @@ let post = (req, res) => {
     });
 }
 
-let get = async (req, res) => {
+let get = (req, res) => {
     try {
         let code = req.url.split("/");
         if (code[1] == 'code') { // md5
@@ -106,26 +106,21 @@ let get = async (req, res) => {
                 print("auth!!!!!, " + code[2], JSON.stringify(account))
                 const vhost  = config.get('mq:vhost');
                 // 큐 생성 및 exchange, cmd 바인딩
-                rabbit.get(`/queues/${vhost}`).then(rs => {
-                    _.forEach(rs, r => {
-                        console.log("12312312", r[0], r.name)
+
+                rabbit.get(`/queues/${vhost}`).then(async rs => {
+                    let q_list = _.map(rs.data, r => r.name)
+                    if(_.find(q_list, account.q)) { return; }
+                    await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : '' })
+                    await rabbit.put(`/permissions/${vhost}/${account.id}`, {
+                        configure : '',
+                        write : account.id,
+                        read : account.id,
                     })
+                    .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "auto_delete":false,"durable":true }))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/msg/q/${account.q}`, {"routing_key":account.q,"arguments":{}}))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/cmd/q/${account.q}`, {"routing_key":account.q,"arguments":{}}))
+                    .catch((e) => { console.log(e); throw new Error('MQ error'); })
                 })
-                return;
-                await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : '' })
-                await rabbit.put(`/permissions/${vhost}/${account.id}`, {
-                    configure : '',
-                    write : account.id,
-                    read : account.id,
-                  })
-                .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "auto_delete":false,"durable":true }))
-                .then(() => {
-                    rabbit.put(`/bindings/${vhost}/e/msg/q/${account.q}/`)
-                    //{"routing_key":"c."+account.q,"arguments":{}
-                })
-                // .then(() => rabbit.put(`/bindings/${config.get('mq:vhost')}/e/cmd/q/${account.q}/`, {"routing_key":"c."+account.q,"arguments":{}}))
-                .catch((e) => { console.log(e); throw new Error('MQ error'); })
-                
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.write(JSON.stringify({ res: account }));
