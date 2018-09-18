@@ -38,11 +38,11 @@ let request = require('request');
 let sendPost = () => {
     
     console.log("send post")
-    request.post('http://localhost:9759/code/', { form : 'hdh0926@naver.com' }, (e, res, body) => {
+    request.post('http://syncn.club:9759/code/', { form : 'hdh0926@naver.com' }, (e, res, body) => {
         
         body = JSON.parse(body);
         console.log(res.statusCode, body)
-        let url = 'http://localhost:9759/account/' + body.res;
+        let url = 'http://syncn.club:9759/account/' + body.res;
         console.log("url : ", url)
         let auth = () => request.get(url, (e, res, body) => {
             body = JSON.parse(body);

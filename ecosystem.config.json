@@ -7,7 +7,7 @@
             "ignore_watch": [
                 "logs"
             ],
-            "exec_mode": "cluster",
+            "exec_mode": "fork",
             "instances": 1,
             "merge_logs": false,
             "log_date_format": "YY-MM-DD HH:mm:ss",

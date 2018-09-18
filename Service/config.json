@@ -17,5 +17,10 @@
         "port": "587",
         "pw": "syncn",
         "id": "syncn"
+    },
+    "middleware": {
+        "port": 9759,
+        "host": "syncn.club",
+        "protocol": "http"
     }
 }
