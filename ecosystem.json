@@ -1,11 +1,18 @@
 {
-  "apps": [
+    "apps": [
         {
             "name": "Service Auth",
-            "script": "Service/svc/auth.js",
+            "script": "Service/svc.auth.js",
             "watch": false,
-            "env": {
-            "NODE_ENV": "production"
+            "ignore_watch": [
+                "logs"
+            ],
+            "exec_mode": "cluster",
+            "instances": 0,
+            "merge_logs": false,
+            "log_date_format": "YY-MM-DD HH:mm:ss",
+            "error_file": "./logs/err.log",
+            "out_file": "./logs/out.log"
         }
-    }]
+    ]
 }
