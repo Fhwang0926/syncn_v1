@@ -1,15 +1,17 @@
 import sqlite3
+import PathSearch
 # import pydash as _
 import uuid
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
 
 
 class noteSql():
-    def __init__(self, fullPath):
+    def __init__(self):
+        self.fullpath = PathSearch.SetPath().result
         self.path = ''
         self.cursor = None
         self.conn = None
-        self.build(fullPath)
+        self.build(self.fullpath)
         pass
 
     def read(self, chk=False):
@@ -53,12 +55,5 @@ class noteSql():
 
 # SELECT * FROM note
 
-
-def main():
-    dao = noteSql(
-        "C:\\Users\\전인석\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
-    print(dao.read())
-
-
 if __name__ == '__main__':
-    main()
+    pass
