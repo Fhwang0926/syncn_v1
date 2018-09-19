@@ -17,13 +17,14 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 projectname=syncn
+
 # install erlang for rabbitmq
 wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb $ sudo dpkg -i erlang-solutions_1.0_all.deb
 apt-get update
-apt-get install erlang
+apt-get install -y erlang
 
 # install rabbitmq
-apt-get install rabbitmq-server
+apt-get install -y rabbitmq-server
 rabbitmq-plugins enable rabbitmq_management
 service rabbitmq-server restart
 
@@ -47,13 +48,22 @@ rabbitmqadmin -u {$projectname} -p {$projectname} -V {$projectname} declare exch
 # rabbitmqadmin -u {$projectname} -p {$projectname} -V {$projectname} declare binding source="news" destination_type="queue" destination="tech" routing_key="tech.*"
 # https://nixmash.com/post/installing-rabbitmqadmin-command-line-tool-in-ubuntu 이거보고 추가해주기
 
+# install pm2 for nodejs
+pm2 install pm2-logrotate
+pm2 install pm2 -g
+
+# setting pm2
+pm2 set pm2-logrotate:max_size 1M
+pm2 set pm2-logrotate:interval_unit DD
+pm2 set pm2-logrotate:reatain 10
+
 # install nodejs10.x
 apt-get install -y nodejs
 
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - 
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list 
 apt-get update 
-apt-get install yarn
+apt-get install -y yarn
 apt autoremove
 
 echo
