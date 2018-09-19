@@ -10,11 +10,10 @@ class MQ():
         self.Userid = self.ServerData['id']
         self.Userpw = self.ServerData['pw']
         self.RoutingKey = self.QueueName
-        # self.SqlObject = NoteSql.noteSql()
-        # self.SqlData = self.SqlObject.read()
-        # self.Message = self.SqlData
-        self.Message = '123'
-        self.exchange = "msg"
+        self.SqlObject = NoteSql.noteSql()
+        self.SqlData = self.SqlObject.read()
+        self.Message = self.SqlData
+        self.exchange = ""
 
     def SendQueue(self):
         self.url = 'amqp://' + self.Userid + ":" + self.Userpw + '@jis5376.iptime.org/syncn'
