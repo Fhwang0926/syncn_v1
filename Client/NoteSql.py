@@ -53,12 +53,5 @@ class noteSql():
 
 # SELECT * FROM note
 
-
-def main():
-    dao = noteSql(
-        "C:\\Users\\전인석\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
-    print(dao.read())
-
-
 if __name__ == '__main__':
-    main()
+    pass
