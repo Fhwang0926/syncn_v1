@@ -9,6 +9,7 @@ import uuid
 import json
 import time
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
+#  ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
 
 
 class DAO():
@@ -21,13 +22,19 @@ class DAO():
         self.id = None;
         self.noteCnt = 0;
         self.temp = None;
-        self.debug = False;
+        self.debug = True;
         
         # set function
         self.init(self.fullpath)
         self.readUser()
         self.dumpBackupOneRow()
         pass
+
+    def close(self):
+        try:
+            return { "res" : sle.conn.close() }
+        except Exception as e:
+            return { "e" : e }
 
     def read(self):
         try:
@@ -71,22 +78,23 @@ class DAO():
             def parser(k):
                 cols = ["Text", "WindowPosition", "Id", "ParentId", "Theme", "CreatedAt", "UpdatedAt"]
                 parms = [self.temp[k]['Text'], self.temp[k]['WindowPosition'], uuid.uuid1(), self.id, self.temp[k]['Theme'], int(time.time()), int(time.time())]
+
                 for index in range(0, len(parms)):
-                    parms[index] = "'{0}'".format(parms)
+                    parms[index] = "'{0}'".format(parms[index])
 
                 if self.debug:
                     for index in range(0, len(cols)):
                         print(cols[index], " = ", parms[index])
                 
-                sql = "INSERT INTO Note ({0}) VALUES ('{1}')".format(_.join(cols, ','), _.join(parms, "','"))
-                self.db
+                sql = "INSERT INTO Note ({0}) VALUES ({1})".format(_.join(cols, ','), _.join(parms, ","))
                 print(sql)
                 self.db.execute(sql)
-                self.db.commit()
+                self.conn.commit()
+
                 
 
             _.for_each(_.keys(notes), parser)
-            print("syncn")
+            print("sync")
             self.temp = None;
             return { "res" : True }
         except Exception as e:
