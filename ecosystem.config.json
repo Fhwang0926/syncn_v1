@@ -3,16 +3,18 @@
         {
             "name": "Service Auth",
             "script": "Service/svc.auth.js",
+            "description": "git pull, auto restart",
             "watch": false,
             "ignore_watch": [
                 "logs"
             ],
             "exec_mode": "fork",
+            "args": "dev",
             "instances": 1,
             "merge_logs": false,
-            "log_date_format": "YY-MM-DD HH:mm:ss",
-            "error_file": "./logs/err.log",
-            "out_file": "./logs/out.log"
+            "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+            "out_file": "./logs/auth-out.log",
+            "error_file": "./logs/auth-err.log"
         }
     ]
 }

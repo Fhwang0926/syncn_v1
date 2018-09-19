@@ -114,8 +114,8 @@ let get = (req, res) => {
                     await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : 'None' }).then(() =>{
                         rabbit.put(`/permissions/${vhost}/${account.id}`, {
                             configure: '',
-                            write: `(${account.id}|msg)`,
-                            read: `(${account.id}|cmd|msg)`,
+                            write: `(${account.q}|msg)`,
+                            read: `(${account.q}|cmd|msg)`,
                         }).catch(e => print("UP", e))
                     })
                     .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }).catch(e => print("Q", e)))

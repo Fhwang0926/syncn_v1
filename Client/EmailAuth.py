@@ -12,7 +12,7 @@ class EmailCert():
     # Log in Authentication URL Request
     def SendMyInfo(self):
         try:
-            self.Post = requests.post(url=self.url, data=self.EmailAddress)
+            self.Post = requests.post(url=self.url + "/code/", data=self.EmailAddress)
         except requests.exceptions.ConnectionError:
             print("requests.exceptions.ConnectionError")
             return
@@ -31,7 +31,8 @@ class EmailCert():
             print("Check your network!")
             return
 
-        # time.sleep(3)
+        time.sleep(30)
+        print("start wait")
         self.ReceiveCheckCode()
 
     # Authentication URL confirm message
@@ -51,5 +52,5 @@ class EmailCert():
 
 if __name__ == '__main__':
 
-    test = EmailCert("http://syncn.club:9759","wdt0818@naver.com")
+    test = EmailCert("http://syncn.club:9759","hdh0926@naver.com")
     test.SendMyInfo()
