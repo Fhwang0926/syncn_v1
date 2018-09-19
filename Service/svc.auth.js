@@ -26,6 +26,7 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 let auth_cleaner = () => {
     console.log('auth cleaner running, client cnt : ', _.keys(auth).length, _.keys(auth))
     _.forEach(_.keys(auth), key => {
+        console.log("check\n"+auth[key].expire+"\n"+timestamp())
         if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
     setTimeout(() => {
@@ -114,12 +115,12 @@ let get = (req, res) => {
                         rabbit.put(`/permissions/${vhost}/${account.id}`, {
                             configure: '',
                             write: `(${account.id}|msg)`,
-                            read: `(${account.id}|cmd)`,
-                        })
+                            read: `(${account.id}|cmd|msg)`,
+                        }).catch(e => print("UP", e))
                     })
-                    .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }))
-                    .then(() => rabbit.post(`/bindings/${vhost}/e/msg/q/${account.q}`, {"routing_key":account.q }))
-                    .then(() => rabbit.post(`/bindings/${vhost}/e/cmd/q/${account.q}`, {"routing_key":account.q }))
+                    .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }).catch(e => print("Q", e)))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/msg/q/${account.q}`, {"routing_key":account.q }).catch(e => print("B1", e)))
+                    .then(() => rabbit.post(`/bindings/${vhost}/e/cmd/q/${account.q}`, {"routing_key":account.q }).catch(e => print("B2", e)))
                     .catch((e) => { console.log(e); throw new Error('MQ error'); })
                 })
                 
