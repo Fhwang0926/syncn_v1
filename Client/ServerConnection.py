@@ -10,7 +10,7 @@ class MQ():
         self.Userid = self.ServerData['id']
         self.Userpw = self.ServerData['pw']
         self.RoutingKey = self.QueueName
-        self.SqlObject = NoteSql.noteSql("C:\\Users\\전인석\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
+        self.SqlObject = NoteSql.noteSql()
         self.SqlData = self.SqlObject.read()
         self.Message = self.SqlData
         self.exchange = ""
