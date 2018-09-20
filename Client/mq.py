@@ -7,6 +7,7 @@ class MQ():
         self.build()
         self.connection = pika.BlockingConnection(pika.URLParameters(self.Url))
         self.channel = self.connection.channel()
+        if(self.channel): print(self.Url+' connected')
         
     def build(self):
         self.ServerData = json.load(open("Setting.syncn", 'r'))
@@ -21,30 +22,38 @@ class MQ():
         self.RoutingKey = self.QueueName
         self.exchange = "msg"
         self.Message = "test"
+        
     
-    def makeQueue(self, name, opt):
-        self.channel.queue_declare(name, opt)
+    def makeQueue(self, name='', durable=True, opt={}):
+        self.channel.queue_declare(name, durable, opt)
         pass
     
-    def makeExahnge(self, name, ex_type, opt):
-        self.channel.exchange_declare(exchange=name, exchange_type=ex_type, options=opt)
+    def makeExchange(self, name='', ex_type='', opt={}):
+        self.channel.exchange_declare(name, ex_type, opt)
         pass
 
-    def makeBind(self, exchange, queue):
-        self.channel.queue_bind(exchange=exchange, queue=queue)
+    def makeBind(self, exchange='', queue='', routing_key=''):
+        self.channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
         pass
 
     def makeUser(self):
+        # to be make when use it
         pass
 
-    def makeQueue(self):
+    def removeQueue(self):
+        # to be make when use it
         pass
+
     def removeExchange(self):
+        # to be make when use it
         pass
-    def removeBind(self, exchange, queue):
-        self.channel.queue_bind(exchange=exchange, queue=queue)
+
+    def removeBind(self, exchange='', queue=''):
+        self.channel.queue_unbind(exchange=exchange, queue=queue)
         pass
+
     def removeUser(self):
+        # to be make when use it
         pass
     
     
@@ -54,30 +63,35 @@ class MQ():
     def createChannel(self):
         return self.connection.channel()
 
-    def publishExchange(self, queue, exchange, routing_key, msg, opt):
-        self.Channel.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, options=opt)
+    def publishExchange(self, exchange='', routing_key='', msg='', opt={}):
+        self.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=msg)
         print(" [x] publishExchange %r" % msg)
     
-    def publishQueue(self, queue, type, msg, opt):
-        self.Channel.basic_publish(queue=queue, routing_key=routing_key, body=msg, options=opt)
+    def publishQueue(self, queue='', msg='', opt={}):
+        self.channel.basic_publish(routing_key=queue, exchange='', body=msg)
         print(" [x] publishQueue %r" % msg)
 
-    def ReceiveQueue(self, func, queue, opt):
+    def worker(self, func=None, queue=''):
         print(' [*] start working')
-        cb = func if func else self.callback
-        self.channel.basic_consume(cb, queue=self.QueueName, no_ack=False, options=opt)
+        func = func if func else self.callback
+        self.channel.basic_qos(prefetch_count=1)
+        self.channel.basic_consume(func, queue=queue, no_ack=False)
+        self.channel.start_consuming()
 
-    def callback(ch, method, properties, body):
-            print(" [x] Received %r" % body)
+    def callback(serlf, ch, method, properties, msg):
+            print(" [x] Received %r" % msg)
+            ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
 if __name__ == '__main__':
     mq = MQ()
-    try:
-        mq.makeQueue('test')
-    except exception as e:
-        pass
 
+    mq.makeQueue('test')
+    mq.makeExchange(name='test', ex_type='fanout')
+    mq.makeBind(exchange='test', queue='test')
+
+    mq.publishExchange(exchange='test', msg='test')
     mq.publishQueue(queue='test', msg='test')
-    mq.working(queue='test')
+
+    mq.worker(queue='test')
 
