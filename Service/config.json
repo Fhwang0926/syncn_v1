@@ -1,5 +1,6 @@
 {
     "version" : "1.0.0",
+    "c-version": "0.0.1",
     "description": "Mail service",
     "debug": true,
     "manager": "bluehdh0926@gmail.com",
