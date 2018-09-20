@@ -103,7 +103,7 @@ let get = (req, res) => {
         }
         if (code[1] == 'account') { // ok.md5
             if (_.has(auth, code[2])) {
-                let account = auth[code[2]].info;
+                let account = _.assign(auth[code[2]].info, { version : config.get('c-version') });
                 print("auth!!!!!, " + code[2], JSON.stringify(account))
                 const vhost  = config.get('mq:vhost');
                 // 큐 생성 및 exchange, cmd 바인딩
@@ -132,6 +132,12 @@ let get = (req, res) => {
                 res.write(JSON.stringify({ e: "Check Email auth URL, Or maybe it was expireded" }));
             }
         }
+        
+        if (code[1] == 'update') { // update
+            //get version and compress given new version
+            
+        }
+
         res.end();  
     } catch (e) {
         console.log(e)
