@@ -3,19 +3,19 @@
 # auth : bluehdh0926@gmail.com
 
 import sqlite3
-import PathSearch
 import pydash as _
 import uuid
 import json
 import time
+import Search
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
 #  ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
 
 
 class DAO():
-    def __init__(self, fullpath):
+    def __init__(self, fullpath=''):
         # set variables
-        self.fullpath = fullpath if fullpath else PathSearch.SetPath().result
+        self.fullpath = fullpath if fullpath else Search.PathSearcher().run()
         self.path = ''
         self.db = None
         self.conn = None
@@ -122,16 +122,15 @@ class DAO():
         except Exception as e:
             return { "e" : e }
         
-# SELECT * FROM note
-
 if __name__ == '__main__':
     # No remove this comment
+    # Smaple location
     # C:\Users\hdh09\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
-    dao = DAO("C:\\Users\\hdh09\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
-    # print(dao.read())
+    dao = DAO()
+    print(dao.read())
     # if update input type is string, using json parser
-    data = '{"1": {"Text": "test", "WindowPosition": "V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=", "Theme": "Yellow"}}'
-    dao.sync(json.loads(data))
+    # data = '{"1": {"Text": "test", "WindowPosition": "V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=", "Theme": "Yellow"}}'
+    # dao.sync(json.loads(data))
     # dao.update("132")
 
     pass
