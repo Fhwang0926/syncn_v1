@@ -2,3 +2,6 @@ Web/node_modules/
 UI/node_modules/
 Service/node_modules/
 Client/example/
+Server Service/node_modules/
+Server Web/UI/
+Agent/example/
