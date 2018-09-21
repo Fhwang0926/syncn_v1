@@ -5,54 +5,67 @@ import json
 
 
 class EmailCert():
-    def __init__(self, Url, EmailAddress):
-        self.url = Url
-        self.EmailAddress = EmailAddress
+    def __init__(self):
+        self.debug = True
+        self.url = ''
+        self.email = ''
+        self.otpCode = ''
+        self.sub = {
+            "code" : "/code/",
+            "account" : "/account/",
+            "remove" : "/remove/",
+        }
 
-
-    def
-    # Log in Authentication URL Request
-    def SendMyInfo(self):
+    def build(self, url, email):
+        self.url = url if url.find("://") else "http://"+url
+        self.email = email
+        self.otpCode = ''
+    
+    def requestAuthClear(self):
+        self.otpCode = ''
+        print("OTP Code Clear, try createOTP")
+    
+    def buildClear(self):
+        self.otpCode = ''
+        self.email = ''
+        self.url = ''
+        print("Reset build, try createOTP")
+    
+    def createOTP(self):
         try:
-            self.Post = requests.post(url=self.url + "/code/", data=self.EmailAddress)
+            otpResult = requests.post(url=self.url + self.sub['code'], data=self.email)
+            if otpResult.status_code == 200:
+                self.otpCode = otpResult.json()['res']
+                if self.debug:
+                    print(otpResult.status_code, " : ", otpResult.json()['e'])
+            else:
+                print(otpResult.status_code, " : ", "Server Connection failed, Check your network!")
         except requests.exceptions.ConnectionError:
             print("requests.exceptions.ConnectionError")
-            return
-        except:
-            raise
-            return
+        except Exception as e:
+            print(e)
 
-        if self.Post.status_code == 200:
-            self.ResponseBody = self.Post.json()['res']
-            # print(self.Post.status_code)
-            # self.ResponseBody = self.ResponseBody.split(".")
-            print(self.Post.json()['res'])
-
-        else:
-            print(self.Post.status_code)
-            print("Check your network!")
-            return
-
-        time.sleep(30)
-        print("start wait")
-        self.ReceiveCheckCode()
-
-    # Authentication URL confirm message
-    def ReceiveCheckCode(self):
-        self.ReceiveConfirmMessage= requests.get(url=self.url + "/account/" + self.ResponseBody)
-        # print(self.ReceiveConfirmMessage.url)
-        if self.ReceiveConfirmMessage.status_code == 200:
-            self.ConfigData = (self.ReceiveConfirmMessage.json()['res'])
-
-            with open("Setting.syncn", 'w') as settingfile:
-                json.dump(self.ConfigData, settingfile)
-            # print(self.ReceiveConfirmMessage.text)
-        else:
-            print(self.ReceiveConfirmMessage.status_code)
-            # print(self.ReceiveConfirmMessage.text)
-            print("Check your Email and Certify by URL Link")
+    def authOTP(self):
+        try:
+            authResult = requests.get(url=self.url + self.sub['account'] + self.otpCode)
+            if authResult.status_code == 200:
+                setting = open("Setting.syncn", 'w')
+                setting.write(json.dump(authResult.json()['res']))
+                setting.close()
+                print("save setting!! ready to sync")
+                if self.debug: print(authResult.text)
+            else:
+                print("authResult.status_code, Check your Email and verify auth URL Link")
+                if self.debug: print(authResult.json()['e'])
+        except Exception as e:
+            print(e)
+            pass
+        
 
 if __name__ == '__main__':
 
-    test = EmailCert("http://syncn.club:9759","hdh0926@naver.com")
-    test.SendMyInfo()
+    client = EmailCert()
+    client.build("http://syncn.club:9759","hdh0926@naver.com")
+    client.createOTP()
+    time.sleep(60)
+    client.authOTP()
