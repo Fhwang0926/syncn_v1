@@ -1,6 +1,6 @@
 import pika
 import json
-import NoteSql
+from Lib import *
 
 class MQ():
     def __init__(self):
@@ -10,10 +10,11 @@ class MQ():
         self.Userid = self.ServerData['id']
         self.Userpw = self.ServerData['pw']
         self.RoutingKey = self.QueueName
-        self.SqlObject = NoteSql.noteSql()
-        self.SqlData = self.SqlObject.read()
-        self.Message = self.SqlData
-        self.exchange = ""
+        # self.SqlObject = NoteSql.noteSql()
+        # self.SqlData = self.SqlObject.read()
+        self.Message = "WTF"
+        self.exchange = "msg"
+
 
     def SendQueue(self):
         self.url = 'amqp://' + self.Userid + ":" + self.Userpw + '@jis5376.iptime.org/syncn'
