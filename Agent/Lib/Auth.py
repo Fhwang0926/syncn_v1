@@ -1,8 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+# auth : bluehdh0926@gmail.com
 
-import requests
-import time
-import json
-
+import requests, time, json
 
 class EmailCert():
     def __init__(self):
@@ -37,7 +37,7 @@ class EmailCert():
             if otpResult.status_code == 200:
                 self.otpCode = otpResult.json()['res']
                 if self.debug:
-                    print(otpResult.status_code, " : ", otpResult.json()['e'])
+                    print(otpResult.status_code, " : ", otpResult.json()['res'])
             else:
                 print(otpResult.status_code, " : ", "Server Connection failed, Check your network!")
         except requests.exceptions.ConnectionError:
@@ -50,7 +50,7 @@ class EmailCert():
             authResult = requests.get(url=self.url + self.sub['account'] + self.otpCode)
             if authResult.status_code == 200:
                 setting = open("Setting.syncn", 'w')
-                setting.write(json.dump(authResult.json()['res']))
+                setting.write(json.dumps(authResult.json()['res']))
                 setting.close()
                 print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)

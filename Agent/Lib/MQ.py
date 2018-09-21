@@ -1,12 +1,15 @@
-import pika
-import json
-# import NoteSql
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+# auth : bluehdh0926@gmail.com
+
+import pika, json, os, sys
 
 class MQ():
     def __init__(self):
         try:
+            self.debug = True
             self.build()
-            self.connection = pika.BlockingConnection(pika.URLParameters(self.Url))
+            self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
             self.channel = self.connection.channel()
             if(self.channel): print('PROTOCOL : '+self.url+' connected')
         except Exception as e:
@@ -15,17 +18,18 @@ class MQ():
         
     def build(self):
         try:
-            self.config = json.load(open("Setting.syncn", 'r'))
-            self.queue = self.config['q']
-            self.id = self.config['id']
-            self.pw = self.config['pw']
-            self.host = self.config['host']
-            self.port = self.config['port']
-            self.vhost = self.config['vhost']
-            self.url = 'amqp://{0}:{1}@{2}:{3}/{4}'.format(self.id, self.pw, self.host, self.port, self.vhost)
+            self.config = json.loads(open("Setting.syncn", 'r').read())
+            self.queue = self.config["q"]
+            self.id = self.config["id"]
+            self.pw = self.config["pw"]
+            self.host = self.config["host"]
+            self.port = self.config["port"]
+            self.vhost = self.config["vhost"]
+            self.url = "amqp://{0}:{1}@{2}:{3}/{4}".format(self.id, self.pw, self.host, self.port, self.vhost)
             self.rKey = self.queue
             self.ex_msg = "msg"
             self.ex_cmd = "cmd"
+            print(self.url)
         except Exception as e:
             print(e)
             pass
@@ -89,16 +93,15 @@ class MQ():
             print(" [x] Received %r" % msg)
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
-
 if __name__ == '__main__':
     mq = MQ()
 
-    mq.makeQueue('test')
-    mq.makeExchange(name='test', ex_type='fanout')
-    mq.makeBind(exchange='test', queue='test')
+    # mq.makeQueue('test')
+    # mq.makeExchange(name='test', ex_type='fanout')
+    # mq.makeBind(exchange='test', queue='test')
 
-    mq.publishExchange(exchange='test', msg='test')
-    mq.publishQueue(queue='test', msg='test')
+    # mq.publishExchange(exchange='test', msg='test')
+    # mq.publishQueue(queue='test', msg='test')
 
-    mq.worker(queue='test')
+    # mq.worker(queue='test')
 
