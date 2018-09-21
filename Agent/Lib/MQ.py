@@ -4,26 +4,32 @@ import json
 
 class MQ():
     def __init__(self):
-        self.build()
-        self.connection = pika.BlockingConnection(pika.URLParameters(self.Url))
-        self.channel = self.connection.channel()
-        if(self.channel): print(self.Url+' connected')
+        try:
+            self.build()
+            self.connection = pika.BlockingConnection(pika.URLParameters(self.Url))
+            self.channel = self.connection.channel()
+            if(self.channel): print('PROTOCOL : '+self.url+' connected')
+        except Exception as e:
+            print(e)
+            pass
         
     def build(self):
-        self.ServerData = json.load(open("Setting.syncn", 'r'))
-        self.QueueName = self.ServerData['q']
-        self.Userid = self.ServerData['id']
-        self.Userpw = self.ServerData['pw']
-        self.Domain = "jis5376.iptime.org"
-        # self.Domain = self.ServerData['domain'] if self.ServerData['domain'] else "jis5376.iptime.org" # this info make config or get domain later
-        # self.Port = self.ServerData['port'] if self.ServerData['port'] else 5672 # this info make config or get domain later
-        self.port = 5672
-        self.Url = 'amqp://' + self.Userid + ":" + self.Userpw + '@'+self.Domain+'/syncn'
-        self.RoutingKey = self.QueueName
-        self.exchange = "msg"
-        self.Message = "test"
+        try:
+            self.config = json.load(open("Setting.syncn", 'r'))
+            self.queue = self.config['q']
+            self.id = self.config['id']
+            self.pw = self.config['pw']
+            self.host = self.config['host']
+            self.port = self.config['port']
+            self.vhost = self.config['vhost']
+            self.url = 'amqp://{0}:{1}@{2}:{3}/{4}'.format(self.id, self.pw, self.host, self.port, self.vhost)
+            self.rKey = self.queue
+            self.ex_msg = "msg"
+            self.ex_cmd = "cmd"
+        except Exception as e:
+            print(e)
+            pass
         
-    
     def makeQueue(self, name='', durable=True, opt={}):
         self.channel.queue_declare(name, durable, opt)
         pass
@@ -49,7 +55,8 @@ class MQ():
         pass
 
     def removeBind(self, exchange='', queue=''):
-        self.channel.queue_unbind(exchange=exchange, queue=queue)
+        # to be make when use it
+        # self.channel.queue_unbind(exchange=exchange, queue=queue)
         pass
 
     def removeUser(self):

@@ -9,6 +9,8 @@ class EmailCert():
         self.url = Url
         self.EmailAddress = EmailAddress
 
+
+    def
     # Log in Authentication URL Request
     def SendMyInfo(self):
         try:

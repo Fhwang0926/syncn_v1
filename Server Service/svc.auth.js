@@ -103,11 +103,12 @@ let get = (req, res) => {
         }
         if (code[1] == 'account') { // ok.md5
             if (_.has(auth, code[2])) {
-                let account = _.assign(auth[code[2]].info, { version : config.get('c-version') });
+                const vhost = config.get('mq:vhost');
+                let info = { version: config.get("c-version"), host: config.get("mq:host"), port: config.get("mq:port"), vhost : vhost }
+                let account = _.assign(auth[code[2]].info, info);
                 print("auth!!!!!, " + code[2], JSON.stringify(account))
-                const vhost  = config.get('mq:vhost');
+                
                 // 큐 생성 및 exchange, cmd 바인딩
-
                 rabbit.get(`/queues/${vhost}`).then(async rs => {
                     let q_list = _.map(rs.data, r => r.name)
                     if(_.find(q_list, account.q)) { return; }
