@@ -7,6 +7,7 @@
     "mq" : {
         "host": "jis5376.iptime.org",
         "port": "5672",
+        "api_port": "9999",
         "vhost": "syncn",
         "id": "syncn",
         "pw": "syncn"

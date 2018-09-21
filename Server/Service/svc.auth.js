@@ -1,14 +1,15 @@
 process.chdir(__dirname);
 require('app-module-path').addPath(__dirname);
 require('lib/common')
+const moment = require('moment')
 
 const fs = require('fs')
 const mq = require('lib/channel');
 const mail = require('lib/sendmail');
 const forge = require('node-forge')
 const rabbit = require('axios').create({
-    baseURL: 'http://' + config.get('mq:host') + ':9999/api',
-    timeout : 2000,
+    baseURL: `http://${config.get('mq:host')}:${config.get('mq:api_port')}/api`,
+    timeout : 3000,
     auth: { username: config.get('mq:id'), password: config.get('mq:pw') }
 })
 
@@ -26,7 +27,7 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 let auth_cleaner = () => {
     console.log('auth cleaner running, client cnt : ', _.keys(auth).length, _.keys(auth))
     _.forEach(_.keys(auth), key => {
-        console.log("check\n"+auth[key].expire+"\n"+timestamp())
+        console.log("check\n"+auth[key].expire+" - "+moment(auth[key].expire).format("YYYY-MM-DD hh:mm:ss")+"\n"+timestamp()+" - "+moment(timestamp()).format("YYYY-MM-DD hh:mm:ss"))
         if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
     setTimeout(() => {
