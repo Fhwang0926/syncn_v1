@@ -27,7 +27,7 @@ fs.readFile('mail_format/auth_link.html', (err, data) => {
 let auth_cleaner = () => {
     console.log('auth cleaner running, client cnt : ', _.keys(auth).length, _.keys(auth))
     _.forEach(_.keys(auth), key => {
-        console.log("check\n"+auth[key].expire+" - "+moment(auth[key].expire).format("YYYY-MM-DD hh:mm:ss")+"\n"+timestamp()+" - "+moment(timestamp()).format("YYYY-MM-DD hh:mm:ss"))
+        console.log("check\n"+auth[key].expire+" - "+moment(auth[key].expire).format("YYYY-MM-DD hh:mm:ss")+"\n"+timestamp()+" - "+moment().format("YYYY-MM-DD hh:mm:ss"))
         if (auth[key].expire < timestamp() || auth[key].status ) { auth = _.omit(auth, [key]) }
     })
     setTimeout(() => {
