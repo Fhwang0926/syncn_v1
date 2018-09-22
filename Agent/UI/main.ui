@@ -5,6 +5,9 @@
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -31,6 +34,12 @@
     <height>590</height>
    </size>
   </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
   <property name="contextMenuPolicy">
    <enum>Qt::NoContextMenu</enum>
   </property>
@@ -48,7 +57,7 @@
    <double>1.000000000000000</double>
   </property>
   <property name="toolTip">
-   <string/>
+   <string>Sync your sticky note on Windows 10</string>
   </property>
   <property name="statusTip">
    <string/>
@@ -74,14 +83,144 @@
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="w_main">
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="toolTip">
+    <string>Sync your sticky note on Windows 10</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#btn_close:hover { color:black; }
+#btn_close { color:gray; }
+#btn_tray:hover { color:black; }
+#btn_tray { color:gray; }</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="la_header">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <spacer name="sp_head">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>500</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_tray">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="sizeIncrement">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Corbel</family>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Minimumrize window(Tray)</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:rgb(255, 255, 127);
+border-style:none;</string>
+        </property>
+        <property name="text">
+         <string>_</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_close">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Corbel</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Close</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:rgb(255, 255, 127);
+border-style:none;</string>
+        </property>
+        <property name="text">
+         <string>X</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="la_content">
+      <item>
+       <layout class="QHBoxLayout" name="la_body_all">
         <item>
-         <spacer name="horizontalSpacer_3">
+         <spacer name="sp_body_l">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -94,7 +233,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="l_title">
           <property name="font">
            <font>
             <family>Bahnschrift Condensed</family>
@@ -129,7 +268,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_4">
+         <spacer name="sp_body_r">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -144,9 +283,9 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="la_footer_all">
         <item>
-         <spacer name="horizontalSpacer_2">
+         <spacer name="sp_footer_l">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -162,9 +301,9 @@
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <layout class="QVBoxLayout" name="la_footer_body">
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="l_info">
             <property name="font">
              <font>
               <family>Bahnschrift SemiBold</family>
@@ -194,7 +333,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="input_info">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -225,6 +364,12 @@
               <pointsize>14</pointsize>
              </font>
             </property>
+            <property name="mouseTracking">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Using only your E-mail</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color:rgb(255, 255, 255);
 border-style:solid;
@@ -232,7 +377,7 @@ border-color:#e5d32e;
 border-width:1px;</string>
             </property>
             <property name="frame">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -249,9 +394,9 @@ border-width:1px;</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btn_ok">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -303,6 +448,9 @@ border-width:1px;</string>
             <property name="contextMenuPolicy">
              <enum>Qt::NoContextMenu</enum>
             </property>
+            <property name="toolTip">
+             <string>Click when you sure Okay</string>
+            </property>
             <property name="statusTip">
              <string notr="true"/>
             </property>
@@ -322,8 +470,7 @@ border-width:1px;</string>
              <string notr="true">background-color:rgb(246, 246, 246);
 border-style:solid;
 border-color:#e5d32e;
-border-width:1px;
-hover:pointer;</string>
+border-width:1px;</string>
             </property>
             <property name="inputMethodHints">
              <set>Qt::ImhNone</set>
@@ -340,7 +487,7 @@ hover:pointer;</string>
            </widget>
           </item>
           <item>
-           <spacer name="verticalSpacer">
+           <spacer name="sp_footer_b">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -358,7 +505,7 @@ hover:pointer;</string>
          </layout>
         </item>
         <item>
-         <spacer name="horizontalSpacer">
+         <spacer name="sp_footer_r">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
