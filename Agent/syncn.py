@@ -11,11 +11,29 @@ import sys
 class UI(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.syncn = {
+                "icon" : "UI/images/sync.ico",
+                "trayicon" : "UI/images/sync.png"
+        }
         self.setObjectName("MainWindow")
         
         # icon
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("UI/images/sync.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(self.syncn["icon"]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        # tray self.syncn["trayicon"]
+        # icon = QIcon(self.syncn["trayicon"])
+        self.tray = syncNTray(icon)
+        self.isTray = False
+        # self.tray = QtWidgets.QSystemTrayIcon(icon)
+        
+
+        # tray function
+        self.tray.exitAction.triggered.connect(self.shutdown)
+        self.tray.protectAction.triggered.connect(self.test)
+        self.tray.accountAction.triggered.connect(self.windowTrigger)
+        
+
 
         # window
         self.setWindowIcon(icon)
@@ -42,6 +60,7 @@ class UI(QMainWindow):
         self.btn_tray.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_tray.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;\nfont-family:Corbel;\nfont-size:12px;\nfont-weight:900;")
         self.btn_tray.setObjectName("btn_tray")
+        self.btn_tray.clicked.connect(self.windowTrigger)
 
         self.btn_close = QtWidgets.QPushButton(self.w_main)
         self.btn_close.setMinimumSize(QtCore.QSize(30, 30))
@@ -127,7 +146,6 @@ class UI(QMainWindow):
         self.la_content.addLayout(self.la_footer_all)
         self.la_content.setObjectName("la_content")
         
-        
         self.verticalLayout_3.addLayout(self.la_header)
         self.verticalLayout_3.addLayout(self.la_content)
         self.setCentralWidget(self.w_main)
@@ -158,6 +176,22 @@ class UI(QMainWindow):
         self.move(self.pos() + event.globalPos() - self.old_pos)
         self.old_pos = event.globalPos()
         event.accept()
+    
+    def windowTrigger(self):
+        if self.isTray:
+            self.show()
+            self.tray.hide()
+            self.isTray = False
+        else:
+            self.hide()
+            self.tray.show()
+            
+            self.isTray = True
+                
+
+    def test(self):
+        print("test")
+        self.tray.showMessage("Notify", "Hello")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -173,9 +207,30 @@ class UI(QMainWindow):
         self.btn_ok.setToolTip(_translate("MainWindow", "Click when you sure Okay"))
         self.btn_ok.setText(_translate("MainWindow", "OK"))
 
+    def start(self):
+        app = QtWidgets.QApplication(sys.argv)
+        MainWindow = UI()
+        MainWindow.show()
+        sys.exit(app.exec_())
+
+class syncNTray(QtWidgets.QSystemTrayIcon):
+
+    def __init__(self, icon, parent=None):
+        QtWidgets.QSystemTrayIcon.__init__(self, icon, parent)
+        menu = QtWidgets.QMenu(parent)
+        self.syncAction = menu.addAction("Sync")
+        self.shareAction = menu.addAction("Share")
+        self.protectAction = menu.addAction("Encryption")
+        self.accountAction = menu.addAction("Account")
+        self.logoutAction = menu.addAction("Logout")
+        self.exitAction = menu.addAction("Exit")
+        self.setContextMenu(menu)
+        self.setToolTip("SyncN[:Sync Note on Windows]!")
+        
     
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = UI()
     MainWindow.show()
     sys.exit(app.exec_())
+
