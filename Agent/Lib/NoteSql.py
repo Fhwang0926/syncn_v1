@@ -4,7 +4,13 @@
 
 import sqlite3, uuid, json, time
 import pydash as _
-from Lib import Search
+try:
+    from Lib import Search
+except Exception as e:
+    print(e)
+    import Search
+    pass
+
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
 #  ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
 
@@ -88,8 +94,6 @@ class DAO():
                 self.db.execute(sql)
                 self.conn.commit()
 
-                
-
             _.for_each(_.keys(notes), parser)
             print("sync")
             self.temp = None;
@@ -101,7 +105,8 @@ class DAO():
     def dumpBackupOneRow(self):
         try:
             col = ["*"]
-            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' limit 1".format(_.join(col, ','), self.id))
+            limit = `LIMIT 1` if self.debug else ''
+            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' {2}".format(_.join(col, ','), self.id, limit))
             self.backup = self.convert(rs)['res']
             return { "res" : True }
         except Exception as e:
