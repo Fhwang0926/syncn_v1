@@ -99,7 +99,7 @@ let get = (req, res) => {
                 console.log(auth['ok.' + code[2]])
             } else {
                 res.writeHead(404);
-                res.write(auth_link.replace(/%script%/, `alert("Expired this URL\nrestart program and again auth"); window.close();`));
+                res.write(auth_link.replace(/%script%/, "alert('Expired this URL\n\nrestart program and again auth'); window.close();"));
                 // res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
