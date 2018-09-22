@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "Service Auth",
-            "script": "Service/svc.auth.js",
+            "script": "svc.auth.js",
             "description": "git pull, auto restart",
             "watch": false,
             "ignore_watch": [
@@ -18,7 +18,7 @@
         },
         {
             "name": "Service Mail",
-            "script": "Service/svc.mail.js",
+            "script": "svc.mail.js",
             "description": "git pull, auto restart",
             "watch": false,
             "ignore_watch": [
