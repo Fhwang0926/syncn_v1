@@ -7,7 +7,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from Lib import Auth, Setting
-import sys
+import sys, os
 
 
 class UI(QMainWindow):
@@ -16,6 +16,7 @@ class UI(QMainWindow):
 
         super().__init__()
         self.debug = True
+        self.auth = os.path.exists("setting.syncn")
         self.syncn = {
                 "icon" : "UI/images/sync.ico",
                 "trayicon" : "UI/images/sync.png",
@@ -23,7 +24,7 @@ class UI(QMainWindow):
         }
         self.setObjectName("MainWindow")
         self.OTP = Auth.EmailCert()
-        
+
         # icon
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(self.syncn["icon"]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -154,6 +155,18 @@ class UI(QMainWindow):
         self.setCentralWidget(self.w_main)
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+        # check auth
+        if self.auth:
+            self.l_info.setStyleSheet("color:green;\n")
+            self.l_info.setText("You Was Auth")
+            self.input_info.setText("0123456789012345")
+            self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
+            self.input_info.setEnabled(False)
+            self.input_info.setClearButtonEnabled(False)
+            self.btn_ok.setText("Run on Tray")
+            self.auth = True
+
         if self.debug: print("init End")
         self.show()
         sys.exit(app.exec_())
@@ -201,6 +214,7 @@ class UI(QMainWindow):
         self.tray.showMessage("Notify", "Hello")
     
     def procAuth(self):
+        if self.auth: return self.windowTrigger()
         if not self.OTP.isCreateOTP:
             # need create OTP
             if not self.OTP.build(self.input_info.text(), "syncn.club:9759"):
@@ -219,10 +233,17 @@ class UI(QMainWindow):
             # need auth OTP
             if self.OTP.authOTP():
                 self.l_info.setStyleSheet("color:green;\n")
-                self.l_info.setText("Successful Auth")
+                self.l_info.setText("Successful Auth\nStart! SyncN on Tray")
+                self.input_info.setText("0123456789012345")
+                self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
+                self.input_info.setEnabled(False)
+                self.input_info.setClearButtonEnabled(False)
+                self.btn_ok.setText("Run on Tray")
+                self.auth = True
             else:
                 self.l_info.setStyleSheet("color:red;\n")
-                self.l_info.setText("Auth Failed, Check Email")            
+                self.l_info.setText("Auth Failed, Check Email")
+        
 
     # QMessageBox.about(None, "Notify", "try check email address detail", )
     # self.msg("Notify", "Try Check Email Address Correctly")
@@ -268,7 +289,6 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         self.setContextMenu(menu)
         self.setToolTip("SyncN[:Sync Note on Windows]!")
         
-    
 if __name__ == "__main__":
     print("Start application")
     app = QtWidgets.QApplication(sys.argv)
