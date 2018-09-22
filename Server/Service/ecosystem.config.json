@@ -15,6 +15,22 @@
             "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
             "out_file": "./logs/auth-out.log",
             "error_file": "./logs/auth-err.log"
+        },
+        {
+            "name": "Service Mail",
+            "script": "Service/svc.mail.js",
+            "description": "git pull, auto restart",
+            "watch": false,
+            "ignore_watch": [
+                "logs"
+            ],
+            "exec_mode": "fork",
+            "args": "dev",
+            "instances": 1,
+            "merge_logs": false,
+            "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+            "out_file": "./logs/auth-out.log",
+            "error_file": "./logs/auth-err.log"
         }
     ]
 }

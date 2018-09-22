@@ -92,14 +92,15 @@ let get = (req, res) => {
         // using email auth
         if (code[1] == 'code') { // md5
             if (_.has(auth, code[2])) {
-                res.writeHead(200); res.write(auth_link);
+                res.writeHead(200); res.write(auth_link.replace(/%script%/, `alert("Auth Successful"); window.close();`));
                 auth[code[2]].status = true;
                 auth['ok.' + code[2]] = { info: auth[code[2]].info, status: false, expire: timestamp() + auth_exfire } // expire 3 min
                 
                 console.log(auth['ok.' + code[2]])
             } else {
                 res.writeHead(404);
-                res.write(JSON.stringify({ e: "Expired this URL" }));
+                res.write(auth_link.replace(/%script%/, `alert("Expired this URL\nrestart program and again auth"); window.close();`));
+                // res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
         // using account create
