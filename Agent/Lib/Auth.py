@@ -2,7 +2,11 @@
 # -*- coding: utf8 -*-
 # auth : bluehdh0926@gmail.com
 
-import requests, time, json
+import requests, time, json, re
+try:
+    from Setting import syncn
+except Exception as e:
+    from Lib.Setting import syncn
 
 class EmailCert():
     def __init__(self):
@@ -10,19 +14,25 @@ class EmailCert():
         self.url = ''
         self.email = ''
         self.otpCode = ''
+        self.isCreateOTP = False
+        self.isBuild = False
         self.sub = {
             "code" : "/code/",
             "account" : "/account/",
             "remove" : "/remove/",
         }
 
-    def build(self, url, email):
-        self.url = url if url.find("://") else "http://"+url
+    def build(self, email, url):
+        if self.emailChecker(email): return False
+        self.url = url if url.find("://") > -1 else "http://"+url
         self.email = email
         self.otpCode = ''
+        self.isBuild = True
+        return True
     
     def requestAuthClear(self):
         self.otpCode = ''
+        # add remove auth info server side
         print("OTP Code Clear, try createOTP")
     
     def buildClear(self):
@@ -31,41 +41,51 @@ class EmailCert():
         self.url = ''
         print("Reset build, try createOTP")
     
+    def emailChecker(self, email):
+        regex = re.compile(r"^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+        if self.debug: print("check : ", email, regex.match(email))
+        return regex.match(email) == None
+    
     def createOTP(self):
         try:
             otpResult = requests.post(url=self.url + self.sub['code'], data=self.email)
             if otpResult.status_code == 200:
                 self.otpCode = otpResult.json()['res']
+                self.isCreateOTP = True
                 if self.debug:
                     print(otpResult.status_code, " : ", otpResult.json()['res'])
+                return True
             else:
                 print(otpResult.status_code, " : ", "Server Connection failed, Check your network!")
         except requests.exceptions.ConnectionError:
             print("requests.exceptions.ConnectionError")
         except Exception as e:
             print(e)
+        return False
+        
 
     def authOTP(self):
         try:
             authResult = requests.get(url=self.url + self.sub['account'] + self.otpCode)
             if authResult.status_code == 200:
-                setting = open("Setting.syncn", 'w')
-                setting.write(json.dumps(authResult.json()['res']))
-                setting.close()
+                config = syncn("../setting.syncn")
+                config.writeSetting(authResult.json()['res'])
                 print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)
+                return True
             else:
                 print("authResult.status_code, Check your Email and verify auth URL Link")
                 if self.debug: print(authResult.json()['e'])
         except Exception as e:
             print(e)
             pass
+        return False
         
 
 if __name__ == '__main__':
 
     client = EmailCert()
-    client.build("http://syncn.club:9759","hdh0926@naver.com")
+    client.build(syncn("../setting.syncn").config["service"],"hdh0926@naver.com")
     client.createOTP()
     time.sleep(60)
     client.authOTP()

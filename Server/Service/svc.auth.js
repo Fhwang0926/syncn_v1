@@ -107,6 +107,7 @@ let get = (req, res) => {
             if (_.has(auth, code[2])) {
                 const vhost = config.get('mq:vhost');
                 let service = `${config.get('service:protocol')}://${config.get('service:host')}:${config.get('service:port')}`
+                print(service)
                 let info = { version: config.get("c-version"), host: config.get("mq:host"), port: config.get("mq:port"), vhost : vhost, service : service }
                 let account = _.assign(auth[code[2]].info, info);
                 print("auth!!!!!, " + code[2], JSON.stringify(account))

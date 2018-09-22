@@ -6,41 +6,42 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
+from Lib import Auth, Setting
 import sys
+
 
 class UI(QMainWindow):
     def __init__(self):
+        app = QtWidgets.QApplication(sys.argv)
+
         super().__init__()
+        self.debug = True
         self.syncn = {
                 "icon" : "UI/images/sync.ico",
-                "trayicon" : "UI/images/sync.png"
+                "trayicon" : "UI/images/sync.png",
+                "config" : "setting.syncn"
         }
         self.setObjectName("MainWindow")
+        self.OTP = Auth.EmailCert()
         
         # icon
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(self.syncn["icon"]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
         # tray self.syncn["trayicon"]
-        # icon = QIcon(self.syncn["trayicon"])
         self.tray = syncNTray(icon)
-        self.isTray = False
-        # self.tray = QtWidgets.QSystemTrayIcon(icon)
         
-
         # tray function
         self.tray.exitAction.triggered.connect(self.shutdown)
-        self.tray.protectAction.triggered.connect(self.test)
+        self.tray.protectAction.triggered.connect(self.encryptTrigger)
         self.tray.accountAction.triggered.connect(self.windowTrigger)
+        self.tray.logoutAction.triggered.connect(self.test)
         
-
-
         # window
         self.setWindowIcon(icon)
         self.setEnabled(True)
         self.resize(390, 590)
         self.setMinimumSize(QtCore.QSize(390, 590))
-        # self.setMaximumSize(QtCore.QSize(390, 590))
         self.setMouseTracking(True)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle("SyncN")        
@@ -81,6 +82,7 @@ class UI(QMainWindow):
         self.btn_ok.setStyleSheet("background-color:rgb(246, 246, 246);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.btn_ok.setInputMethodHints(QtCore.Qt.ImhNone)
         self.btn_ok.setObjectName("btn_ok")
+        self.btn_ok.clicked.connect(self.procAuth)
 
         # window - widget - label
         self.l_title = QtWidgets.QLabel(self.w_main)
@@ -104,6 +106,7 @@ class UI(QMainWindow):
         self.input_info.setClearButtonEnabled(True)
         self.input_info.textChanged.connect(self.checkInput)
         self.input_info.setObjectName("input_info")
+        self.input_info.returnPressed.connect(self.procAuth)
 
         # window - widget - spacer
         spacerItem = QtWidgets.QSpacerItem(500, 10, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
@@ -151,6 +154,9 @@ class UI(QMainWindow):
         self.setCentralWidget(self.w_main)
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
+        if self.debug: print("init End")
+        self.show()
+        sys.exit(app.exec_())
 
     # function
     def shutdown(self):
@@ -178,20 +184,55 @@ class UI(QMainWindow):
         event.accept()
     
     def windowTrigger(self):
-        if self.isTray:
+        if self.tray.isActive:
             self.show()
             self.tray.hide()
-            self.isTray = False
+            self.tray.isActive = False
         else:
             self.hide()
             self.tray.show()
-            
-            self.isTray = True
-                
+            self.tray.isActive = True
+
+    def encryptTrigger(self):
+        self.tray.protectAction.checkable = True if self.tray.isEncrypt else False
 
     def test(self):
         print("test")
         self.tray.showMessage("Notify", "Hello")
+    
+    def procAuth(self):
+        if not self.OTP.isCreateOTP:
+            # need create OTP
+            if not self.OTP.build(self.input_info.text(), "syncn.club:9759"):
+                self.l_info.setText("Check Email Address")
+                self.l_info.setStyleSheet("color:red;\n")
+                return
+            else:
+                if self.OTP.createOTP():
+                    self.l_info.setStyleSheet("color:green;\n")
+                    self.l_info.setText("We Sended Auth mail")
+                else:
+                    self.l_info.setStyleSheet("color:red;\n")
+                    self.l_info.setText("Failed send Auth email")
+                
+        else:
+            # need auth OTP
+            if self.OTP.authOTP():
+                self.l_info.setStyleSheet("color:green;\n")
+                self.l_info.setText("Successful Auth")
+            else:
+                self.l_info.setStyleSheet("color:red;\n")
+                self.l_info.setText("Auth Failed, Check Email")            
+
+    # QMessageBox.about(None, "Notify", "try check email address detail", )
+    # self.msg("Notify", "Try Check Email Address Correctly")
+    def msg(self, title, body):
+        msg = QMessageBox()
+        msg.setIcon(QtGui.QIcon(self.syncn["trayicon"])) 
+        msg.setWindowTitle(title)
+        msg.setText(body)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -207,20 +248,20 @@ class UI(QMainWindow):
         self.btn_ok.setToolTip(_translate("MainWindow", "Click when you sure Okay"))
         self.btn_ok.setText(_translate("MainWindow", "OK"))
 
-    def start(self):
-        app = QtWidgets.QApplication(sys.argv)
-        MainWindow = UI()
-        MainWindow.show()
-        sys.exit(app.exec_())
-
 class syncNTray(QtWidgets.QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QtWidgets.QSystemTrayIcon.__init__(self, icon, parent)
         menu = QtWidgets.QMenu(parent)
+        
+        self.isEncrypt = False
+        self.isActive = False
         self.syncAction = menu.addAction("Sync")
         self.shareAction = menu.addAction("Share")
-        self.protectAction = menu.addAction("Encryption")
+        self.protectAction = QtWidgets.QAction("Encryption", self, checkable=True)
+        self.protectAction.setStatusTip('Default False')
+        self.protectAction.setChecked(False)
+        menu.addAction(self.protectAction)
         self.accountAction = menu.addAction("Account")
         self.logoutAction = menu.addAction("Logout")
         self.exitAction = menu.addAction("Exit")
@@ -229,8 +270,8 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         
     
 if __name__ == "__main__":
+    print("Start application")
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = UI()
-    MainWindow.show()
-    sys.exit(app.exec_())
+    application = UI()
+    
 

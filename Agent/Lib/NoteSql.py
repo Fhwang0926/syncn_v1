@@ -2,8 +2,9 @@
 # -*- coding: utf8 -*-
 # auth : bluehdh0926@gmail.com
 
-import sqlite3, uuid, json, time, Search
+import sqlite3, uuid, json, time
 import pydash as _
+from Lib import Search
 #windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
 #  ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
 
