@@ -18,6 +18,10 @@ class PathSearcher():
     def getFindPath(self):
         return self.findPath
 
+    def getFindDir(self):
+        self.search(self.default_path)
+        return self.findDir
+
     def run(self):
         self.search(self.default_path)
         return self.getFindPath()
@@ -38,6 +42,7 @@ class PathSearcher():
             for f in files:
                 fullPath = path + '/' + f
                 if fullPath.find("plum.sqlite") != -1:
+                    self.findDir = path
                     self.findPath = fullPath
                     self.is_find = True
 
