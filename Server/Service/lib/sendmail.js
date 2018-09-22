@@ -54,9 +54,9 @@ let mail = {
         return mail.send(mailOptions)
     },
     send : (info) => {
-        print(info.from)
-        if (!info.from.length) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
-        if (!info.subject.length) { info.subject = 'SyncN Notify' }
+        print(info)
+        if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
+        if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
         // if (!info.from.length) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
 
         return new Promise((resolve, reject) => {
