@@ -16,7 +16,7 @@ const rabbit = require('axios').create({
 const regx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,5}$/i;
 let auth = {}
 let auth_link = '';
-const auth_exfire = 1000 * 60 * 3; // expire 3 min
+const auth_exfire = 60 * 3; // expire 3 min
 
 fs.readFile('mail_format/auth_link.html', (err, data) => {
     if (err) throw err;

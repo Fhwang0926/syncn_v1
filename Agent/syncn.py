@@ -33,10 +33,10 @@ class UI(QMainWindow):
         self.tray = syncNTray(icon)
         
         # tray function
-        self.tray.exitAction.triggered.connect(self.shutdown)
+        self.tray.exitAction.triggered.connect(self.proExit)
         self.tray.protectAction.triggered.connect(self.encryptTrigger)
         self.tray.accountAction.triggered.connect(self.windowTrigger)
-        self.tray.logoutAction.triggered.connect(self.test)
+        self.tray.logoutAction.triggered.connect(self.proLogout)
         
         # window
         self.setWindowIcon(icon)
@@ -70,7 +70,7 @@ class UI(QMainWindow):
         self.btn_close.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_close.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;")
         self.btn_close.setObjectName("btn_close")
-        self.btn_close.clicked.connect(self.shutdown)
+        self.btn_close.clicked.connect(self.proExit)
 
         self.btn_ok = QtWidgets.QPushButton(self.w_main)
         self.btn_ok.setEnabled(False)
@@ -83,7 +83,7 @@ class UI(QMainWindow):
         self.btn_ok.setStyleSheet("background-color:rgb(246, 246, 246);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.btn_ok.setInputMethodHints(QtCore.Qt.ImhNone)
         self.btn_ok.setObjectName("btn_ok")
-        self.btn_ok.clicked.connect(self.procAuth)
+        self.btn_ok.clicked.connect(self.proAuth)
 
         # window - widget - label
         self.l_title = QtWidgets.QLabel(self.w_main)
@@ -107,7 +107,7 @@ class UI(QMainWindow):
         self.input_info.setClearButtonEnabled(True)
         self.input_info.textChanged.connect(self.checkInput)
         self.input_info.setObjectName("input_info")
-        self.input_info.returnPressed.connect(self.procAuth)
+        self.input_info.returnPressed.connect(self.proAuth)
 
         # window - widget - spacer
         spacerItem = QtWidgets.QSpacerItem(500, 10, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
@@ -160,7 +160,7 @@ class UI(QMainWindow):
         if self.auth:
             self.l_info.setStyleSheet("color:green;\n")
             self.l_info.setText("You Was Auth")
-            self.input_info.setText("0123456789012345")
+            self.input_info.setText("0123456789012")
             self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
             self.input_info.setEnabled(False)
             self.input_info.setClearButtonEnabled(False)
@@ -172,7 +172,7 @@ class UI(QMainWindow):
         sys.exit(app.exec_())
 
     # function
-    def shutdown(self):
+    def proExit(self):
         self.close()
         sys.exit(0)
 
@@ -213,7 +213,7 @@ class UI(QMainWindow):
         print("test")
         self.tray.showMessage("Notify", "Hello")
     
-    def procAuth(self):
+    def proAuth(self):
         if self.auth: return self.windowTrigger()
         if not self.OTP.isCreateOTP:
             # need create OTP
@@ -234,7 +234,7 @@ class UI(QMainWindow):
             if self.OTP.authOTP():
                 self.l_info.setStyleSheet("color:green;\n")
                 self.l_info.setText("Successful Auth\nStart! SyncN on Tray")
-                self.input_info.setText("0123456789012345")
+                self.input_info.setText("0123456789012")
                 self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
                 self.input_info.setEnabled(False)
                 self.input_info.setClearButtonEnabled(False)
@@ -243,6 +243,14 @@ class UI(QMainWindow):
             else:
                 self.l_info.setStyleSheet("color:red;\n")
                 self.l_info.setText("Auth Failed, Check Email")
+    
+    def proLogout(self):
+        try:
+            os.remove(self.syncn["config"])
+            sys.exit(0)
+        except Exception as e:
+            print(e)
+            pass
         
 
     # QMessageBox.about(None, "Notify", "try check email address detail", )
