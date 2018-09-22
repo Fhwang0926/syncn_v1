@@ -34,30 +34,31 @@ const transporter = nodemailer.createTransport(smtpPool({
     maxMessages: 20,
 }));
 
-fs.readFile('mail_format/auth.html', (err, data) => {
+fs.readFile('mail_format/common.html', (err, data) => {
     if (err) throw err;
-    auth_html = data.toString();
-    
+    common = data.toString();
 });
 
 let mail = {
     send_auth: (to, code) => {
-        
+        let tag = `<a href="${auth_url + code}" target="_blank" style="text-decoration: none; font-weight: 900; ">Click here to Verify</a>`
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
-            subject : 'SyncN Notify auth URL(this code remove to after 5 min)', //expire get from nconf
-            html: auth_html.replace(/%code%/g, auth_url + code),
+            subject : 'SyncN Notify auth URL(this code remove to after 3 min)', //expire get from nconf
+            html: common.replace(/%type%/, "SyncN Auth Notify").replace(/%title%/, "Need to Auth for your sync").replace(/%code%/g, tag),
             //text
         };
 
         return mail.send(mailOptions)
     },
     send : (info) => {
-        print(info)
+        // let url = "http://syncn.club"
+        // let tag = `<a href="${url}" target="_blank" style="text-decoration: none; font-weight: 900; "></a>`
         if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
-        // if (!info.from.length) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
+            info.html = common.replace(/%code%/g, text).replace(/%type%/, "SyncN Notify").replace(/%title%/, "Hello, Dear")
+            _.omit(info, "text")
 
         return new Promise((resolve, reject) => {
             transporter.sendMail(info, (err, res) => {
