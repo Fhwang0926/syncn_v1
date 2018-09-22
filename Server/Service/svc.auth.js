@@ -60,7 +60,6 @@ let post = (req, res) => {
         });
     })
 
-
     req.on('end', () => {
         try {
             let email = data.match(regx)[0];
@@ -90,6 +89,7 @@ let post = (req, res) => {
 let get = (req, res) => {
     try {
         let code = req.url.split("/");
+        // using email auth
         if (code[1] == 'code') { // md5
             if (_.has(auth, code[2])) {
                 res.writeHead(200); res.write(auth_link);
@@ -102,10 +102,12 @@ let get = (req, res) => {
                 res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
+        // using account create
         if (code[1] == 'account') { // ok.md5
             if (_.has(auth, code[2])) {
                 const vhost = config.get('mq:vhost');
-                let info = { version: config.get("c-version"), host: config.get("mq:host"), port: config.get("mq:port"), vhost : vhost }
+                let service = `${config.get('service:protocol')}://${config.get('service:host')}:${config.get('service:port')}`
+                let info = { version: config.get("c-version"), host: config.get("mq:host"), port: config.get("mq:port"), vhost : vhost, service : service }
                 let account = _.assign(auth[code[2]].info, info);
                 print("auth!!!!!, " + code[2], JSON.stringify(account))
                 
@@ -134,12 +136,13 @@ let get = (req, res) => {
                 res.write(JSON.stringify({ e: "Check Email auth URL, Or maybe it was expireded" }));
             }
         }
-        
+        // using agent update
         if (code[1] == 'update') { // update
             //get version and compress given new version
-            
+            notice = "not ready update link"
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify({ res: notice }));
         }
-
         res.end();  
     } catch (e) {
         console.log(e)
@@ -185,7 +188,7 @@ let remove = async (req, res) => {
 
 mq.open().then((ch) => {
     let http = require('http');
-    let middleware = http.createServer('/', (req, res) => {
+    let service = http.createServer('/', (req, res) => {
         switch (req.method) {
             case 'POST':
                 post(req, res);
@@ -204,11 +207,9 @@ mq.open().then((ch) => {
                 mq.send("mail", '', { type: "notice", headers: { to: config.get('manager') } }) // using cmd
                 break;
         }
-            
     });
-    middleware.listen(9759);
+    service.listen(9759);
     auth_cleaner();
-
 }).catch(e => {
     print(e)
 })

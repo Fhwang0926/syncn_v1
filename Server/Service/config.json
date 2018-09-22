@@ -15,12 +15,12 @@
     },
     "mail": {
         "queue" : "mail",
-        "host": "syncn.club",
+        "host": "localhost",
         "port": "587",
         "pw": "syncn",
         "id": "syncn"
     },
-    "middleware": {
+    "service": {
         "port": 9759,
         "host": "syncn.club",
         "protocol": "http"
