@@ -46,7 +46,7 @@ let mail = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
             subject : 'SyncN Notify auth URL(this code remove to after 3 min)', //expire get from nconf
-            html: common.replace(/%type%/, "SyncN Auth Notify").replace(/%title%/, "Need to Auth for your sync").replace(/%code%/g, tag),
+            html: common.replace(/%type%/g, "SyncN Auth Notify").replace(/%title%/g, "Need to Auth for your sync").replace(/%code%/g, tag),
             //text
         };
 
@@ -57,7 +57,7 @@ let mail = {
         // let tag = `<a href="${url}" target="_blank" style="text-decoration: none; font-weight: 900; "></a>`
         if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
-            info.html = common.replace(/%code%/g, info.text).replace(/%type%/, "SyncN Notify").replace(/%title%/, "Hello, Dear")
+            info.html = common.replace(/%type%/g, "SyncN Notify").replace(/%title%/g, "Hello, Dear").replace(/%code%/g, info.text)
             _.omit(info, "text")
 
         return new Promise((resolve, reject) => {
