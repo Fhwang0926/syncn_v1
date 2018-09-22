@@ -57,7 +57,7 @@ let mail = {
         // let tag = `<a href="${url}" target="_blank" style="text-decoration: none; font-weight: 900; "></a>`
         if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
-            info.html = common.replace(/%code%/g, text).replace(/%type%/, "SyncN Notify").replace(/%title%/, "Hello, Dear")
+            info.html = common.replace(/%code%/g, info.text).replace(/%type%/, "SyncN Notify").replace(/%title%/, "Hello, Dear")
             _.omit(info, "text")
 
         return new Promise((resolve, reject) => {
