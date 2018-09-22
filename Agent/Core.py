@@ -11,9 +11,10 @@ import json
 class signalThread(QThread):
     sync = pyqtSignal(bool)
 
-    def __init__(self, sec=0, parent=None):
+    def __init__(self, sec=0, parent=None, debug=False):
         super().__init__()
         self.isRun = False
+        self.debug = debug
         self.cnt = 0;
         svc = Search.PathSearcher()
         self.path = svc.run()
@@ -48,22 +49,23 @@ class signalThread(QThread):
     def run(self):
         try:
             while self.isRun:
-                getSignal = win32event.WaitForSingleObject(self.handler, 1200)
-                print(getSignal, self.cnt)
+                getSignal = win32event.WaitForSingleObject(self.handler, 3000)
+                
                 if getSignal == win32con.WAIT_OBJECT_0:
                     # change detected
                     self.cnt = 0;
+                    if self.debug: print("user writting")
                     win32file.FindNextChangeNotification(self.handler)
                 elif getSignal == win32con.WAIT_FAILED:
-                    # self.th.stop()
                     print("Occured the Error")
-                else:
-                    print("WTF")
+                else:                    
                     if self.cnt > 10:
                         self.sync.emit(True)
                         self.cnt = 0;
                     else:
                         self.cnt +=1
+                        if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+                        
         except Exception as e:
             print(e)
             pass

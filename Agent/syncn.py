@@ -160,7 +160,7 @@ class UI(QMainWindow):
 
         # init thread
         self.th_mq = mqSendThread()
-        self.th_signal = signalThread()
+        self.th_signal = signalThread(debug=True)
         self.th_signal.sync.connect(self.th_mq.run)
         
 
