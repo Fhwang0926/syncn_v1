@@ -4,7 +4,12 @@ global.config = require('nconf')
 
 
 let moment = require("moment");
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+
 global.timestamp = () => {
+    moment().tz(moment())
+    moment.tz("2014-06-01 12:00", "America/New_York");
     return moment().unix()
 }
 global.time = () => {

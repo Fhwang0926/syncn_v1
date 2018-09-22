@@ -8,3 +8,4 @@ Agent/example/
 Agent/Lib/__pycache__/
 Agent/__pycache__/
 *.syncn
+Server/Service/node_modules/
