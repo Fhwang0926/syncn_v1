@@ -29,7 +29,6 @@ class MQ():
             self.rKey = self.queue
             self.ex_msg = "msg"
             self.ex_cmd = "cmd"
-            print(self.url)
         except Exception as e:
             print(e)
             pass

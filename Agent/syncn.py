@@ -7,6 +7,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from Lib import Auth, Setting
+from Core import *
 import sys, os
 
 
@@ -37,6 +38,7 @@ class UI(QMainWindow):
         self.tray.protectAction.triggered.connect(self.encryptTrigger)
         self.tray.accountAction.triggered.connect(self.windowTrigger)
         self.tray.logoutAction.triggered.connect(self.proLogout)
+        self.tray.activated.connect(self.openWindow)
         
         # window
         self.setWindowIcon(icon)
@@ -156,17 +158,14 @@ class UI(QMainWindow):
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-        # check auth
-        if self.auth:
-            self.l_info.setStyleSheet("color:green;\n")
-            self.l_info.setText("You Was Auth")
-            self.input_info.setText("0123456789012")
-            self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
-            self.input_info.setEnabled(False)
-            self.input_info.setClearButtonEnabled(False)
-            self.btn_ok.setText("Run on Tray")
-            self.auth = True
+        # init thread
+        self.th_mq = mqSendThread()
+        self.th_signal = signalThread()
+        self.th_signal.sync.connect(self.th_mq.run)
+        
 
+        # check auth
+        if self.auth: self.authStyle()
         if self.debug: print("init End")
         self.show()
         sys.exit(app.exec_())
@@ -189,6 +188,9 @@ class UI(QMainWindow):
     def mouseReleaseEvent(self, e):
         self.mouse_down = False
 
+    def keyPressEvent(self, e):
+        if e.key() == 16777216: self.windowTrigger()
+        
     def mouseMoveEvent(self, event):
         x=event.x()
         y=event.y()
@@ -205,6 +207,17 @@ class UI(QMainWindow):
             self.hide()
             self.tray.show()
             self.tray.isActive = True
+            self.sycnN(True)
+    
+    def sycnN(self, type):
+        if type:
+            # if (not self.th_mq.isRun) and self.auth: self.th_mq.start(self.config)
+            if (not self.th_signal.isRun) and self.auth: self.th_signal.start()
+        else:
+            if self.th_mq.isRun: self.th_mq.stop()
+            if self.th_signal.isRun: self.th_signal.stop()
+        
+            
 
     def encryptTrigger(self):
         self.tray.protectAction.checkable = True if self.tray.isEncrypt else False
@@ -228,18 +241,10 @@ class UI(QMainWindow):
                 else:
                     self.l_info.setStyleSheet("color:red;\n")
                     self.l_info.setText("Failed send Auth email")
-                
         else:
             # need auth OTP
             if self.OTP.authOTP():
-                self.l_info.setStyleSheet("color:green;\n")
-                self.l_info.setText("Successful Auth\nStart! SyncN on Tray")
-                self.input_info.setText("0123456789012")
-                self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
-                self.input_info.setEnabled(False)
-                self.input_info.setClearButtonEnabled(False)
-                self.btn_ok.setText("Run on Tray")
-                self.auth = True
+                self.authStyle()
             else:
                 self.l_info.setStyleSheet("color:red;\n")
                 self.l_info.setText("Auth Failed, Check Email")
@@ -251,7 +256,23 @@ class UI(QMainWindow):
         except Exception as e:
             print(e)
             pass
-        
+
+    def authStyle(self):
+        self.l_info.setStyleSheet("color:green;\n")
+        self.l_info.setText("Successful Auth\nStart! SyncN on Tray")
+        self.input_info.setAlignment(Qt.AlignCenter)
+        self.input_info.setFont(QtGui.QFont("Corbel", 7, 10))
+        self.input_info.setText("01234567890123")
+        self.input_info.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.input_info.setEnabled(False)
+        self.input_info.setClearButtonEnabled(False)
+        self.btn_ok.setText("Run on Tray")
+        self.auth = True
+    
+    def openWindow(self, reason):
+        if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
+            self.windowTrigger()
+            self.raise_()
 
     # QMessageBox.about(None, "Notify", "try check email address detail", )
     # self.msg("Notify", "Try Check Email Address Correctly")
@@ -285,10 +306,13 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         
         self.isEncrypt = False
         self.isActive = False
-        self.syncAction = menu.addAction("Sync")
+        self.syncAction = QtWidgets.QAction("Sync", self, checkable=True)
+        self.syncAction.setStatusTip('Default Yes')
+        self.syncAction.setChecked(False)
+        menu.addAction(self.syncAction)
         self.shareAction = menu.addAction("Share")
         self.protectAction = QtWidgets.QAction("Encryption", self, checkable=True)
-        self.protectAction.setStatusTip('Default False')
+        self.protectAction.setStatusTip('Default No')
         self.protectAction.setChecked(False)
         menu.addAction(self.protectAction)
         self.accountAction = menu.addAction("Account")

@@ -30,11 +30,11 @@ class Signal():
 
                 if self.timer_is_runing == False:
                     self.timerStart()
-                # elif self.timer_is_runing == True:
-                #     self.timerStop()
+                elif self.timer_is_runing == True:
+                    self.timerStop()
 
 
-                win32file.FindNextChangeNotification(handler)
+                win32file.FindFirstChangeNotification(handler)
             elif self.sendSignal == win32con.WAIT_FAILED:
                 print("Occured the Error")
 

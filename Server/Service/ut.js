@@ -65,3 +65,6 @@ let sendPost = () => {
 
 // sendPost();
 // consumer();
+
+
+console.log(JSON.stringify({ to: "hdh0926@naver.com", html: "test" }))
