@@ -57,8 +57,11 @@ let mail = {
         // let tag = `<a href="${url}" target="_blank" style="text-decoration: none; font-weight: 900; "></a>`
         if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
+        if (!_.has(info, "html")) {
             info.html = common.replace(/%type%/g, "SyncN Notify").replace(/%title%/g, "Hello, Dear").replace(/%code%/g, info.text)
             _.omit(info, "text")
+        }
+            
 
         return new Promise((resolve, reject) => {
             transporter.sendMail(info, (err, res) => {
