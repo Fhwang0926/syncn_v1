@@ -5,3 +5,6 @@ Client/example/
 Server Service/node_modules/
 Server Web/UI/
 Agent/example/
+Agent/Lib/__pycache__/
+Agent/__pycache__/
+*.syncn
