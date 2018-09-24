@@ -6,7 +6,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
-from Lib import Auth, Setting, signal_v4 as si
 from Core import *
 import sys, os
 
@@ -24,7 +23,6 @@ class UI(QMainWindow):
                 "config" : "setting.syncn"
         }
         self.setObjectName("MainWindow")
-        self.OTP = Auth.EmailCert()
 
         # icon
         icon = QtGui.QIcon()
@@ -32,13 +30,6 @@ class UI(QMainWindow):
 
         # tray self.syncn["trayicon"]
         self.tray = syncNTray(icon)
-        
-        # tray function
-        self.tray.exitAction.triggered.connect(self.proExit)
-        self.tray.protectAction.triggered.connect(self.encryptTrigger)
-        self.tray.accountAction.triggered.connect(self.windowTrigger)
-        self.tray.logoutAction.triggered.connect(self.proLogout)
-        self.tray.activated.connect(self.openWindow)
         
         # window
         self.setWindowIcon(icon)
@@ -64,7 +55,7 @@ class UI(QMainWindow):
         self.btn_tray.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_tray.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;\nfont-family:Corbel;\nfont-size:12px;\nfont-weight:900;")
         self.btn_tray.setObjectName("btn_tray")
-        self.btn_tray.clicked.connect(self.windowTrigger)
+        
 
         self.btn_close = QtWidgets.QPushButton(self.w_main)
         self.btn_close.setMinimumSize(QtCore.QSize(30, 30))
@@ -85,7 +76,6 @@ class UI(QMainWindow):
         self.btn_ok.setStyleSheet("background-color:rgb(246, 246, 246);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.btn_ok.setInputMethodHints(QtCore.Qt.ImhNone)
         self.btn_ok.setObjectName("btn_ok")
-        self.btn_ok.clicked.connect(self.proAuth)
 
         # window - widget - label
         self.l_title = QtWidgets.QLabel(self.w_main)
@@ -109,7 +99,7 @@ class UI(QMainWindow):
         self.input_info.setClearButtonEnabled(True)
         self.input_info.textChanged.connect(self.checkInput)
         self.input_info.setObjectName("input_info")
-        self.input_info.returnPressed.connect(self.proAuth)
+        
 
         # window - widget - spacer
         spacerItem = QtWidgets.QSpacerItem(500, 10, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
@@ -158,12 +148,6 @@ class UI(QMainWindow):
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-        # init thread
-        self.th_mq = mqSendThread()
-        self.th_mq.finished.connect(lambda : print("End Send"))
-        # self.th_signal = si.signalThread(debug=True)
-        # self.th_signal.sync.connect(self.th_mq.run)
-        
         # check auth
         if self.auth: self.authStyle()
         if self.debug: print("init End")
@@ -198,8 +182,6 @@ class UI(QMainWindow):
         event.accept()
     
     def windowTrigger(self):
-        self.sycnN(True)
-        return
         if self.tray.isActive:
             self.show()
             self.tray.hide()
@@ -208,57 +190,10 @@ class UI(QMainWindow):
             self.hide()
             self.tray.show()
             self.tray.isActive = True
-            self.sycnN(True)
-    
-    def sycnN(self, type):
-        if type:
-            print("start blocking")
-            # if (not self.th_signal.isRun) and self.auth: self.th_signal.start()
-            print("can print is?")
-        else:
-            pass
-            # if self.th_mq.isRun: self.th_mq.stop()
-            # if self.th_signal.isRun: self.th_signal.stop()
-        
-            
+            self.sycnN(True)        
 
     def encryptTrigger(self):
         self.tray.protectAction.checkable = True if self.tray.isEncrypt else False
-
-    def test(self):
-        print("test")
-        self.tray.showMessage("Notify", "Hello")
-    
-    def proAuth(self):
-        if self.auth: return self.windowTrigger()
-        if not self.OTP.isCreateOTP:
-            # need create OTP
-            if not self.OTP.build(self.input_info.text(), "syncn.club:9759"):
-                self.l_info.setText("Check Email Address")
-                self.l_info.setStyleSheet("color:red;\n")
-                return
-            else:
-                if self.OTP.createOTP():
-                    self.l_info.setStyleSheet("color:green;\n")
-                    self.l_info.setText("We Sended Auth mail")
-                else:
-                    self.l_info.setStyleSheet("color:red;\n")
-                    self.l_info.setText("Failed send Auth email")
-        else:
-            # need auth OTP
-            if self.OTP.authOTP():
-                self.authStyle()
-            else:
-                self.l_info.setStyleSheet("color:red;\n")
-                self.l_info.setText("Auth Failed, Check Email")
-    
-    def proLogout(self):
-        try:
-            os.remove(self.syncn["config"])
-            sys.exit(0)
-        except Exception as e:
-            print(e)
-            pass
 
     def authStyle(self):
         self.l_info.setStyleSheet("color:green;\n")
@@ -279,13 +214,13 @@ class UI(QMainWindow):
     
     # QMessageBox.about(None, "Notify", "try check email address detail", )
     # self.msg("Notify", "Try Check Email Address Correctly")
-    def msg(self, title, body):
-        msg = QMessageBox()
-        msg.setIcon(QtGui.QIcon(self.syncn["trayicon"])) 
-        msg.setWindowTitle(title)
-        msg.setText(body)
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()
+    # def msg(self, title, body):
+    #     msg = QMessageBox()
+    #     msg.setIcon(QtGui.QIcon(self.syncn["trayicon"])) 
+    #     msg.setWindowTitle(title)
+    #     msg.setText(body)
+    #     msg.setStandardButtons(QMessageBox.Ok)
+    #     msg.exec_()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -325,67 +260,12 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         self.setToolTip("SyncN[:Sync Note on Windows]!")
 
 
-class UIThread(QThread):
-    sync = pyqtSignal(bool)
-
-    def __init__(self, sec=0, parent=None, debug=False):
-        QThread.__init__(self)
-        self.isRun = False
-        self.debug = debug
-        self.timestamp = 0;
-        self.cnt = 0
-        self.target = Search.PathSearcher().run()
-
-    def __del__(self):
-        print(".... end thread.....")
-        self.wait()
-    
-    def stop(self):
-        if not self.isRun:
-            print("was stopped")
-            self.cnt = 0
-            return
-        else:
-            print("real stop")
-            self.isRun = False
-            self.cnt = 0
-
-    def start(self):
-        if self.isRun:
-            print("already thread")
-            self.cnt = 0
-            return
-        else:
-            print("real start")
-            self.cnt = 0
-            self.isRun = True
-            self.run()
-
-    def run(self):
-        app = QtWidgets.QApplication(sys.argv)
-        application = UI()
-        application.show()
-        sys.exit(app.exec_())
-
-        print("UI thread start")
-        try:        
-            while self.isRun:
-                time.sleep(1)
-                print("test")
-                pass
-        except KeyboardInterrupt:
-            self.stop()
-            self.join()
-        except Exception as e:
-            self.stop()
-            self.join()
-            print(e)
 if __name__ == "__main__":
     print("Start application")
-    th_signal = si.signalThread()
-    th_signal.start()
-    th_ui = UIThread()
-    th_ui.start()
+    app = QtWidgets.QApplication(sys.argv)
+    application = UI()
+    application.show()
+    sys.exit(app.exec_())
     
     
     

@@ -744,119 +744,509 @@
 #     using_q_runnable()
 
 # section
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+# import sys
+# from PyQt5 import QtWidgets, QtGui, QtCore
 
-class MainWindow(QtGui.QMainWindow):
+# class MainWindow(QtWidgets.QWidget):
+#     def __init__(self):
+#         # call super class constructor
+#         super(MainWindow, self).__init__()
+#         # build the objects one by one
+#         layout = QtWidgets.QVBoxLayout(self)
+#         self.pb_load = QtWidgets.QPushButton('Load')
+#         self.pb_clear= QtWidgets.QPushButton('Clear')
+#         self.edit = QtWidgets.QTextEdit()
+#         layout.addWidget(self.edit)
+#         layout.addWidget(self.pb_load)
+#         layout.addWidget(self.pb_clear)
+#         # connect the callbacks to the push-buttons
+#         self.pb_load.clicked.connect(self.callback_pb_load)
+#         self.pb_clear.clicked.connect(self.callback_pb_clear)
+
+#     def callback_pb_load(self):
+#         self.edit.append('hello world')
+
+#     def callback_pb_clear(self):
+#         self.edit.clear()
+    
+# def mythread():
+#     print("run?")
+#     app = QtWidgets.QApplication(sys.argv)
+#     win = MainWindow()
+#     win.show()
+#     app.exec_()
+
+# def show():
+#     import threading
+#     t = threading.Thread(target = mythread)
+#     t.daemon = True
+#     t.start()
+
+# show()
+# section
+
+# from Tkinter import *
+# import time
+# import threading
+# import random
+# import Queue
+
+# class GuiPart:
+#     def __init__(self, master, queue, endCommand):
+#         self.queue = queue
+#         # Set up the GUI
+#         console = Tkinter.Button(master, text='Done', command=endCommand)
+#         console.pack()
+#         # Add more GUI stuff here depending on your specific needs
+
+#     def processIncoming(self):
+#         """Handle all messages currently in the queue, if any."""
+#         while self.queue.qsize():
+#             try:
+#                 msg = self.queue.get(0)
+#                 # Check contents of message and do whatever is needed. As a
+#                 # simple test, print it (in real life, you would
+#                 # suitably update the GUI's display in a richer fashion).
+#                 print(msg)
+#             except Queue.Empty:
+#                 # just on general principles, although we don't
+#                 # expect this branch to be taken in this case
+#                 pass
+
+# class ThreadedClient:
+#     """
+#     Launch the main part of the GUI and the worker thread. periodicCall and
+#     endApplication could reside in the GUI part, but putting them here
+#     means that you have all the thread controls in a single place.
+#     """
+#     def __init__(self, master):
+#         """
+#         Start the GUI and the asynchronous threads. We are in the main
+#         (original) thread of the application, which will later be used by
+#         the GUI as well. We spawn a new thread for the worker (I/O).
+#         """
+#         self.master = master
+
+#         # Create the queue
+#         self.queue = Queue.Queue()
+
+#         # Set up the GUI part
+#         self.gui = GuiPart(master, self.queue, self.endApplication)
+
+#         # Set up the thread to do asynchronous I/O
+#         # More threads can also be created and used, if necessary
+#         self.running = 1
+#         self.thread1 = threading.Thread(target=self.workerThread1)
+#         self.thread1.start()
+
+#         # Start the periodic call in the GUI to check if the queue contains
+#         # anything
+#         self.periodicCall()
+
+#     def periodicCall(self):
+#         """
+#         Check every 200 ms if there is something new in the queue.
+#         """
+#         self.gui.processIncoming()
+#         if not self.running:
+#             # This is the brutal stop of the system. You may want to do
+#             # some cleanup before actually shutting it down.
+#             import sys
+#             sys.exit(1)
+#         self.master.after(200, self.periodicCall)
+
+#     def workerThread1(self):
+#         """
+#         This is where we handle the asynchronous I/O. For example, it may be
+#         a 'select()'. One important thing to remember is that the thread has
+#         to yield control pretty regularly, by select or otherwise.
+#         """
+#         while self.running:
+#             # To simulate asynchronous I/O, we create a random number at
+#             # random intervals. Replace the following two lines with the real
+#             # thing.
+#             time.sleep(rand.random() * 1.5)
+#             msg = rand.random()
+#             self.queue.put(msg)
+
+#     def endApplication(self):
+#         self.running = 0
+
+# rand = random.Random()
+# root = Tkinter.Tk()
+
+# client = ThreadedClient(root)
+# root.mainloop()
+#!/usr/bin/python3
+
+# import sys
+# import tempfile
+# import subprocess
+# from PyQt5 import QtWidgets
+# from PyQt5.QtCore import QThread, pyqtSignal, QProcess
+
+# # from mainwindow import Ui_MainWindow
+
+
+# class process(QProcess):
+#     signal = pyqtSignal('PyQt_PyObject')
+
+#     def __init__(self):
+#         QThread.__init__(self)
+#         self.git_url = ""
+
+#     # run method gets called when we start the thread
+#     def run(self):
+#         while True:
+#             time.sleep(1)
+#             print("process")
+#             self.signal.emit("123")
+#             pass
+        
+
+
+# class app(QtWidgets.QMainWindow):
+
+#     def __init__(self, parent=None):
+#         super(app, self).__init__(parent)
+#         self.setupUi(self)
+#         self.pushButton.setText("Git clone with Thread")
+#         self.textEdit = QTextEdit()
+#         self.textEdit.setReadOnly(True)
+#         self.textEdit.setLineWrapMode(QTextEdit.NoWrap)
+
+#         self.closeButton = QPushButton("&Close")
+#         self.closeButton.clicked.connect(self.close)
+
+#         self.layout = QVBoxLayout()
+#         self.layout.addWidget(self.textEdit)
+#         self.layout.addWidget(closeButton)
+#         self.setLayout(layout)
+
+#         self.setWindowTitle("Preview")
+#         # Here we are telling to call git_clone method when
+#         # someone clicks on the pushButton.
+#         self.pushButton.clicked.connect(self.git_clone)
+#           # This is the thread object
+#         # Connect the signal from the thread to the finished method
+#         # self.git_thread.signal.connect(self.finished)
+
+#     # def git_clone(self):
+#     #     self.git_thread.git_url = self.lineEdit.text()  # Get the git URL
+#     #     self.pushButton.setEnabled(False)  # Disables the pushButton
+#     #     self.textEdit.setText("Started git clone operation.")  # Updates the UI
+#     #     self.git_thread.start()  # Finally starts the thread
+
+#     # def finished(self, result):
+#     #     self.textEdit.setText("Cloned at {0}".format(result))  # Show the output to the user
+#     #     self.pushButton.setEnabled(True)  # Enable the pushButton
+
+
+#     def run():
+#         app = QtWidgets.QApplication(sys.argv)
+#         form = ExampleApp()
+#         form.show()
+#         app.exec_()
+#         print("UI run")
+
+# class Worker(QObject):
+#     // 시그널 객체를 하나 생성합니다.
+#     sig_numbers = pyqtSignal(int)
+
+#     def __init__(self, parent=None):
+#         super(self.__class__, self).__init__(parent)
+
+#     @pyqtSlot()           // 버튼이 클릭시 시그널을 받아들이는 슬롯을 하나 마련합니다. 
+#     def startWork(self):
+#         _cnt = 0
+#         while _cnt < 10:
+#             _cnt += 1
+#             self.sig_numbers.emit(_cnt) // pyqtSignal 에 숫자데이터를 넣어 보낸다
+#             print(_cnt)                 // consol에서 어떻게 진행 되는지 보기 위해서 넣어준다
+#             time.sleep(1)
+
+# if __name__ == '__main__':
+#     from multiprocessing import Process
+#     from PyQt5.QtCore import QThread
+#     app()
+#     pro = process()
+#     th = QThread()
+#     th.moveToThread(pro)
+#     th.start()
+
+
+
+# section
+# import gevent
+# import random
+
+# def task(pid):
+#     """
+#     Some non-deterministic task
+#     """
+#     gevent.sleep(random.randint(0,2))
+#     print('Task', pid, 'done')
+
+# def synchronous():
+#     for i in range(1,10):
+#         task(i)
+
+# def asynchronous():
+#     threads = [gevent.spawn(task, i) for i in range(0, 10)]
+#     gevent.joinall(threads)
+
+# print('Synchronous:')
+# synchronous()
+
+# print('Asynchronous:')
+# asynchronous()
+
+import asyncio
+import random
+from Core import *
+import time
+
+
+
+# def print_(msg):
+#     print("sync")
+
+# async def main():
+#     fts = [asyncio.ensure_future(th_signal.start())]
+#     print("async start")
+#     while True:
+#         time.sleep(1)
+#         print("is main")
+#         pass
+
+# th_signal = signalThread()
+# th_signal.sync.connect(print_)
+
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(main())
+# loop.close()
+
+
+# async def slow_operation(future):
+#         await asyncio.sleep(1)
+#         print("123")
+#         # future.set_result('Future is done!')
+
+# def got_result(future):
+#     print(future.result())
+#     # loop.stop()
+
+# async def main():
+#     loop = asyncio.get_event_loop()
+#     future = asyncio.Future()
+#     try:
+#         loop.run_forever()
+#         # while True:
+#         #     print("this main")
+#         #     tims.sleep(1)
+#     except Exception as e:
+#         print("stop")
+#         loop.close()
+#     finally:
+#         print("end?")
+#     print("2")
+#     while True:
+#         await asyncio.sleep(1)
+#         asyncio.ensure_future(slow_operation(future))
+#         pass
+    # future.add_done_callback(got_result)
+    
+
+# main()
+from PyQt5.QtCore import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from threading import Thread
+import time
+import sys
+import SyncN
+import time, os, datetime
+from PyQt5.QtCore import *
+try:
+    from Lib import Search
+except ImportError:
+    import Search
+
+class PrintA(QThread):
     def __init__(self):
-        super(MainWindow, self).__init__()
-        self.initUI()
-        self.task = None
-
-    def initUI(self):
-        self.cmd_button = QtGui.QPushButton("Push/Cancel", self)
-        self.cmd_button2 = QtGui.QPushButton("Push", self)
-        self.cmd_button.clicked.connect(self.send_cancellable_evt)
-        self.cmd_button2.clicked.connect(self.send_evt)
-        self.statusBar()
-        self.layout = QtGui.QGridLayout()
-        self.layout.addWidget(self.cmd_button, 0, 0)
-        self.layout.addWidget(self.cmd_button2, 0, 1)
-        widget = QtGui.QWidget()
-        widget.setLayout(self.layout)
-        self.setCentralWidget(widget)
-        self.show()
-
-    def send_evt(self, arg):
-        self.t1 = RunThread(self.worker, self.on_send_finished, "test")
-        self.t2 = RunThread(self.worker, self.on_send_finished, 55)
-        print("kicked off async tasks, waiting for it to be done")
-
-    def worker(self, inval):
-        print "in worker, received '%s'" % inval
-        time.sleep(2)
-        return inval
-
-    def send_cancellable_evt(self, arg):
-        if not self.task:
-            self.task = RunCancellableThread(None, self.on_csend_finished, "test")
-            print("kicked off async task, waiting for it to be done")
-        else:
-            self.task.cancel()
-            print("Cancelled async task.")
-
-    def on_csend_finished(self, result):
-        self.task = None  # Allow the worker to be restarted.
-        print "got %s" % result
-
-    def on_send_finished(self, result):
-        print "got %s. Type is %s" % (result, type(result))
-
-
-class RunThread(QtCore.QThread):
-    """ Runs a function in a thread, and alerts the parent when done. 
-
-    Uses a pyqtSignal to alert the main thread of completion.
-
-    """
-    finished = QtCore.pyqtSignal(["QString"], [int])
-
-    def __init__(self, func, on_finish, *args, **kwargs):
-        super(RunThread, self).__init__()
-        self.args = args
-        self.kwargs = kwargs
-        self.func = func
-        self.finished.connect(on_finish)
-        self.finished[int].connect(on_finish)
-        self.start()
+        QThread.__init__(self)
+        self.running = True
+        self.isRun = False
+        self.debug = True
+        self.timestamp = 0;
+        self.cnt = 0
+        self.target = Search.PathSearcher().run()
 
     def run(self):
-        try:
-            result = self.func(*self.args, **self.kwargs)
-        except Exception as e:
-            print "e is %s" % e
-            result = e
-        finally:
-            if isinstance(result, int):
-                self.finished[int].emit(result)
+        while self.running:
+            if self.timestamp != os.path.getmtime(self.target):
+                # change detected
+                self.cnt = 0;
+                self.timestamp = os.path.getmtime(self.target)
+                if self.debug: print("user writting")
             else:
-                self.finished.emit(str(result)) # Force it to be a string by default.
+                pass
+                if self.cnt > 10:
+                    print("sync emit")
+                    self.sync.emit(True)
+                    self.cnt = 0;
+                else:
+                    if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+                    self.cnt +=1
+            print('A')
+            time.sleep(1)
+    def stop(self):
+        self.running = False
 
-class RunCancellableThread(RunThread):
-    def __init__(self, *args, **kwargs):
-        self.cancelled = False
-        super(RunCancellableThread, self).__init__(*args, **kwargs)
+class printb(QThread):
+    sync = pyqtSignal(bool)
 
-    def cancel(self):
-        self.cancelled = True  # Use this if you just want to signal your run() function.
-        # Use this to ungracefully stop the thread. This isn't recommended,
-        # especially if you're doing any kind of work in the thread that could
-        # leave things in an inconsistent or corrupted state if suddenly
-        # terminated
-        #self.terminate() 
+    def __init__(self):
+        QThread.__init__(self)
+        self.running = True
+        self.isRun = False
+        self.debug = True
+        self.timestamp = 0;
+        self.cnt = 0
+        self.target = Search.PathSearcher().run()
 
     def run(self):
-        try:
-            start = cur_time = time.time()
-            while cur_time - start < 10:
-                if self.cancelled:
-                    print("cancelled")
-                    result = "cancelled"
-                    break
-                print "doing work in worker..."
-                time.sleep(1)
-                cur_time = time.time()
-        except Exception as e:
-            print "e is %s" % e
-            result = e
-        finally:
-            if isinstance(result, int):
-                self.finished[int].emit(result)
+        while self.running:
+            if self.timestamp != os.path.getmtime(self.target):
+                # change detected
+                self.cnt = 0;
+                self.timestamp = os.path.getmtime(self.target)
+                if self.debug: print("user writting")
             else:
-                self.finished.emit(str(result)) # Force it to be a string by default.
+                pass
+                if self.cnt > 10:
+                    print("sync emit")
+                    self.sync.emit(True)
+                    self.cnt = 0;
+                else:
+                    if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+                    self.cnt +=1
+            print('A')
+            time.sleep(1)
+    def stop(self):
+        self.running = False
 
+    # def __init__(self, sec=0, debug=False):
+    #     QThread.__init__(self)
+    #     self.isRun = False
+    #     self.debug = debug
+    #     self.timestamp = 0;
+    #     self.cnt = 0
+    #     self.target = Search.PathSearcher().run()
 
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    m = MainWindow()
-    sys.exit(app.exec_())
+    # # def __del__(self):
+    # #     print(".... end thread.....")
+    # #     self.wait()
+    
+    # def stop(self):
+    #     if not self.isRun:
+    #         print("was stopped")
+    #         self.cnt = 0
+    #         return
+    #     else:
+    #         print("real stop")
+    #         self.isRun = False
+    #         self.cnt = 0
+
+    # def start(self):
+    #     if self.isRun:
+    #         print("already thread")
+    #         self.cnt = 0
+    #         return
+    #     else:
+    #         print("real start")
+    #         self.cnt = 0
+    #         self.isRun = True
+    #         self.run()
+
+    # def run(self):
+    #     try:
+    #         self.isRun = True
+    #         while self.isRun:
+    #             if self.timestamp != os.path.getmtime(self.target):
+    #                 # change detected
+    #                 self.cnt = 0;
+    #                 self.timestamp = os.path.getmtime(self.target)
+    #                 if self.debug: print("user writting")
+    #             else:
+    #                 if self.cnt > 10:
+    #                     print("sync emit")
+    #                     self.sync.emit(True)
+    #                     self.cnt = 0;
+    #                 else:
+    #                     if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+    #                     self.cnt +=1
+    #             print("while", self.isRun)
+    #             time.sleep(2)
+    #     except Exception as e:
+    #         print(e)
+
+a = PrintA()
+b = printb()
+
+a.start()
+b.start()
+
+app = QtWidgets.QApplication(sys.argv)
+application = SyncN.UI()
+application.show()
+sys.exit(app.exec_())
+
+while True:
+    print("non blokcing")
+    time.sleep(1)
+# time.sleep(10)
+# a.stop()
+# time.sleep(10)
+# b.stop()
+
+# section
+# ----
+# from multiprocessing import Process, Queue
+ 
+# sentinel = -1
+ 
+# def creator(data, q):
+#     # // Creates data to be consumed and waits for the consumer
+#     # // to finish processing
+    
+#     print('Creating data and putting it on the queue')
+#     for item in data:
+#         q.put(item)
+ 
+
+# def my_consumer(q):
+#     # // Consumes some data and works on it
+#     # // In this case, all it does is double the input
+   
+#     while True:
+#         data = q.get()
+#         print('data found to be processed: {}'.format(data))
+#         processed = data * 2
+#         print(processed)
+ 
+#         if data is sentinel:
+#             break
+ 
+# if __name__ == '__main__':
+#     q = Queue()
+#     data = [5, 10, 13, -1]
+#     process_one = Process(target=creator, args=(data, q))
+#     process_two = Process(target=my_consumer, args=(q,))
+#     process_one.start()
+#     process_two.start()
+ 
+#     q.close()
+#     q.join_thread()
+ 
+#     process_one.join()
+#     process_two.join()

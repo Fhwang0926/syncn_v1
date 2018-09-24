@@ -6,13 +6,11 @@ import sqlite3, uuid, json, time
 import pydash as _
 try:
     from Lib import Search
-except Exception as e:
-    print(e)
+except ImportError:
     import Search
-    pass
 
-#windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
-#  ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
+# windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
+# ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
 
 
 class DAO():
@@ -47,7 +45,6 @@ class DAO():
             return { "res" : self.convert(rs)['res'] }
         except Exception as e:
             return { "e" : e }
-        
     
     def readUser(self): # version 1.0 consider 1 account in host
         try:

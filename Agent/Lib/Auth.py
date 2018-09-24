@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# auth : bluehdh0926@gmail.com
+# auth : bluehdh0926@gmail.com, suck0818@gmail.com
 
 import requests, time, json, re
 try:
-    from Setting import syncn
-except Exception as e:
     from Lib.Setting import syncn
+except ImportError:
+    from Setting import syncn
+    
 
 class EmailCert():
     def __init__(self):

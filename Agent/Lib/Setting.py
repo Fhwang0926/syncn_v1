@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# auth : bluehdh0926@gmail.com
+# auth : bluehdh0926@gmail.com, suck0818@gmail.com
 # setting management json
+
 import json
 
 class syncn(object):

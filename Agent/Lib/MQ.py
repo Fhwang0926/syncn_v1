@@ -93,14 +93,16 @@ class MQ():
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
-    mq = MQ()
-
-    # mq.makeQueue('test')
-    # mq.makeExchange(name='test', ex_type='fanout')
-    # mq.makeBind(exchange='test', queue='test')
-
-    # mq.publishExchange(exchange='test', msg='test')
-    # mq.publishQueue(queue='test', msg='test')
-
-    # mq.worker(queue='test')
+    try:
+        mq = MQ()
+        mq.makeQueue('test')
+        mq.makeExchange(name='test', ex_type='fanout')
+        mq.makeBind(exchange='test', queue='test')
+        mq.publishExchange(exchange='test', msg='test')
+        mq.publishQueue(queue='test', msg='test')
+        mq.worker(queue='test')
+    except Exception as e:
+        print("Error, check this {0}".format(e))
+        pass
+    
 
