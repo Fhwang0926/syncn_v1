@@ -37,7 +37,7 @@ class DAO():
         try:
             # self.readUser()
             col = ["Text", "WindowPosition", "Theme"]
-            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' limit 1".format(_.join(col, ','), self.id))
+            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' limit 2".format(_.join(col, ','), self.id))
             return { "res" : self.convert(rs)['res'] }
         except Exception as e:
             return { "e" : e }
@@ -98,7 +98,7 @@ class DAO():
     def dumpBackupOneRow(self):
         try:
             col = ["*"]
-            limit = "LIMIT 1" if self.debug else ''
+            limit = "LIMIT 2" if self.debug else ''
             rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' {2}".format(_.join(col, ','), self.id, limit))
             self.backup = self.convert(rs)['res']
             return { "res" : True }

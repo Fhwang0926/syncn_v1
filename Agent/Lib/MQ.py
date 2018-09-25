@@ -18,7 +18,7 @@ class MQ():
         
     def build(self):
         try:
-            self.config = json.loads(open("../Setting.syncn", 'r').read())
+            self.config = json.loads(open("Setting.syncn", 'r').read())
             self.queue = self.config["q"]
             self.id = self.config["id"]
             self.pw = self.config["pw"]
