@@ -1,93 +1,59 @@
-import Setting
-import MQ
-import NoteSql
-import Search
-# from PyQt5.QtCore import QThread
+try:
+    from Lib import Setting, MQ, NoteSql, Search, Signal
+except ImportError:
+    import Setting
+    import MQ
+    import NoteSql
+    import Search
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import win32file
-import win32event
-import win32con
 import json
 import time
-import asyncio
+
 
 class signalThread(QThread):
     sync = pyqtSignal(bool)
-    coroutine = pyqtSignal(bool)
 
-    def __init__(self, sec=0, parent=None, debug=False):
+    def __init__(self, debug=False):
         QThread.__init__(self)
         self.isRun = False
         self.debug = debug
-        self.cnt = 0;
-        svc = Search.PathSearcher()
-        self.path = svc.run()
-        self.setDir = svc.getFindDir()
+        self.timestamp = 0;
+        self.cnt = 0
+        self.target = Search.PathSearcher().run()
+        self.signal = Signal.signal(debug=self.debug)
+        self.signalRunner = self.signal.connect()
 
     def __del__(self):
-        print(".... end thread.....")
+        if self.debug: print(".... end thread.....")
         self.wait()
     
     def stop(self):
-        if not self.isRun:
-            print("already stop")
-            self.cnt = 0
-            return
-        else:
-            print("real stop")
-            self.isRun = False
-            self.cnt = 0
-
-    def start(self):
-        if self.isRun:
-            print("already thread")
-            self.cnt = 0
-            return
-        else:
-            print("real start")
-            self.cnt = 0
-            self.isRun = True
-            self.run()
-            # self.run = self.run()
-            # self.run.next()
-            # self.coroutine.emit(True)
-            # print("send emait")
+        self.isRun = False
+        self.cnt = 0
 
     def run(self):
         try:
-            print("start blocking in signal thread")
+            self.isRun = next(self.signalRunner)
             while self.isRun:
-                getSignal = win32event.WaitForSingleObject(self.handler, 1000)
-                
-                # tmp = (yield) # wait coroutine
-                
-                if getSignal == win32con.WAIT_OBJECT_0:
-                    # change detected
-                    self.cnt = 0;
-                    if self.debug: print("user writting")
-                    win32file.FindNextChangeNotification(self.handler)
-                elif getSignal == win32con.WAIT_FAILED:
-                    print("Occured the Error")
-                else:                    
-                    if self.cnt > 10:
-                        self.sync.emit(True)
-                        self.cnt = 0;
-                    else:
-                        self.cnt +=1
-                        if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
-                        
+                print("isRun = True")
+                self.signalRunner.send(0)
+                self.sync.emit(True)
+                time.sleep(1)
         except Exception as e:
-            print(e)
-            pass
-        
+            self.stop()
+            self.join()
+            print("Error, check this {0}".format(e))
+
+
 class mqSendThread(QThread):
 
-    def __init__(self, sec=0, parent=None):
+    def __init__(self, debug=False):
         super().__init__()
         try:
+            self.debug = debug
             self.config = Setting.syncn("setting.syncn")
-            self.ch = MQ.MQ()
+            self.ch = MQ.MQ(debug=self.debug)
             self.DAO = NoteSql.DAO()
         except Exception as e:
             print(e)
@@ -100,7 +66,7 @@ class mqSendThread(QThread):
         self.ch.publishExchange("msg", self.ch.queue, json.dumps("test"))
         self.wait()
 
-class mqreciveThread(QThread):
+class mqReciveThread(QThread):
     
     def __init__(self, sec=0, parent=None):
         super().__init__()
@@ -122,11 +88,8 @@ class mqreciveThread(QThread):
     def stop(self):
         self.isRun = False
 
-    def start(self):
-        self.isRun = True
-        self.run()
-
     def run(self):
+        self.isRun = True
         while self.isRun:
             # self.sec_changed.emit('time (secs)：{}'.format(self.sec))
             print("hello")
@@ -163,11 +126,8 @@ class dataThread(QThread):
     def stop(self):
         self.isRun = False
 
-    def start(self):
-        self.isRun = True
-        self.run()
-
     def run(self):
+        self.isRun = True
         while self.isRun:
             # self.sec_changed.emit('time (secs)：{}'.format(self.sec))
             print("hello")

@@ -10,8 +10,8 @@ except ImportError:
     
 
 class EmailCert():
-    def __init__(self):
-        self.debug = True
+    def __init__(self, debug=False):
+        self.debug = debug
         self.url = ''
         self.email = ''
         self.otpCode = ''
@@ -71,7 +71,7 @@ class EmailCert():
             if authResult.status_code == 200:
                 config = syncn("setting.syncn")
                 config.writeSetting(authResult.json()['res'])
-                print("save setting!! ready to sync")
+                if self.debug: print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)
                 return True
             else:

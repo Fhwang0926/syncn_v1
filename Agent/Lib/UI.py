@@ -6,7 +6,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
-from Core import *
 import sys, os
 
 
@@ -16,7 +15,7 @@ class UI(QMainWindow):
 
         QMainWindow.__init__(self)
         self.debug = True
-        self.auth = os.path.exists("setting.syncn")
+        self.auth = False
         self.syncn = {
                 "icon" : "UI/images/sync.ico",
                 "trayicon" : "UI/images/sync.png",
@@ -30,7 +29,7 @@ class UI(QMainWindow):
 
         # tray self.syncn["trayicon"]
         self.tray = syncNTray(icon)
-        
+
         # window
         self.setWindowIcon(icon)
         self.setEnabled(True)
@@ -56,6 +55,7 @@ class UI(QMainWindow):
         self.btn_tray.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;\nfont-family:Corbel;\nfont-size:12px;\nfont-weight:900;")
         self.btn_tray.setObjectName("btn_tray")
         
+        
 
         self.btn_close = QtWidgets.QPushButton(self.w_main)
         self.btn_close.setMinimumSize(QtCore.QSize(30, 30))
@@ -63,7 +63,7 @@ class UI(QMainWindow):
         self.btn_close.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_close.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;")
         self.btn_close.setObjectName("btn_close")
-        self.btn_close.clicked.connect(self.proExit)
+        
 
         self.btn_ok = QtWidgets.QPushButton(self.w_main)
         self.btn_ok.setEnabled(False)
@@ -97,7 +97,7 @@ class UI(QMainWindow):
         self.input_info.setFont(QtGui.QFont("Bahnschrift Condensed", 14))
         self.input_info.setStyleSheet("background-color:rgb(255, 255, 255);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.input_info.setClearButtonEnabled(True)
-        self.input_info.textChanged.connect(self.checkInput)
+        
         self.input_info.setObjectName("input_info")
         
 
@@ -149,7 +149,6 @@ class UI(QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
         # check auth
-        if self.auth: self.authStyle()
         if self.debug: print("init End")
         
 
@@ -157,12 +156,10 @@ class UI(QMainWindow):
     def proExit(self):
         self.close()
         sys.exit(0)
-
+        
     def checkInput(self, to):
-        if self.input_info.text():
-            self.btn_ok.setEnabled(True)
-        else:
-            self.btn_ok.setEnabled(False)
+        chkBit = True if self.input_info.text() else False
+        self.btn_ok.setEnabled(chkBit)
 
     def mousePressEvent(self, event):
         self.old_pos = event.globalPos()
@@ -190,10 +187,6 @@ class UI(QMainWindow):
             self.hide()
             self.tray.show()
             self.tray.isActive = True
-            self.sycnN(True)        
-
-    def encryptTrigger(self):
-        self.tray.protectAction.checkable = True if self.tray.isEncrypt else False
 
     def authStyle(self):
         self.l_info.setStyleSheet("color:green;\n")
@@ -205,6 +198,7 @@ class UI(QMainWindow):
         self.input_info.setEnabled(False)
         self.input_info.setClearButtonEnabled(False)
         self.btn_ok.setText("Run on Tray")
+        self.btn_ok.setEnabled(True)
         self.auth = True
     
     def openWindow(self, reason):
@@ -246,7 +240,7 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         self.isActive = False
         self.syncAction = QtWidgets.QAction("Sync", self, checkable=True)
         self.syncAction.setStatusTip('Default Yes')
-        self.syncAction.setChecked(False)
+        self.syncAction.setChecked(True)
         menu.addAction(self.syncAction)
         self.shareAction = menu.addAction("Share")
         self.protectAction = QtWidgets.QAction("Encryption", self, checkable=True)

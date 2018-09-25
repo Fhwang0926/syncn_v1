@@ -18,7 +18,7 @@ class MQ():
         
     def build(self):
         try:
-            self.config = json.loads(open("Setting.syncn", 'r').read())
+            self.config = json.loads(open("../Setting.syncn", 'r').read())
             self.queue = self.config["q"]
             self.id = self.config["id"]
             self.pw = self.config["pw"]
@@ -95,11 +95,11 @@ class MQ():
 if __name__ == '__main__':
     try:
         mq = MQ()
-        mq.makeQueue('test')
-        mq.makeExchange(name='test', ex_type='fanout')
-        mq.makeBind(exchange='test', queue='test')
-        mq.publishExchange(exchange='test', msg='test')
-        mq.publishQueue(queue='test', msg='test')
+        # mq.makeQueue('test')
+        # mq.makeExchange(name='test', ex_type='fanout')
+        # mq.makeBind(exchange='test', queue='test')
+        # mq.publishExchange(exchange='test', msg='test')
+        # mq.publishQueue(queue='test', msg='test')
         mq.worker(queue='test')
     except Exception as e:
         print("Error, check this {0}".format(e))

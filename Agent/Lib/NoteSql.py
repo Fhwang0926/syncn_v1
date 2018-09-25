@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# auth : bluehdh0926@gmail.com
+# auth : bluehdh0926@gmail.com, suck0818@gmail.com
 
 import sqlite3, uuid, json, time
 import pydash as _
@@ -8,10 +8,6 @@ try:
     from Lib import Search
 except ImportError:
     import Search
-
-# windows RS4 under version location is C: \Users\Username\AppData\Roaming\Microsoft\Sticky Notes\StickyNotes.snt
-# ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9
-
 
 class DAO():
     def __init__(self, fullpath=''):
@@ -122,14 +118,18 @@ class DAO():
             return { "e" : e }
         
 if __name__ == '__main__':
-    # No remove this comment
-    # Smaple location
-    # C:\Users\hdh09\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
+    msg += "# windows RS4 under version location is C:\\Users\\Username\\AppData\\Roaming\\Microsoft\\Sticky Notes\\StickyNotes.snt"
+    msg += "# ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9"
+    msg += "# Smaple location"
+    msg += "# C:\\Users\\hdh09\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite"
+    msg += "# if update input type is string, using json parser"
+    msg += "# data = '{\"1\": {\"Text\": \"test\", \"WindowPosition\": \"V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=\", \"Theme\": \"Yellow\"}}"
+    msg += "# dao.sync(json.loads(data))"
+    msg += "# dao.update(\"132\")"
+    msg += "\n"
+
+    print(msg)
     dao = DAO()
     print(dao.read())
-    # if update input type is string, using json parser
-    # data = '{"1": {"Text": "test", "WindowPosition": "V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=", "Theme": "Yellow"}}'
-    # dao.sync(json.loads(data))
-    # dao.update("132")
 
     pass
