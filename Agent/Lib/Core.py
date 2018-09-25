@@ -45,7 +45,7 @@ class signalThread(QThread):
         except Exception as e:
             self.stop()
             self.join()
-            print("Error, check this {0}".format(e))
+            print("signalThread, check this {0}".format(e))
 
 
 class mqSendThread(QThread):
@@ -54,11 +54,11 @@ class mqSendThread(QThread):
         QThread.__init__(self)
         try:
             self.debug = debug
-            self.config = Setting.syncn("../setting.syncn")
+            self.config = Setting.syncn()
             self.ch = MQ.MQ(debug=self.debug)
             self.DAO = NoteSql.DAO()
         except Exception as e:
-            print(e)
+            print("mqSendThread, check this {0}".format(e))
             pass
 
     def __del__(self):
@@ -66,14 +66,18 @@ class mqSendThread(QThread):
         self.wait()
         
     def run(self, msg=""):
-        print("msg : ", (msg))
-        if msg:
-            print("WTF")
+        try:
+            if msg:
+                print("WTF")
+                pass
+            else:
+                if self.debug: print("send?", type(json.dumps(self.DAO.read())))
+                self.ch.publishExchange("msg", self.ch.queue, json.dumps(self.DAO.read()))
+                if self.debug: print("publishExchange", time.time())
+        except Exception as e:
+            print("mqSendThread, check this {0}".format(e))
             pass
-        else:
-            if self.debug: print("send?", type(json.dumps(self.DAO.read())))
-            self.ch.publishExchange("msg", self.ch.queue, json.dumps(self.DAO.read()))
-            if self.debug: print("publishExchange", time.time())
+        
             # self.ch.publishExchange("msg", self.ch.queue, json.dumps("test"))
 
 class mqReciveThread(QThread):
@@ -83,10 +87,10 @@ class mqReciveThread(QThread):
         try:
             self.isRun = False
             self.sec = 0
-            self.config = Setting.syncn("setting.syncn")
+            self.config = Setting.syncn()
             self.ch = MQ.MQ()
         except Exception as e:
-            print(e)
+            print("mqReciveThread, check this {0}".format(e))
             pass
         
         # self.main.add_sec_signal.connect(self.add_sec)   # 이것도 작동함. # custom signal from main thread to worker thread
@@ -121,10 +125,10 @@ class dataThread(QThread):
         super().__init__()
         try:
             self.isRun = False
-            self.config = Setting.syncn("setting.syncn")
+            self.config = Setting.syncn()
             self.DAO = NoteSql.DAO()
         except Exception as e:
-            print(e)
+            print("dataThread, check this {0}".format(e))
             pass
         
         # self.main.add_sec_signal.connect(self.add_sec)   # 이것도 작동함. # custom signal from main thread to worker thread

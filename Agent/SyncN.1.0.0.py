@@ -10,7 +10,7 @@ class SyncN(object):
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
-        if os.path.exists("setting.syncn"): self.UI.authStyle()
+        if os.path.exists(Setting.syncn().path): self.UI.authStyle()
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
         # init core
@@ -84,7 +84,7 @@ class SyncN(object):
         try:
             os.remove(self.UI.syncn["config"])
         except Exception as e:
-            print(e)
+            print("{0} proLogout, check this {0}".format(__file__, e))
         finally:
             sys.exit(0)
 

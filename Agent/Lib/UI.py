@@ -207,7 +207,7 @@ class UI(QMainWindow):
                 self.windowTrigger()
                 self.raise_()
         except Exception as e:
-            print(e)
+            print("{0} openWindow, check this {0}".format(__file__, e))
             pass
         
     

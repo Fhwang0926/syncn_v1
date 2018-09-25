@@ -4,14 +4,15 @@
 # setting management json
 
 import json
+import os
 
 class syncn(object):
-    def __init__(self, path):
+    def __init__(self, path=''):
         try:
-            self.path = path
-            self.config = json.loads(open(path, 'r').read())
+            self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
+            self.config = json.loads(open(self.path, 'r').read())
         except Exception as e:
-            print(e)
+            print(__file__, e)
             pass
         
     def readSetting(self):
@@ -30,6 +31,6 @@ class syncn(object):
         
 if __name__ == '__main__':
     import time
-    test = Setting('../setting.syncn')
+    test = syncn()
     test.addSetting("tmp", "asd")
     print(test.config)

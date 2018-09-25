@@ -3,22 +3,31 @@
 # auth : bluehdh0926@gmail.com
 
 import pika, json, os, sys
+try:
+    from Lib import Setting
+except ImportError:
+    import Setting
+    
+
 
 class MQ():
     def __init__(self, debug=False):
         try:
             self.debug = debug
-            self.build()
-            self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
-            self.channel = self.connection.channel()
-            if(self.channel): print('PROTOCOL : '+self.url+' connected')
+            
+            if self.build():
+                self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
+                self.channel = self.connection.channel()
+                if(self.channel): print('PROTOCOL : '+self.url+' connected')
+            else:
+                if self.debug: print("Non-Auth")
         except Exception as e:
-            print(e)
+            print("{0} __init__, check this {0}".format(__file__, e))
             pass
         
     def build(self):
         try:
-            self.config = json.loads(open("Setting.syncn", 'r').read())
+            self.config = Setting.syncn().config
             self.queue = self.config["q"]
             self.id = self.config["id"]
             self.pw = self.config["pw"]
@@ -29,8 +38,10 @@ class MQ():
             self.rKey = self.queue
             self.ex_msg = "msg"
             self.ex_cmd = "cmd"
+            return True
         except Exception as e:
-            print(e)
+            print("{0} build, check this {0}".format(__file__, e))
+            return False
             pass
         
     def makeQueue(self, name='', durable=True, opt={}):

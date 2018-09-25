@@ -93,7 +93,7 @@ class DAO():
             return { "res" : True }
         except Exception as e:
             return { "e" : e }
-            print(e)
+            print("{0} sync, check this {0}".format(__file__, e))
         
     def dumpBackupOneRow(self):
         try:

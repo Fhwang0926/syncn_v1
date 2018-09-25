@@ -61,7 +61,7 @@ class EmailCert():
         except requests.exceptions.ConnectionError:
             print("requests.exceptions.ConnectionError")
         except Exception as e:
-            print(e)
+            print("${0} createOTP, check this {1}".format(__file__, e))
         return False
         
 
@@ -69,7 +69,7 @@ class EmailCert():
         try:
             authResult = requests.get(url=self.url + self.sub['account'] + self.otpCode)
             if authResult.status_code == 200:
-                config = syncn("setting.syncn")
+                config = syncn()
                 config.writeSetting(authResult.json()['res'])
                 if self.debug: print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)
@@ -78,7 +78,7 @@ class EmailCert():
                 print("authResult.status_code, Check your Email and verify auth URL Link")
                 if self.debug: print(authResult.json()['e'])
         except Exception as e:
-            print(e)
+            print("${0} authOTP, check this {1}".format(__file__, e))
             pass
         return False
         
@@ -86,7 +86,7 @@ class EmailCert():
 if __name__ == '__main__':
 
     client = EmailCert()
-    client.build(syncn("../setting.syncn").config["service"],"hdh0926@naver.com")
+    client.build(syncn().config["service"],"hdh0926@naver.com")
     client.createOTP()
     time.sleep(60)
     client.authOTP()
