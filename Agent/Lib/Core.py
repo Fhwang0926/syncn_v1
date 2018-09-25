@@ -13,9 +13,10 @@ import time
 
 class signalThread(QThread):
     sync = pyqtSignal(bool)
-
+    
     def __init__(self, debug=False):
-        QThread.__init__(self)
+        super().__init__()
+        
         self.isRun = False
         self.debug = debug
         self.timestamp = 0;
@@ -37,8 +38,9 @@ class signalThread(QThread):
             self.isRun = next(self.signalRunner)
             while self.isRun:
                 print("isRun = True")
-                self.signalRunner.send(0)
                 self.sync.emit(True)
+                self.signalRunner.send(0)
+                
                 time.sleep(1)
         except Exception as e:
             self.stop()
@@ -49,22 +51,30 @@ class signalThread(QThread):
 class mqSendThread(QThread):
 
     def __init__(self, debug=False):
-        super().__init__()
+        QThread.__init__(self)
         try:
             self.debug = debug
-            self.config = Setting.syncn("setting.syncn")
+            self.config = Setting.syncn("../setting.syncn")
             self.ch = MQ.MQ(debug=self.debug)
             self.DAO = NoteSql.DAO()
         except Exception as e:
             print(e)
             pass
-        
-    def run(self):
-        # self.sec_changed.emit('time (secs)：{}'.format(self.sec))
-        print("send?", type(json.dumps(self.DAO.read())))
-        # self.ch.publishExchange("msg", self.ch.queue, json.dumps(self.DAO.read()))
-        self.ch.publishExchange("msg", self.ch.queue, json.dumps("test"))
+
+    def __del__(self):
+        if self.debug: print(".... end thread.....")
         self.wait()
+        
+    def run(self, msg=""):
+        print("msg : ", (msg))
+        if msg:
+            print("WTF")
+            pass
+        else:
+            if self.debug: print("send?", type(json.dumps(self.DAO.read())))
+            self.ch.publishExchange("msg", self.ch.queue, json.dumps(self.DAO.read()))
+            if self.debug: print("publishExchange", time.time())
+            # self.ch.publishExchange("msg", self.ch.queue, json.dumps("test"))
 
 class mqReciveThread(QThread):
     
@@ -135,8 +145,7 @@ class dataThread(QThread):
             self.sec += 1
 
 if __name__ == "__main__":
-    import sys
-
-    app = QApplication(sys.argv)
-    form = MyMain()
-    app.exec_()
+    th_mq = mqSendThread()
+    th_mq.start()
+    while 1:
+        time.sleep(1)

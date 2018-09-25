@@ -86,7 +86,7 @@ let post = (req, res) => {
     });
 }
 
-let get = (req, res) => {
+let get = async (req, res) => {
     try {
         let code = req.url.split("/");
         // using email auth
@@ -145,6 +145,22 @@ let get = (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.write(JSON.stringify({ res: notice }));
         }
+        print(code);
+        
+        if (code[1] == 'info') { // return info
+            const vhost = config.get('mq:vhost');
+            if (code[2] == 'queue') {
+                let queue = code[3];
+                print(`/queues/${vhost}/${queue}`)
+                await rabbit.get(`/queues/${vhost}/${queue}`).then(async rs => {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.write(JSON.stringify({ res: _.assign({ consumer: rs.data.consumer_details.length }, _.pick(await rs.data, ["messages", "messages_ready"])) }));
+                }).catch((e) => { console.log(e, `/queues/${vhost}/${queue}`); throw new Error('MQ error'); })
+            } else{
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({ e : "failed" }));
+            }
+        }
         res.end();  
     } catch (e) {
         console.log(e)
@@ -159,7 +175,7 @@ let get = (req, res) => {
         });
     })
 }
-
+// account remove
 let remove = async (req, res) => {
     try {
         let code = req.url.split("/");
@@ -211,7 +227,7 @@ mq.open().then((ch) => {
         }
     });
     service.listen(9759);
-    auth_cleaner();
+    // auth_cleaner();
 }).catch(e => {
     print(e)
 })

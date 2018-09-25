@@ -16,7 +16,7 @@ class SyncN(object):
         # init core
         self.th_signal = Core.signalThread(debug=True)
         # init MQ
-        self.th_mq = Core.mqSendThread(debug=True)
+        self.th_mqSender = Core.mqSendThread(debug=True)
         
         # init func
         self.connectInterface()
@@ -44,10 +44,15 @@ class SyncN(object):
         print("start thread all")
         self.th_signal.start()
 
-    def threadChannel(self):
-        self.th_signal.sync.connect(self.)
+    def setThreadChannel(self):
+        self.th_signal.sync.connect(self.th_mqSender.start)
+
+    def test(self):
+        print("test")
 
     def run(self):
+        # self.th_mqSender.run()
+        self.setThreadChannel()
         self.threadStart()
         self.UI.show()
         sys.exit(self.app.exec_())

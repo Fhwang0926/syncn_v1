@@ -1,9 +1,9 @@
 {
     "apps": [
         {
-            "name": "Service Auth",
-            "script": "svc.auth.js",
-            "description": "git pull, auto restart",
+            "name": "Service plugin",
+            "script": "svc.plugin.js",
+            "description": "auth, mq info, etc...",
             "watch": false,
             "ignore_watch": [
                 "logs"

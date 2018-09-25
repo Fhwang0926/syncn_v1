@@ -5,9 +5,9 @@
 import pika, json, os, sys
 
 class MQ():
-    def __init__(self):
+    def __init__(self, debug=False):
         try:
-            self.debug = True
+            self.debug = debug
             self.build()
             self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
             self.channel = self.connection.channel()
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         # mq.makeBind(exchange='test', queue='test')
         # mq.publishExchange(exchange='test', msg='test')
         # mq.publishQueue(queue='test', msg='test')
-        mq.worker(queue='test')
+        mq.worker(queue='c.73ff7d371f80571ed86a77726ad25330')
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass

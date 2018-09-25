@@ -55,7 +55,7 @@ class DAO():
     def init(self, path):
         try:
             self.path = path
-            self.conn = sqlite3.connect(path)
+            self.conn = sqlite3.connect(path, check_same_thread=False )
             self.db = self.conn.cursor()
             return { "res" : True }
         except Exception as e:

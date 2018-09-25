@@ -62,9 +62,45 @@ let sendPost = () => {
     });
 }
 
+let checkQueueDebug = () => {
+    const forge = require("node-forge")
+    let tc1 = "hdh0926@naver.com";
+    let tc2 = "wdt0818@naver.com";
 
+    let sha256_email = forge.md.sha256.create().update(tc1).update(tc1.split("@")[0]).digest().toHex();
+    console.log(sha256_email)
+    let queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}`;
+    console.log(queue_name)
+    console.log("----------------------------------------------------")
+    sha256_email = forge.md.sha256.create().update(tc2).update(tc2.split("@")[0]).digest().toHex();
+    console.log(sha256_email)
+    queue_name = `c.${forge.md.md5.create().update(sha256_email).digest().toHex()}`;
+    console.log(queue_name)
+}
+
+
+let sendGet = () => {
+
+    console.log("send get")
+    request.get('http://localhost:9759/info/queue/c.73ff7d371f80571ed86a77726ad25330', (e, res, body) => {
+        print(res, body)
+        // body = JSON.parse(body);
+        // console.log(res.statusCode, body)
+        // let url = 'http://syncn.club:9759/account/' + body.res;
+        // console.log("url : ", url)
+        // let auth = () => request.get(url, (e, res, body) => {
+        //     body = JSON.parse(body);
+        //     console.log(res.statusCode, body);
+        //     setTimeout(auth, 3000);
+        // });
+        // auth();
+    });
+    // setTimeout(sendGet, 2000)
+}
+checkQueueDebug()
 // sendPost();
 // consumer();
+// sendGet();
 
 
-console.log(JSON.stringify({ to: "hdh0926@naver.com", html: "test" }))
+// console.log(JSON.stringify({ to: "hdh0926@naver.com", html: "test" }))

@@ -202,9 +202,14 @@ class UI(QMainWindow):
         self.auth = True
     
     def openWindow(self, reason):
-        if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
-            self.windowTrigger()
-            self.raise_()
+        try:
+            if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
+                self.windowTrigger()
+                self.raise_()
+        except Exception as e:
+            print(e)
+            pass
+        
     
     # QMessageBox.about(None, "Notify", "try check email address detail", )
     # self.msg("Notify", "Try Check Email Address Correctly")
