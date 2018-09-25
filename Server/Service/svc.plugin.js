@@ -226,7 +226,7 @@ mq.open().then((ch) => {
         }
     });
     service.listen(9759);
-    // auth_cleaner();
+    auth_cleaner();
 }).catch(e => {
     print(e)
 })
