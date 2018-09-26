@@ -49,7 +49,6 @@ class SyncN(object):
         self.th_signal.syncSignal.connect(self.th_mqSender.start)
         self.th_mqReciver.exitSignal.connect(self.UI.proExit)
         self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
-        # self.th_mqSender.msgRemoveSignal.connect(self.th_mqReciver.start)
 
     def run(self):
         self.disconnectCMD()

@@ -43,7 +43,7 @@ class signal(object):
                         if self.debug: print("sync emit", self.cnt)
                     else:
                         if self.isSended:
-                            if self.debug: print("continue")
+                            # if self.debug: print("continue")
                             continue
                         if self.debug: print("Wait for Sync : ", 5 - self.cnt, " sec")
                         self.cnt +=1

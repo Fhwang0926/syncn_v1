@@ -18,7 +18,7 @@ class MQ():
             if self.build():
                 self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
                 self.channel = self.connection.channel()
-                if(self.channel): print('PROTOCOL : '+self.url+' connected')
+                if self.debug and (self.channel): print('PROTOCOL : '+self.url+' connected')
             else:
                 if self.debug: print("Non-Auth")
         except Exception as e:

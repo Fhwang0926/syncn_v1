@@ -47,13 +47,14 @@ class signalThread(QThread):
             print("signalThread, check this {0}".format(e))
 
 class mqSendThread(QThread):
-    msgRemoveSignal = pyqtSignal(bool)
+    reciveSignal = pyqtSignal(bool)
     def __init__(self, debug=False):
         QThread.__init__(self)
         try:
             self.debug = debug
             self.msg = ''
             self.DAO = NoteSql.DAO()
+            
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
             pass
@@ -73,7 +74,18 @@ class mqSendThread(QThread):
             if self.debug:
                 print("push : {0} {1} {2} bytes {3} {4}".format(time.time(), "msg", ch.queue, len(msg), opt, headers))
             self.msg = ''
-            ch.worker(self.worker, ch.queue)
+
+            # fix msg cnt
+            queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
+            if queueInfo.status_code == 200:
+                rs = json.loads(queueInfo.text)["res"]
+                self.frist = False
+                if rs["messages_ready"] > 0 or rs["messages"] > 0:
+                    print("msg cnt fix just 1")
+                    ch.worker(self.worker, ch.queue)
+            else:
+                print("failed")
+            
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
     
@@ -93,7 +105,6 @@ class mqReciveThread(QThread):
         try:
             self.isRun = False
             self.debug = debug
-            self.ch = MQ.MQ()
         except Exception as e:
             print("mqReciveThread, check this {0}".format(e))
             pass
@@ -108,19 +119,23 @@ class mqReciveThread(QThread):
     def run(self):
         self.isRun = True
         try:
-            queueInfo = requests.get(url="{0}/info/queue/{1}".format(self.ch.config["service"], self.ch.config["q"]))
+            ch = MQ.MQ()
+            queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
             if queueInfo.status_code == 200:
                 print("get info", queueInfo.text)
                 rs = json.loads(queueInfo.text)["res"]
+                self.frist = False
                 if rs["messages_ready"] > 0 or rs["messages"] > 0:
-                    self.ch.worker(self.worker, self.ch.queue)
+                    ch.worker(self.worker, ch.queue)
                 else:
                     print("No msg So push this msg")
                     self.syncSignal.emit(True)
             else:
                 print("failed")
+            
         except Exception as e:
-            serviceUrl = "http://syncn.club:9759"
+            print("mqReciveThread, check this {0}".format(e))
+            
 
     def worker(self, ch, method, properties, msg):
         try:
@@ -130,19 +145,20 @@ class mqReciveThread(QThread):
                     print("is me!!!!! no exit!!!!")
                     ch.basic_ack(delivery_tag = method.delivery_tag)
                 else:
-                    ch.basic_ack(delivery_tag = method.delivery_tag)
                     print("Another Computer connected!!")
-                    ch.close()
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
                     print("sync stop")
                     self.exitSignal.emit(True)
             else:
                 DAO = NoteSql.DAO()
                 print("start sync insert data")
-                DAO.sync(json.loads(msg)["res"])
+                result = DAO.sync(json.loads(msg)["res"])["res"]
+                if result: print("sync send mail")
                 print("end sync insert data")
+                ch.basic_ack(delivery_tag = method.delivery_tag)
+                print("close channel")
                 ch.cancel()
                 ch.close()
-                print("close channel")
         except Exception as e:
             self.ch.channel.cancel()
             self.ch.channel.close()
