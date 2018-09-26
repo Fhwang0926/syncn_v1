@@ -63,14 +63,18 @@ class DAO():
 
     def sync(self, notes):
         try:
+            print(1)
             if not notes: return print("given 1 args(type=dict)")
+            print(2)
             if not (type(notes) is dict): return print("args must be a dict")
-
+            
             # question to user before processing sync 
-            # if not self.debug: self.db.execute('TRUNCATE Note') # clean
+            self.db.execute('DELETE FROM Note') # clean
+            self.conn.commit()
             # insert format { Text, WindowPosition, Id, ParentId, Theme, CreatedAt, UpdatedAt }
             # self.readUser()
             self.temp = notes;
+            print("update")
             def parser(k):
                 cols = ["Text", "WindowPosition", "Id", "ParentId", "Theme", "CreatedAt", "UpdatedAt"]
                 parms = [self.temp[k]['Text'], self.temp[k]['WindowPosition'], uuid.uuid1(), self.id, self.temp[k]['Theme'], int(time.time()), int(time.time())]
@@ -83,10 +87,10 @@ class DAO():
                         print(cols[index], " = ", parms[index])
                 
                 sql = "INSERT INTO Note ({0}) VALUES ({1})".format(_.join(cols, ','), _.join(parms, ","))
-                print(sql)
+                print("sql", sql)
                 self.db.execute(sql)
                 self.conn.commit()
-
+            print(_.keys(notes), "123")
             _.for_each(_.keys(notes), parser)
             print("sync")
             self.temp = None;

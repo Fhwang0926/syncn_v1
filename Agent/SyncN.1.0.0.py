@@ -1,6 +1,10 @@
-from Lib import Core, UI, MQ, Setting, Auth, NoteSql
+from Lib import Core, UI, Setting, Auth, NoteSql
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys, os
+import sys
+import time
+import os
+import requests
+import json
 
 class SyncN(object):
     def __init__(self):
@@ -13,10 +17,12 @@ class SyncN(object):
         if os.path.exists(Setting.syncn().path): self.UI.authStyle()
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
-        # init core
+        # init signal
         self.th_signal = Core.signalThread(debug=True)
         # init MQ
         self.th_mqSender = Core.mqSendThread(debug=True)
+        # init MQ
+        self.th_mqReciver = Core.mqReciveThread(debug=True)
         
         # init func
         self.connectInterface()
@@ -39,22 +45,17 @@ class SyncN(object):
         self.UI.tray.logoutAction.triggered.connect(self.proLogout)
         if self.debug: print("[+] Registration Interface")
 
-    def threadStart(self):
-        if not self.UI.auth: return
-        print("start thread all")
-        self.th_signal.start()
-
     def setThreadChannel(self):
         self.th_signal.sync.connect(self.th_mqSender.start)
-
-    def test(self):
-        print("test")
+        # self.th_mqSender.msgRemoveSignal.connect(self.th_mqReciver.start)
 
     def run(self):
-        # self.th_mqSender.run()
+        self.th_mqReciver.start()
+        self.disconnectCMD()
         self.setThreadChannel()
-        self.threadStart()
+        if self.UI.auth: self.th_signal.start()
         self.UI.show()
+        
         sys.exit(self.app.exec_())
     
     def proAuth(self):
@@ -88,20 +89,26 @@ class SyncN(object):
         finally:
             sys.exit(0)
 
+    def disconnectCMD(self):
+        
+        try:
+            config = Setting.syncn().config
+            consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
+            if consumerInfo.status_code == 200:
+                print("get info", consumerInfo.text)
+                rs = json.loads(consumerInfo.text)["res"]["consumer"]
+                for x in range(0, rs):
+                    self.th_mqSender.msg = "quit" # all client remove
+                    self.th_mqSender.start()
+                    self.th_mqSender.wait() # all client remove end
+                    time.sleep(1)
+            else:
+                print("check consumers failed")
+                if self.debug: print(json.loads(consumerInfo.text)['e'])
+        except Exception as e:
+            print("{0} disconnectCMD, check this {1}".format(__file__, e))
+            pass
 
 if __name__ == '__main__':
     main = SyncN()
     main.run()
-    
-
-        
-# # tray function
-
-
-
-
-
-        
-
-
-

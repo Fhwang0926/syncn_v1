@@ -37,7 +37,7 @@ class signal(object):
                     if self.debug: print("user writting")
                         
                 else:
-                    if self.cnt > 10: 
+                    if self.cnt > 5: 
                         self.cnt = yield True # send signal coroutine
                         self.isSended = True
                         if self.debug: print("sync emit", self.cnt)
@@ -45,7 +45,7 @@ class signal(object):
                         if self.isSended:
                             if self.debug: print("continue")
                             continue
-                        if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+                        if self.debug: print("Wait for Sync : ", 5 - self.cnt, " sec")
                         self.cnt +=1
                 
         except Exception as e:

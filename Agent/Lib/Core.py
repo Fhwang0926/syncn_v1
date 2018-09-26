@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import json
 import time
+import requests
 
 
 class signalThread(QThread):
@@ -49,13 +50,12 @@ class signalThread(QThread):
 
 
 class mqSendThread(QThread):
-
+    msgRemoveSignal = pyqtSignal(bool)
     def __init__(self, debug=False):
         QThread.__init__(self)
         try:
             self.debug = debug
-            self.config = Setting.syncn()
-            self.ch = MQ.MQ(debug=self.debug)
+            self.msg = ''
             self.DAO = NoteSql.DAO()
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
@@ -65,35 +65,40 @@ class mqSendThread(QThread):
         if self.debug: print(".... end thread.....")
         self.wait()
         
-    def run(self, msg=""):
+    def run(self):
         try:
-            if msg:
-                print("WTF")
-                pass
-            else:
-                if self.debug: print("send?", type(json.dumps(self.DAO.read())))
-                self.ch.publishExchange("msg", self.ch.queue, json.dumps(self.DAO.read()))
-                if self.debug: print("publishExchange", time.time())
+            ch = MQ.MQ(debug=self.debug)
+            if self.debug: print("send?", type(json.dumps(self.DAO.read())))
+            msg = self.msg if self.msg else json.dumps(self.DAO.read())
+            opt = { "type" : "cmd" } if self.msg else { "type" : "msg" }
+            headers = { "host" : ch.config["id"] } if self.msg else ''
+            ch.publishExchange("msg", ch.queue, msg, opt=opt, head=headers)
+            if self.debug: print("publishExchange", time.time(), "msg", ch.queue, msg, opt, headers)
+            self.msg = ''
+
+            print("is run???????")
+            ch.worker(self.worker, ch.queue)
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
-            pass
-        
-            # self.ch.publishExchange("msg", self.ch.queue, json.dumps("test"))
+    
+    def worker(self, ch, method, properties, msg):
+        try:
+            ch.basic_ack(delivery_tag = method.delivery_tag)
+            ch.close()
+        except Exception as e:
+            print("worker, check this {0}".format(e))
 
 class mqReciveThread(QThread):
     
-    def __init__(self, sec=0, parent=None):
+    def __init__(self, debug=False):
         super().__init__()
         try:
             self.isRun = False
-            self.sec = 0
-            self.config = Setting.syncn()
+            self.debug = debug
             self.ch = MQ.MQ()
         except Exception as e:
             print("mqReciveThread, check this {0}".format(e))
             pass
-        
-        # self.main.add_sec_signal.connect(self.add_sec)   # 이것도 작동함. # custom signal from main thread to worker thread
 
     def __del__(self):
         print(".... end thread.....")
@@ -104,49 +109,38 @@ class mqReciveThread(QThread):
 
     def run(self):
         self.isRun = True
-        while self.isRun:
-            # self.sec_changed.emit('time (secs)：{}'.format(self.sec))
-            print("hello")
-            self.sleep(5)
-            self.sec += 1
+        queueInfo = requests.get(url="{0}/info/queue/{1}".format(self.ch.config["service"], self.ch.config["q"]))
+        if queueInfo.status_code == 200:
+            print("get info", queueInfo.text)
+            rs = json.loads(queueInfo.text)["res"]
+            if rs["messages_ready"] > 0 or rs["messages"] > 0: self.ch.worker(self.worker, self.ch.queue)
+            else: return
+        else:
+            print("failed")
 
-    # @pyqtSlot()
-    # def add_sec(self):
-    #     print("add_sec....")
-    #     self.sec += 100
-
-    # @pyqtSlot("PyQt_PyObject")    # @pyqtSlot(object) 도 가능..
-    # def recive_instance_singal(self, inst):
-        # print(inst.name)
-
-class dataThread(QThread):
-    
-    def __init__(self, sec=0, parent=None):
-        super().__init__()
+    def worker(self, ch, method, properties, msg):
         try:
-            self.isRun = False
-            self.config = Setting.syncn()
-            self.DAO = NoteSql.DAO()
+            if properties.type == "cmd":
+                if properties.headers.get('host') == Setting.syncn().config["id"]:
+                    # if self.debug: print(msg, properties.headers.get('host'), Setting.syncn().config["id"])
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
+                else:
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
+                    print("Another Computer connected!!")
+                    ch.close()
+                    print("sync stop")
+            else:
+                print("get data sycn!")
+                # print("sync?", json.loads(msg))
+                DAO = NoteSql.DAO()
+                print("insert")
+                DAO.sync(json.loads(msg)["res"])
+                    
+            # ch.basic_ack(delivery_tag = method.delivery_tag)
         except Exception as e:
-            print("dataThread, check this {0}".format(e))
-            pass
-        
-        # self.main.add_sec_signal.connect(self.add_sec)   # 이것도 작동함. # custom signal from main thread to worker thread
-
-    def __del__(self):
-        print(".... end thread.....")
-        self.wait()
-    
-    def stop(self):
-        self.isRun = False
-
-    def run(self):
-        self.isRun = True
-        while self.isRun:
-            # self.sec_changed.emit('time (secs)：{}'.format(self.sec))
-            print("hello")
-            self.sleep(5)
-            self.sec += 1
+            self.ch.channel.cancel()
+            self.ch.reopenChannel()
+            print("worker, check this {0}".format(e))        
 
 if __name__ == "__main__":
     th_mq = mqSendThread()

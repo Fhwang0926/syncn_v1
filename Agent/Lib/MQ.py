@@ -13,8 +13,8 @@ except ImportError:
 class MQ():
     def __init__(self, debug=False):
         try:
+            self.ack = False
             self.debug = debug
-            
             if self.build():
                 self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
                 self.channel = self.connection.channel()
@@ -83,17 +83,24 @@ class MQ():
     
     def createChannel(self):
         return self.connection.channel()
-
-    def publishExchange(self, exchange='', routing_key='', msg='', opt={}):
-        self.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=msg)
-        print(" [x] publishExchange %r" % msg)
     
-    def publishQueue(self, queue='', msg='', opt={}):
-        self.channel.basic_publish(routing_key=queue, exchange='', body=msg)
-        print(" [x] publishQueue %r" % msg)
+    def reopenChannel(self):
+        self.channel = self.connection.channel()
+
+    def publishExchange(self, exchange='', routing_key='', msg='', opt='', head={}):
+        if opt: option = pika.BasicProperties( type = opt["type"], headers=head)
+        else: option=''
+        self.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=option)
+        if self.debug: print(" [x] publishExchange %r" % msg)
+    
+    def publishQueue(self, queue='', msg='', opt='', headers={}):
+        if opt: option = pika.BasicProperties( type = opt["type"], headers=head)
+        else: option=''
+        self.channel.basic_publish(routing_key=queue, exchange='', body=msg, properties=option)
+        if self.debug: print(" [x] publishQueue %r" % msg)
 
     def worker(self, func=None, queue=''):
-        print(' [*] start working')
+        if self.debug: print(' [*] start working')
         func = func if func else self.callback
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(func, queue=queue, no_ack=False)
@@ -101,17 +108,30 @@ class MQ():
 
     def callback(serlf, ch, method, properties, msg):
             print(" [x] Received %r" % msg)
-            ch.basic_ack(delivery_tag = method.delivery_tag)
+            if properties.type == "cmd":
+                if properties.headers.get('host') == Setting.syncn().config["id"]:
+                    # if self.debug: print(msg, properties.headers.get('host'), Setting.syncn().config["id"])
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
+                else:
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
+                    print("Another Computer connected!!")
+                    ch.cancel()
+                    ch.close()
+                    sys.exit(0)
+                    print("sync stop")
 
 if __name__ == '__main__':
+    
     try:
         mq = MQ()
         # mq.makeQueue('test')
         # mq.makeExchange(name='test', ex_type='fanout')
         # mq.makeBind(exchange='test', queue='test')
         # mq.publishExchange(exchange='test', msg='test')
+        
+        # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })    
         # mq.publishQueue(queue='test', msg='test')
-        mq.worker(queue='c.73ff7d371f80571ed86a77726ad25330')
+        mq.worker(queue='c.6a61bb6e853cefcbb3b7de16259567c1')
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass

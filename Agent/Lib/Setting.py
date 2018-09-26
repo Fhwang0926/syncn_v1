@@ -9,7 +9,9 @@ import os
 class syncn(object):
     def __init__(self, path=''):
         try:
+            self.debug = True
             self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
+            if self.debug: print(self.path)
             self.config = json.loads(open(self.path, 'r').read())
         except Exception as e:
             print(__file__, e)

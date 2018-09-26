@@ -31,9 +31,8 @@ class PathSearcher():
             for _dir in os.listdir(path):
                 fullPath = os.path.join(os.path.abspath(path), _dir)
                 if os.path.isdir(fullPath) and fullPath.find('MicrosoftStickyNotes_') != -1: self.detailSearch(fullPath)
-
         except Exception as e:
-            print(e)
+            print("{0} search, check this {0}".format(__file__, e))
             pass
         if not self.is_find: self.reSearch()
     
