@@ -50,10 +50,12 @@ class SyncN(object):
         # self.th_mqSender.msgRemoveSignal.connect(self.th_mqReciver.start)
 
     def run(self):
-        self.th_mqReciver.start()
         self.disconnectCMD()
+        self.th_mqReciver.start()
+        
         self.setThreadChannel()
-        if self.UI.auth: self.th_signal.start()
+        if self.UI.auth:
+            self.th_signal.start()    
         self.UI.show()
         
         sys.exit(self.app.exec_())
@@ -77,6 +79,7 @@ class SyncN(object):
             # need auth OTP
             if self.OTP.authOTP():
                 self.UI.authStyle()
+                self.disconnectCMD()
             else:
                 self.UI.l_info.setStyleSheet("color:red;\n")
                 self.UI.l_info.setText("Auth Failed, Check Email")
@@ -90,7 +93,6 @@ class SyncN(object):
             sys.exit(0)
 
     def disconnectCMD(self):
-        
         try:
             config = Setting.syncn().config
             consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))

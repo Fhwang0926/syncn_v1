@@ -109,14 +109,17 @@ class mqReciveThread(QThread):
 
     def run(self):
         self.isRun = True
-        queueInfo = requests.get(url="{0}/info/queue/{1}".format(self.ch.config["service"], self.ch.config["q"]))
-        if queueInfo.status_code == 200:
-            print("get info", queueInfo.text)
-            rs = json.loads(queueInfo.text)["res"]
-            if rs["messages_ready"] > 0 or rs["messages"] > 0: self.ch.worker(self.worker, self.ch.queue)
-            else: return
-        else:
-            print("failed")
+        try:
+            queueInfo = requests.get(url="{0}/info/queue/{1}".format(self.ch.config["service"], self.ch.config["q"]))
+            if queueInfo.status_code == 200:
+                print("get info", queueInfo.text)
+                rs = json.loads(queueInfo.text)["res"]
+                if rs["messages_ready"] > 0 or rs["messages"] > 0: self.ch.worker(self.worker, self.ch.queue)
+                else: return
+            else:
+                print("failed")
+        except Exception as e:
+            serviceUrl = "http://syncn.club:9759"
 
     def worker(self, ch, method, properties, msg):
         try:
