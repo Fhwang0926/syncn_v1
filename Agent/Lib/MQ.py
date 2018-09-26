@@ -111,6 +111,7 @@ class MQ():
             if properties.type == "cmd":
                 if properties.headers.get('host') == Setting.syncn().config["id"]:
                     # if self.debug: print(msg, properties.headers.get('host'), Setting.syncn().config["id"])
+                    print("exit?")
                     ch.basic_ack(delivery_tag = method.delivery_tag)
                 else:
                     ch.basic_ack(delivery_tag = method.delivery_tag)
@@ -131,6 +132,7 @@ if __name__ == '__main__':
         
         # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })    
         # mq.publishQueue(queue='test', msg='test')
+        print("start consume")
         mq.worker(queue='c.6a61bb6e853cefcbb3b7de16259567c1')
     except Exception as e:
         print("Error, check this {0}".format(e))

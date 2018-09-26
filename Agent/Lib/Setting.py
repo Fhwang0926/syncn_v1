@@ -7,9 +7,9 @@ import json
 import os
 
 class syncn(object):
-    def __init__(self, path=''):
+    def __init__(self, path='', debug=False):
         try:
-            self.debug = True
+            self.debug = debug
             self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
             if self.debug: print(self.path)
             self.config = json.loads(open(self.path, 'r').read())

@@ -63,9 +63,10 @@ class DAO():
 
     def sync(self, notes):
         try:
-            print(1)
+            if not notes:
+                print("is Empty")
+                return { "res" : True }
             if not notes: return print("given 1 args(type=dict)")
-            print(2)
             if not (type(notes) is dict): return print("args must be a dict")
             
             # question to user before processing sync 
@@ -90,7 +91,6 @@ class DAO():
                 print("sql", sql)
                 self.db.execute(sql)
                 self.conn.commit()
-            print(_.keys(notes), "123")
             _.for_each(_.keys(notes), parser)
             print("sync")
             self.temp = None;

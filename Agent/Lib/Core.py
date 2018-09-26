@@ -13,11 +13,10 @@ import requests
 
 
 class signalThread(QThread):
-    sync = pyqtSignal(bool)
+    syncSignal = pyqtSignal(bool)
     
     def __init__(self, debug=False):
         super().__init__()
-        
         self.isRun = False
         self.debug = debug
         self.timestamp = 0;
@@ -39,15 +38,13 @@ class signalThread(QThread):
             self.isRun = next(self.signalRunner)
             while self.isRun:
                 print("isRun = True")
-                self.sync.emit(True)
+                self.syncSignal.emit(True)
                 self.signalRunner.send(0)
-                
                 time.sleep(1)
         except Exception as e:
             self.stop()
             self.join()
             print("signalThread, check this {0}".format(e))
-
 
 class mqSendThread(QThread):
     msgRemoveSignal = pyqtSignal(bool)
@@ -62,21 +59,20 @@ class mqSendThread(QThread):
             pass
 
     def __del__(self):
-        if self.debug: print(".... end thread.....")
+        if self.debug: print(".... mqSendThread end.....")
         self.wait()
         
     def run(self):
         try:
-            ch = MQ.MQ(debug=self.debug)
+            ch = MQ.MQ()
             if self.debug: print("send?", type(json.dumps(self.DAO.read())))
             msg = self.msg if self.msg else json.dumps(self.DAO.read())
             opt = { "type" : "cmd" } if self.msg else { "type" : "msg" }
             headers = { "host" : ch.config["id"] } if self.msg else ''
             ch.publishExchange("msg", ch.queue, msg, opt=opt, head=headers)
-            if self.debug: print("publishExchange", time.time(), "msg", ch.queue, msg, opt, headers)
+            if self.debug:
+                print("push : {0} {1} {2} bytes {3} {4}".format(time.time(), "msg", ch.queue, len(msg), opt, headers))
             self.msg = ''
-
-            print("is run???????")
             ch.worker(self.worker, ch.queue)
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
@@ -89,7 +85,9 @@ class mqSendThread(QThread):
             print("worker, check this {0}".format(e))
 
 class mqReciveThread(QThread):
-    
+    exitSignal = pyqtSignal(bool)
+    syncSignal = pyqtSignal(bool)
+
     def __init__(self, debug=False):
         super().__init__()
         try:
@@ -101,7 +99,7 @@ class mqReciveThread(QThread):
             pass
 
     def __del__(self):
-        print(".... end thread.....")
+        print(".... mqReciveThread end.....")
         self.wait()
     
     def stop(self):
@@ -114,8 +112,11 @@ class mqReciveThread(QThread):
             if queueInfo.status_code == 200:
                 print("get info", queueInfo.text)
                 rs = json.loads(queueInfo.text)["res"]
-                if rs["messages_ready"] > 0 or rs["messages"] > 0: self.ch.worker(self.worker, self.ch.queue)
-                else: return
+                if rs["messages_ready"] > 0 or rs["messages"] > 0:
+                    self.ch.worker(self.worker, self.ch.queue)
+                else:
+                    print("No msg So push this msg")
+                    self.syncSignal.emit(True)
             else:
                 print("failed")
         except Exception as e:
@@ -126,22 +127,25 @@ class mqReciveThread(QThread):
             if properties.type == "cmd":
                 if properties.headers.get('host') == Setting.syncn().config["id"]:
                     # if self.debug: print(msg, properties.headers.get('host'), Setting.syncn().config["id"])
+                    print("is me!!!!! no exit!!!!")
                     ch.basic_ack(delivery_tag = method.delivery_tag)
                 else:
                     ch.basic_ack(delivery_tag = method.delivery_tag)
                     print("Another Computer connected!!")
                     ch.close()
                     print("sync stop")
+                    self.exitSignal.emit(True)
             else:
-                print("get data sycn!")
-                # print("sync?", json.loads(msg))
                 DAO = NoteSql.DAO()
-                print("insert")
+                print("start sync insert data")
                 DAO.sync(json.loads(msg)["res"])
-                    
-            # ch.basic_ack(delivery_tag = method.delivery_tag)
+                print("end sync insert data")
+                ch.cancel()
+                ch.close()
+                print("close channel")
         except Exception as e:
             self.ch.channel.cancel()
+            self.ch.channel.close()
             self.ch.reopenChannel()
             print("worker, check this {0}".format(e))        
 

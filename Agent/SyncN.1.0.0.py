@@ -46,7 +46,9 @@ class SyncN(object):
         if self.debug: print("[+] Registration Interface")
 
     def setThreadChannel(self):
-        self.th_signal.sync.connect(self.th_mqSender.start)
+        self.th_signal.syncSignal.connect(self.th_mqSender.start)
+        self.th_mqReciver.exitSignal.connect(self.UI.proExit)
+        self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
         # self.th_mqSender.msgRemoveSignal.connect(self.th_mqReciver.start)
 
     def run(self):
@@ -97,9 +99,11 @@ class SyncN(object):
             config = Setting.syncn().config
             consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
             if consumerInfo.status_code == 200:
-                print("get info", consumerInfo.text)
+                print("check info", json.loads(consumerInfo.text)["res"])
                 rs = json.loads(consumerInfo.text)["res"]["consumer"]
+                if not rs: print("Non running agent")
                 for x in range(0, rs):
+                    print("send exit cmd", x)
                     self.th_mqSender.msg = "quit" # all client remove
                     self.th_mqSender.start()
                     self.th_mqSender.wait() # all client remove end
