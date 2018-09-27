@@ -41,7 +41,7 @@ fs.readFile('mail_format/common.html', (err, data) => {
 
 let mail = {
     send_auth: (to, code) => {
-        let tag = `<a href="${auth_url + code}" target="_blank" style="text-decoration: none; font-weight: 900; ">Click here to Verify</a>`
+        let tag = `<a href="${auth_url + code}" target="_blank" style="text-decoration: none; font-weight: 900; ">Click here to Verify</a><br/><br/>then Click "Auth OK" on Program`
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
