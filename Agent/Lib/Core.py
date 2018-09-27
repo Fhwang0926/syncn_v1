@@ -1,6 +1,7 @@
 try:
     from Lib import Setting, MQ, NoteSql, Search, Signal
 except ImportError:
+    print("import errer")
     import Setting
     import MQ
     import NoteSql
@@ -79,7 +80,6 @@ class mqSendThread(QThread):
             queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
             if queueInfo.status_code == 200:
                 rs = json.loads(queueInfo.text)["res"]
-                self.frist = False
                 if rs["messages_ready"] > 0 or rs["messages"] > 0:
                     print("msg cnt fix just 1")
                     ch.worker(self.worker, ch.queue)
@@ -124,7 +124,6 @@ class mqReciveThread(QThread):
             if queueInfo.status_code == 200:
                 print("get info", queueInfo.text)
                 rs = json.loads(queueInfo.text)["res"]
-                self.frist = False
                 if rs["messages_ready"] > 0 or rs["messages"] > 0:
                     ch.worker(self.worker, ch.queue)
                 else:
@@ -150,12 +149,23 @@ class mqReciveThread(QThread):
                     print("sync stop")
                     self.exitSignal.emit(True)
             else:
-                DAO = NoteSql.DAO()
-                print("start sync insert data")
-                result = DAO.sync(json.loads(msg)["res"])["res"]
-                if result: print("sync send mail")
-                print("end sync insert data")
-                ch.basic_ack(delivery_tag = method.delivery_tag)
+                while self.isRun:
+
+                    DAO = NoteSql.DAO()
+                    print("start sync insert data")
+                    result = DAO.sync(json.loads(msg)["res"])["res"]
+                    if result: print("sync send mail")
+                    print("end sync insert data")
+
+                    time.sleep(1)
+                    queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
+                    if queueInfo.status_code == 200:
+                        print("get info", queueInfo.text)
+                        rs = json.loads(queueInfo.text)["res"]
+                        if rs["messages_ready"] > 1 or rs["messages"] > 1:
+                            ch.basic_ack(delivery_tag = method.delivery_tag)
+                            self.isRun = False
+                            print("ack")
                 print("close channel")
                 ch.cancel()
                 ch.close()

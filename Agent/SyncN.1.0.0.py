@@ -56,7 +56,7 @@ class SyncN(object):
         
         self.setThreadChannel()
         if self.UI.auth:
-            self.th_signal.start()    
+            self.th_signal.start()
         self.UI.show()
         
         sys.exit(self.app.exec_())
@@ -73,6 +73,7 @@ class SyncN(object):
                 if self.OTP.createOTP():
                     self.UI.l_info.setStyleSheet("color:green;\n")
                     self.UI.l_info.setText("We Sended Auth mail")
+                    self.UI.btn_ok.setText("Auth OK")
                 else:
                     self.UI.l_info.setStyleSheet("color:red;\n")
                     self.UI.l_info.setText("Failed send Auth email")
@@ -81,6 +82,9 @@ class SyncN(object):
             if self.OTP.authOTP():
                 self.UI.authStyle()
                 self.disconnectCMD()
+                self.th_mqReciver.start()
+                self.th_signal.start()
+                
             else:
                 self.UI.l_info.setStyleSheet("color:red;\n")
                 self.UI.l_info.setText("Auth Failed, Check Email")
