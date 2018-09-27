@@ -23,6 +23,8 @@ class SyncN(object):
         self.th_mqSender = Core.mqSendThread(debug=True)
         # init MQ
         self.th_mqReciver = Core.mqReciveThread(debug=True)
+        # init mail
+        self.th_mail = Core.mailThread(debug=True)
         
         # init func
         self.connectInterface()
@@ -53,6 +55,7 @@ class SyncN(object):
         self.setThreadChannel()
         if self.UI.auth:
             self.disconnectCMD()
+            self.th_mqReciver.once = True
             self.th_mqReciver.start()
             self.th_signal.start()
         self.UI.show()
@@ -78,7 +81,16 @@ class SyncN(object):
         else:
             # need auth OTP
             if self.OTP.authOTP():
+                try:
+                    self.th_mail.msg = "Auth Successful"
+                    self.th_mail.to = self.UI.syncn["to"]
+                    self.th_mail.start()
+                except Exception as e:
+                    print("send Auth Successful Notify Failed : ", e)
+                    pass
+                
                 self.disconnectCMD()
+                self.th_mqReciver.once = True
                 self.th_mqReciver.start()
                 self.th_signal.start()
             else:

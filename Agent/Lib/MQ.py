@@ -93,8 +93,9 @@ class MQ():
         self.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=option)
         if self.debug: print(" [x] publishExchange %r" % msg)
     
-    def publishQueue(self, queue='', msg='', opt='', headers={}):
-        if opt: option = pika.BasicProperties( type = opt["type"], headers=head)
+    def publishQueue(self, queue='', msg='', opt={}):
+        print(opt["headers"])
+        if opt: option = pika.BasicProperties( type = opt["type"], headers=opt["headers"])
         else: option=''
         self.channel.basic_publish(routing_key=queue, exchange='', body=msg, properties=option)
         if self.debug: print(" [x] publishQueue %r" % msg)
@@ -130,10 +131,11 @@ if __name__ == '__main__':
         # mq.makeBind(exchange='test', queue='test')
         # mq.publishExchange(exchange='test', msg='test')
         
-        # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })    
-        # mq.publishQueue(queue='test', msg='test')
-        print("start consume")
-        mq.worker(queue='c.6a61bb6e853cefcbb3b7de16259567c1')
+        # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })
+        mq.publishQueue(queue="mail", msg="test", opt={ "type" : "mail", "headers" : { "to" : "hdh0926@naver.com" } })
+        print("send!!")
+        # print("start consume")
+        # mq.worker(queue='c.6a61bb6e853cefcbb3b7de16259567c1')
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass

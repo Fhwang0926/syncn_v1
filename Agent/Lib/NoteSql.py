@@ -10,16 +10,16 @@ except ImportError:
     import Search
 
 class DAO():
-    def __init__(self, fullpath=''):
+    def __init__(self, fullpath='', debug=False):
         # set variables
         self.fullpath = fullpath if fullpath else Search.PathSearcher().run()
         self.path = ''
         self.db = None
         self.conn = None
-        self.id = None;
-        self.noteCnt = 0;
-        self.temp = None;
-        self.debug = True;
+        self.id = None
+        self.noteCnt = 0
+        self.temp = None
+        self.debug = debug
         
         # set function
         self.init(self.fullpath)
@@ -37,7 +37,8 @@ class DAO():
         try:
             # self.readUser()
             col = ["Text", "WindowPosition", "Theme"]
-            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' limit 2".format(_.join(col, ','), self.id))
+            limit = "limit 2" if self.debug else ''
+            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' {2}".format(_.join(col, ','), self.id, limit))
             return { "res" : self.convert(rs)['res'] }
         except Exception as e:
             return { "e" : e }

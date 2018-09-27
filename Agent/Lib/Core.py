@@ -100,6 +100,7 @@ class mqReciveThread(QThread):
         super().__init__()
         try:
             self.isRun = False
+            self.once = False
             self.debug = debug
         except Exception as e:
             print("mqReciveThread init, check this {0}".format(e))
@@ -121,18 +122,16 @@ class mqReciveThread(QThread):
                 print("get info", queueInfo.text)
                 rs = json.loads(queueInfo.text)["res"]
                 if rs["messages_ready"] > 0 or rs["messages"] > 0:
-                    ch.worker(self.worker, ch.queue, once=True)
+                    ch.worker(self.worker, ch.queue)
                 else:
                     print("No msg So push this msg")
-                    self.syncSignal.emit(True)
             else:
                 print("failed")
-            
         except Exception as e:
             print("mqReciveThread run, check this {0}".format(e))
             
 
-    def worker(self, ch, method, properties, msg, once=False):
+    def worker(self, ch, method, properties, msg):
         try:
             if properties.type == "cmd":
                 if properties.headers.get('host') == Setting.syncn().config["id"]:
@@ -151,18 +150,42 @@ class mqReciveThread(QThread):
                     print("[+] OK - sync send mail")
                 print("end sync insert data")
 
-                if once:
+                if self.once:
                     ch.cancel()
                     ch.close()
+                    self.once = False
                     print("end worker no ack so 1 msg in queue")
                     return
                 else:
                     ch.basic_ack(delivery_tag = method.delivery_tag)
                     print("ack")
         except Exception as e:
-            ch.channel.cancel()
-            ch.channel.close()
+            ch.cancel()
+            ch.close()
             print("worker, check this {0}".format(e))        
+
+class mailThread(QThread):
+    
+    def __init__(self, debug=False):
+        super().__init__()
+        self.isRun = False
+        self.debug = debug
+        self.msg = ""
+        self.to = ""
+
+    def __del__(self):
+        if self.debug: print(".... mailThread end thread.....")
+        self.wait()
+    
+    def run(self):
+        try:
+            ch = MQ.MQ()
+            mq.publishQueue(queue="mail", msg=self.msg, opt={ "type" : "mail", "headers" : { "to" : self.to } })
+        except Exception as e:
+            print(e)
+        
+
+
 
 if __name__ == "__main__":
     th_mq = mqSendThread()
