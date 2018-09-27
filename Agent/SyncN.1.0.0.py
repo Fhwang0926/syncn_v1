@@ -16,7 +16,6 @@ class SyncN(object):
         self.UI = UI.UI()
         if os.path.exists(Setting.syncn().path):
             self.UI.authStyle()
-            self.UI.windowTrigger()
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
         # init signal
@@ -63,6 +62,9 @@ class SyncN(object):
             self.th_mqReciver.start()
             self.th_signal.start()
         self.UI.show()
+        if self.UI.auth:
+            print("dlksahvlkahdjkfvaskjldhfjkashdjklfhsakjhdfhaksjld")
+            self.UI.windowTrigger()
         
         sys.exit(self.app.exec_())
     
