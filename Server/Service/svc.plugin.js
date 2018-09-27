@@ -120,8 +120,8 @@ let get = async (req, res) => {
                     await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : 'None' }).then(() =>{
                         rabbit.put(`/permissions/${vhost}/${account.id}`, {
                             configure: '',
-                            write: `(${account.q}|msg)`,
-                            read: `(${account.q}|cmd|msg)`,
+                            write: `(${account.q}|msg|mail)`,
+                            read: `(${account.q}|msg|mail)`,
                         }).catch(e => print("UP", e))
                     })
                     .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }).catch(e => print("Q", e)))
