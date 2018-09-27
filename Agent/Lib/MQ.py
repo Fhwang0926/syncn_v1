@@ -2,28 +2,34 @@
 # -*- coding: utf8 -*-
 # auth : bluehdh0926@gmail.com
 
-import pika, json, os, sys
+import pika, json, os, sys, time
 try:
-    from Lib import Setting
-except ImportError:
     import Setting
-    
-
-
+except ImportError:
+    from Lib import Setting
 class MQ():
     def __init__(self, debug=False):
         try:
             self.ack = False
             self.debug = debug
+            self.channel = None
+            self.retry = 0
             if self.build():
-                self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
-                self.channel = self.connection.channel()
+                while (self.channel == None and self.retry < 10):
+                    time.sleep(1)
+                    try:
+                        if self.debug: print("retry connecting {0}".format(self.retry))
+                        self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
+                        self.channel = self.connection.channel()
+                        if self.debug: print("connected")
+                    except Exception as e:
+                        self.retry+=1
                 if self.debug and (self.channel): print('PROTOCOL : '+self.url+' connected')
+                if self.channel == None: sys.exit(0)
             else:
                 if self.debug: print("Non-Auth")
         except Exception as e:
             print("{0} __init__, check this {0}".format(__file__, e))
-            pass
         
     def build(self):
         try:
@@ -42,7 +48,6 @@ class MQ():
         except Exception as e:
             print("{0} build, check this {0}".format(__file__, e))
             return False
-            pass
         
     def makeQueue(self, name='', durable=True, opt={}):
         self.channel.queue_declare(name, durable, opt)
@@ -94,8 +99,7 @@ class MQ():
         if self.debug: print(" [x] publishExchange %r" % msg)
     
     def publishQueue(self, queue='', msg='', opt={}):
-        print(opt["headers"])
-        if opt: option = pika.BasicProperties( type = opt["type"], headers=opt["headers"])
+        if opt: option = pika.BasicProperties(type=opt["type"])
         else: option=''
         self.channel.basic_publish(routing_key=queue, exchange='', body=msg, properties=option)
         if self.debug: print(" [x] publishQueue %r" % msg)
@@ -132,10 +136,10 @@ if __name__ == '__main__':
         # mq.publishExchange(exchange='test', msg='test')
         
         # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })
-        mq.publishQueue(queue="mail", msg="test", opt={ "type" : "mail", "headers" : { "to" : "hdh0926@naver.com" } })
+        mq.publishQueue(queue="mail", msg="hdh0926@naver.com", opt={ "type" : "mail" })
         print("send!!")
         # print("start consume")
-        # mq.worker(queue='c.6a61bb6e853cefcbb3b7de16259567c1')
+        # mq.worker(queue='mail')
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass

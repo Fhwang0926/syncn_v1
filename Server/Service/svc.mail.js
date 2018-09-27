@@ -7,8 +7,7 @@ let mail = require('lib/sendmail');
 mq.open().then((ch) => {
     console.log("Mail service start")
     ch.consume('mail', async msg => {
-        print(msg.properties)
-        if (msg.properties.type == "" || msg.properties.type == "default") {
+        if (msg.properties.type == "mail") {
             print(msg.content.toString())
             rs = await mail.send(JSON.parse(msg.content.toString()))
         } else {

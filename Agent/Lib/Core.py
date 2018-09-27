@@ -1,11 +1,10 @@
 try:
-    from Lib import Setting, MQ, NoteSql, Search, Signal
-except ImportError:
-    print("import errer")
     import Setting
     import MQ
     import NoteSql
     import Search
+except ImportError:
+    from Lib import Setting, MQ, NoteSql, Search, Signal
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import json
@@ -95,13 +94,15 @@ class mqSendThread(QThread):
 class mqReciveThread(QThread):
     exitSignal = pyqtSignal(bool)
     syncSignal = pyqtSignal(bool)
+    killSignal = pyqtSignal(bool)
+    execSignal = pyqtSignal(bool)
 
     def __init__(self, debug=False):
         super().__init__()
         try:
             self.isRun = False
             self.once = False
-            self.debug = debug
+            self.debug = True
         except Exception as e:
             print("mqReciveThread init, check this {0}".format(e))
             pass
@@ -115,20 +116,20 @@ class mqReciveThread(QThread):
 
     def run(self):
         self.isRun = True
-        try:
-            ch = MQ.MQ()
-            queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-            if queueInfo.status_code == 200:
-                print("get info", queueInfo.text)
-                rs = json.loads(queueInfo.text)["res"]
-                if rs["messages_ready"] > 0 or rs["messages"] > 0:
-                    ch.worker(self.worker, ch.queue)
-                else:
-                    print("No msg So push this msg")
+        # try:
+        ch = MQ.MQ()
+        queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
+        if queueInfo.status_code == 200:
+            print("get info", queueInfo.text)
+            rs = json.loads(queueInfo.text)["res"]
+            if rs["messages_ready"] > 0 or rs["messages"] > 0:
+                ch.worker(self.worker, ch.queue)
             else:
-                print("failed")
-        except Exception as e:
-            print("mqReciveThread run, check this {0}".format(e))
+                print("No msg So push this msg")
+        else:
+            print("failed")
+        # except Exception as e:
+        #     print("mqReciveThread run, check this {0}".format(e))
             
 
     def worker(self, ch, method, properties, msg):
@@ -144,11 +145,11 @@ class mqReciveThread(QThread):
                     print("is not me!!!!! exit!!!!")
                     self.exitSignal.emit(True)
             else:
+                self.killSignal.emit(True)
                 DAO = NoteSql.DAO()
-                print("start sync insert data")
                 if DAO.sync(json.loads(msg)["res"])["res"]:
+                    self.execSignal.emit(True)
                     print("[+] OK - sync send mail")
-                print("end sync insert data")
 
                 if self.once:
                     ch.cancel()
@@ -180,7 +181,10 @@ class mailThread(QThread):
     def run(self):
         try:
             ch = MQ.MQ()
-            mq.publishQueue(queue="mail", msg=self.msg, opt={ "type" : "mail", "headers" : { "to" : self.to } })
+            ch.publishQueue(queue="mail", msg=self.to, opt={ "type" : "mail" })
+            self.msg = ""
+            self.to = ""
+            print("request mail send")
         except Exception as e:
             print(e)
         
@@ -188,7 +192,9 @@ class mailThread(QThread):
 
 
 if __name__ == "__main__":
-    th_mq = mqSendThread()
-    th_mq.start()
+    th_mail = mailThread()
+    th_mail.msg = "123"
+    th_mail.to = "hdh0926@naver.com"
+    th_mail.start()
     while 1:
         time.sleep(1)

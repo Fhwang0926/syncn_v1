@@ -75,7 +75,7 @@ class DAO():
             self.conn.commit()
             # insert format { Text, WindowPosition, Id, ParentId, Theme, CreatedAt, UpdatedAt }
             # self.readUser()
-            self.temp = notes;
+            self.temp = notes
             print("update")
             def parser(k):
                 cols = ["Text", "WindowPosition", "Id", "ParentId", "Theme", "CreatedAt", "UpdatedAt"]
@@ -94,11 +94,12 @@ class DAO():
                 self.conn.commit()
             _.for_each(_.keys(notes), parser)
             print("sync")
-            self.temp = None;
+            self.temp = None
             return { "res" : True }
         except Exception as e:
-            return { "e" : e }
             print("{0} sync, check this {0}".format(__file__, e))
+            return { "res" : False }
+            
         
     def dumpBackupOneRow(self):
         try:

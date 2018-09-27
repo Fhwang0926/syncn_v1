@@ -14,7 +14,9 @@ class SyncN(object):
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
-        if os.path.exists(Setting.syncn().path): self.UI.authStyle()
+        if os.path.exists(Setting.syncn().path):
+            self.UI.authStyle()
+            self.UI.windowTrigger()
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
         # init signal
@@ -49,6 +51,8 @@ class SyncN(object):
         self.th_signal.syncSignal.connect(self.th_mqSender.start)
         self.th_mqReciver.exitSignal.connect(self.UI.proExit)
         self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
+        self.th_mqReciver.execSignal.connect(self.openNote)
+        self.th_mqReciver.killSignal.connect(self.closeNote)
 
     def run(self):
         self.closeNote()
@@ -81,14 +85,7 @@ class SyncN(object):
         else:
             # need auth OTP
             if self.OTP.authOTP():
-                try:
-                    self.th_mail.msg = "Auth Successful"
-                    self.th_mail.to = self.UI.syncn["to"]
-                    self.th_mail.start()
-                except Exception as e:
-                    print("send Auth Successful Notify Failed : ", e)
-                    pass
-                
+                self.UI.authStyle()
                 self.disconnectCMD()
                 self.th_mqReciver.once = True
                 self.th_mqReciver.start()
