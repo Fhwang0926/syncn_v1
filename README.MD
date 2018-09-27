@@ -7,12 +7,12 @@
 
 
 ## 목차
-1. [사용법]
-2. [구조]
-3. [발전가능성]
-4. [설치 환경] (실행환경 언급해도 좋을듯)(rabbitmq 설치법 & 쉘스크립트, exe빌드 사용법, 사용된 라이브러리 등등)
-5. [문제점 & 버그]
-6. [시연 동영상]
+ [1. 사용법](https://github.com/Fhwang0926/syncn_v1/blob/master/README.MD#%EC%82%AC%EC%9A%A9%EB%B2%95)  
+ [2. 구조]  
+ [3. 발전가능성]  
+ [4. 설치 환경] (실행환경 언급해도 좋을듯)(rabbitmq 설치법 & 쉘스크립트, exe빌드 사용법, 사용된 라이브러리 등등)  
+ [5. 문제점 & 버그]  
+ [6. 시연 동영상]  
 
 
 
@@ -33,11 +33,13 @@ url입력칸 & exe파일 첨부 칸
 * 설치된 **Syncn**을 실행합니다.
 * 입력창에 여러분의 Email을 입력해주세요 ex) abc@gmail.com
 * 입력한 이메일의 수신함을 확인해주세요.
-* 받은 메일안의 URL을 클릭해주세요.(%%%%주의사항 아이콘%%%%이메일을 입력 후 3분안에 클릭해야 합니다.)
+* 받은 메일안의 URL을 클릭해주세요.(※이메일을 입력 후 3분안에 클릭해야 합니다.)
 * "Auth Successfully"라는 팝업창이 뜹니다. 확인을 눌러주세요
 * **Syncn**프로그램으로 돌아가 "OK"버튼을 눌러주세요.
 
-gif파일을 통해 간단 동영상 삽입칸
+<img src="https://github.com/Fhwang0926/syncn_v1/blob/master/Image/EmailWrite.gif" width="30%"></img> 
+<img src="https://github.com/Fhwang0926/syncn_v1/blob/master/Image/EmailAuth.gif" width="60%" height="400"></img>
+
 
 ### 3. 동기화
 [인증](https://github.com/Fhwang0926/syncn_v1/new/master) 절차가 끝났다면 여러분은 평상시처럼 **Sticy Note**를 이용하면 됩니다. **Syncn**은 백그라운드에서 자동으로 실행됩니다. 만약 동기화를 멈추고 싶다면 트레이 아이콘에서 설정할 수 있어요.
