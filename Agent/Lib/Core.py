@@ -20,8 +20,6 @@ class signalThread(QThread):
         super().__init__()
         self.isRun = False
         self.debug = debug
-        self.timestamp = 0;
-        self.cnt = 0
         self.target = Search.PathSearcher().run()
         self.signal = Signal.signal(debug=self.debug)
         self.signalRunner = self.signal.connect()
@@ -32,7 +30,6 @@ class signalThread(QThread):
     
     def stop(self):
         self.isRun = False
-        self.cnt = 0
 
     def run(self):
         try:
@@ -50,7 +47,7 @@ class signalThread(QThread):
 class mqSendThread(QThread):
     reciveSignal = pyqtSignal(bool)
     def __init__(self, debug=False):
-        QThread.__init__(self)
+        super().__init__()
         try:
             self.debug = debug
             self.msg = ''
@@ -58,7 +55,6 @@ class mqSendThread(QThread):
             
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
-            pass
 
     def __del__(self):
         if self.debug: print(".... mqSendThread end.....")
@@ -80,7 +76,7 @@ class mqSendThread(QThread):
             queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
             if queueInfo.status_code == 200:
                 rs = json.loads(queueInfo.text)["res"]
-                if rs["messages_ready"] > 0 or rs["messages"] > 0:
+                if rs["messages_ready"] > 0 or rs["messages"] > 1:
                     print("msg cnt fix just 1")
                     ch.worker(self.worker, ch.queue)
             else:
@@ -106,7 +102,7 @@ class mqReciveThread(QThread):
             self.isRun = False
             self.debug = debug
         except Exception as e:
-            print("mqReciveThread, check this {0}".format(e))
+            print("mqReciveThread init, check this {0}".format(e))
             pass
 
     def __del__(self):
@@ -125,7 +121,7 @@ class mqReciveThread(QThread):
                 print("get info", queueInfo.text)
                 rs = json.loads(queueInfo.text)["res"]
                 if rs["messages_ready"] > 0 or rs["messages"] > 0:
-                    ch.worker(self.worker, ch.queue)
+                    ch.worker(self.worker, ch.queue, once=True)
                 else:
                     print("No msg So push this msg")
                     self.syncSignal.emit(True)
@@ -133,10 +129,10 @@ class mqReciveThread(QThread):
                 print("failed")
             
         except Exception as e:
-            print("mqReciveThread, check this {0}".format(e))
+            print("mqReciveThread run, check this {0}".format(e))
             
 
-    def worker(self, ch, method, properties, msg):
+    def worker(self, ch, method, properties, msg, once=False):
         try:
             if properties.type == "cmd":
                 if properties.headers.get('host') == Setting.syncn().config["id"]:
@@ -146,33 +142,26 @@ class mqReciveThread(QThread):
                 else:
                     print("Another Computer connected!!")
                     ch.basic_ack(delivery_tag = method.delivery_tag)
-                    print("sync stop")
+                    print("is not me!!!!! exit!!!!")
                     self.exitSignal.emit(True)
             else:
-                while self.isRun:
+                DAO = NoteSql.DAO()
+                print("start sync insert data")
+                if DAO.sync(json.loads(msg)["res"])["res"]:
+                    print("[+] OK - sync send mail")
+                print("end sync insert data")
 
-                    DAO = NoteSql.DAO()
-                    print("start sync insert data")
-                    result = DAO.sync(json.loads(msg)["res"])["res"]
-                    if result: print("sync send mail")
-                    print("end sync insert data")
-
-                    time.sleep(1)
-                    queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-                    if queueInfo.status_code == 200:
-                        print("get info", queueInfo.text)
-                        rs = json.loads(queueInfo.text)["res"]
-                        if rs["messages_ready"] > 1 or rs["messages"] > 1:
-                            ch.basic_ack(delivery_tag = method.delivery_tag)
-                            self.isRun = False
-                            print("ack")
-                print("close channel")
-                ch.cancel()
-                ch.close()
+                if once:
+                    ch.cancel()
+                    ch.close()
+                    print("end worker no ack so 1 msg in queue")
+                    return
+                else:
+                    ch.basic_ack(delivery_tag = method.delivery_tag)
+                    print("ack")
         except Exception as e:
-            self.ch.channel.cancel()
-            self.ch.channel.close()
-            self.ch.reopenChannel()
+            ch.channel.cancel()
+            ch.channel.close()
             print("worker, check this {0}".format(e))        
 
 if __name__ == "__main__":

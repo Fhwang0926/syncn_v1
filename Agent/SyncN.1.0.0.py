@@ -27,8 +27,6 @@ class SyncN(object):
         # init func
         self.connectInterface()
         
-
-        # excute others agent disconnect all then only connect me
     
     def connectInterface(self):
         #define UI
@@ -51,11 +49,11 @@ class SyncN(object):
         self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
 
     def run(self):
-        self.disconnectCMD()
-        self.th_mqReciver.start()
-        
+        self.closeNote()
         self.setThreadChannel()
         if self.UI.auth:
+            self.disconnectCMD()
+            self.th_mqReciver.start()
             self.th_signal.start()
         self.UI.show()
         
@@ -73,22 +71,26 @@ class SyncN(object):
                 if self.OTP.createOTP():
                     self.UI.l_info.setStyleSheet("color:green;\n")
                     self.UI.l_info.setText("We Sended Auth mail")
-                    self.UI.btn_ok.setText("Auth OK")
+                    self.UI.btn_ok.setText("Auth OK ?")
                 else:
                     self.UI.l_info.setStyleSheet("color:red;\n")
                     self.UI.l_info.setText("Failed send Auth email")
         else:
             # need auth OTP
             if self.OTP.authOTP():
-                self.UI.authStyle()
                 self.disconnectCMD()
                 self.th_mqReciver.start()
                 self.th_signal.start()
-                
             else:
                 self.UI.l_info.setStyleSheet("color:red;\n")
                 self.UI.l_info.setText("Auth Failed, Check Email")
     
+    def openNote(self):
+        os.system("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App")
+    
+    def closeNote(self):
+        os.system('taskkill /f /im Microsoft.Notes.exe')
+
     def proLogout(self):
         try:
             os.remove(self.UI.syncn["config"])
@@ -97,6 +99,7 @@ class SyncN(object):
         finally:
             sys.exit(0)
 
+    # excute others agent disconnect all then only connect me
     def disconnectCMD(self):
         try:
             config = Setting.syncn().config
