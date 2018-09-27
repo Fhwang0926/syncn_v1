@@ -1,5 +1,5 @@
-# Syncn!
-**Sticy Note**를 사용하면서 icloud의 동기화가 부러웠던 적이 있으세요?? **Syncn**을 써보세요!!
+# SyncN!
+**Sticy Note**를 사용하면서 icloud의 동기화가 부러웠던 적이 있으세요?? **SyncN**을 써보세요!!
 
 *	언제 어디서나 기록한 메모를 볼 수 있습니다. 매번 동기화를 하지 않아도 됩니다!!
 * 기존에 사용하던 이메일로 로그인 하세요. 따로 회원가입이 필요 없습니다.
@@ -18,7 +18,7 @@
 
 ## 사용법
 ### 1. 설치
-**Syncn**은 별도 웹페이지에 설치 파일을 제공하고 있습니다.
+**SyncN**은 별도 웹페이지에 설치 파일을 제공하고 있습니다.
 
 * 아래 첨부된 파일을 다운받으세요 & 아래 링크를 클릭하세요
 * 프로그램을 다운 받아주세요 (기본 설치 경로는 ProgramFile 입니다)
@@ -28,7 +28,7 @@ url입력칸 & exe파일 첨부 칸
 
 
 ### 2. 인증
-**Syncn**은 여러분이 가지고 있는 이메일을 통해 인증이 가능합니다. 입력창에 이메일을 입력하면 인증 URL이 메일로 발송됩니다. 그리고 그 링크를 클릭하기만 하면 인증이 완료됩니다. 인증이 끝나면 서버와 연결할 수 있는 설정파일(Setting.syncn)이 생겨요!
+**SyncN**은 여러분이 가지고 있는 이메일을 통해 인증이 가능합니다. 입력창에 이메일을 입력하면 인증 URL이 메일로 발송됩니다. 그리고 그 링크를 클릭하기만 하면 인증이 완료됩니다. 인증이 끝나면 서버와 연결할 수 있는 설정파일(Setting.syncn)이 생겨요!
 
 * 설치된 **Syncn**을 실행합니다.
 * 입력창에 여러분의 Email을 입력해주세요 ex) abc@gmail.com
@@ -42,11 +42,11 @@ url입력칸 & exe파일 첨부 칸
 
 
 ### 3. 동기화
-[인증](https://github.com/Fhwang0926/syncn_v1/new/master) 절차가 끝났다면 여러분은 평상시처럼 **Sticy Note**를 이용하면 됩니다. **Syncn**은 백그라운드에서 자동으로 실행됩니다. 만약 동기화를 멈추고 싶다면 트레이 아이콘에서 설정할 수 있어요.
+[인증](https://github.com/Fhwang0926/syncn_v1/new/master) 절차가 끝났다면 여러분은 평상시처럼 **Sticy Note**를 이용하면 됩니다. **SyncN**은 백그라운드에서 자동으로 실행됩니다. 만약 동기화를 멈추고 싶다면 트레이 아이콘에서 설정할 수 있어요.
 
-* 동기화를 원하는 컴퓨터에도 **Syncn** 프로그램이 [설치](http://www.test.com)해 주세요. 
-* **Syncn**을 처음 설치하는 컴퓨터일 경우 Email[인증](https://github.com/Fhwang0926/syncn_v1/new/master) 절차를 진행해 주셔야 합니다.
-* **Syncn**이 설치되어 있고 Email[인증](https://github.com/Fhwang0926/syncn_v1/new/master)이 끝난 PC라면 이전과 같이 **Sticy Note**를 사용하시면 됩니다~
+* 동기화를 원하는 컴퓨터에도 **SyncN** 프로그램이 [설치](http://www.test.com)해 주세요. 
+* **SyncN**을 처음 설치하는 컴퓨터일 경우 Email[인증](https://github.com/Fhwang0926/syncn_v1/new/master) 절차를 진행해 주셔야 합니다.
+* **SyncN**이 설치되어 있고 Email[인증](https://github.com/Fhwang0926/syncn_v1/new/master)이 끝난 PC라면 이전과 같이 **Sticy Note**를 사용하시면 됩니다~
 
 트레이 아이콘 동기화 옵션 gif파일 첨부 칸
 
