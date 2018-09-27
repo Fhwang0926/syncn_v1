@@ -41,12 +41,12 @@ fs.readFile('mail_format/common.html', (err, data) => {
 
 let mail = {
     send_auth: (to, code) => {
-        let tag = `<a href="${auth_url + code}" target="_blank" style="text-decoration: none; font-weight: 900; ">Click here to Verify</a><br/><br/>then Click "Auth OK" on Program`
+        let tag = `<a href="${auth_url + code}" target="_blank" style="text-decoration: none; font-weight: 900; ">Click here to Verify</a>`
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
             subject : 'SyncN Notify auth URL(this code remove to after 3 min)', //expire get from nconf
-            html: common.replace(/%type%/g, "SyncN Auth Notify").replace(/%title%/g, "Need to Auth for your sync").replace(/%code%/g, tag),
+            html: common.replace(/%type%/g, "SyncN Auth Notify").replace(/%title%/g, "Need to Auth for your sync").replace(/%code1%/g, tag).replace(/%code2%/g, `then Click "Auth OK" on Program`),
             //text
         };
 
@@ -56,11 +56,10 @@ let mail = {
         if (!_.has(info, "from")) { info.from = 'syncn2018 < syncn2018@gmail.com >' }
         if (!_.has(info, "subject")) { info.subject = 'SyncN Notify' }
         if (!_.has(info, "html")) {
-            info.html = common.replace(/%type%/g, "SyncN Notify").replace(/%title%/g, "Hello, Dear").replace(/%code%/g, info.text)
+            info.html = common.replace(/%type%/g, "SyncN Notify").replace(/%title%/g, "Hello, Dear").replace(/%code1%/g, info.text).replace(/%code2%/g, '')
             _.omit(info, "text")
         }
             
-
         return new Promise((resolve, reject) => {
             transporter.sendMail(info, (err, res) => {
                 if (err) {
