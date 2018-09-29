@@ -119,7 +119,7 @@ let get = async (req, res) => {
                     await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : 'None' }).then(() =>{
                         rabbit.put(`/permissions/${vhost}/${account.id}`, {
                             configure: '(cmd.*)',
-                            write: `(${account.q}|msg|mail|cmd|amq.default|^cmd.*`,
+                            write: `(${account.q}|msg|mail|cmd|amq.default|^cmd.*)`,
                             read: `(${account.q}|msg|mail|cmd|^cmd.*|amq.*)`,
                         }).catch(e => print("UP", e))
                     })
