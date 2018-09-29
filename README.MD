@@ -12,13 +12,13 @@
 
  >[1. 사용법](https://github.com/Fhwang0926/syncn_v1/blob/master/README.MD#%EC%82%AC%EC%9A%A9%EB%B2%95)  
  >
->[2. 장점](https://github.com/Fhwang0926/syncn_v1#%EC%9E%A5%EC%A0%90)
+ >[2. 설치]
+ >
+>[3. 장점](https://github.com/Fhwang0926/syncn_v1#%EC%9E%A5%EC%A0%90)
 >
->[3. 발전가능성](https://github.com/Fhwang0926/syncn_v1#%EB%B0%9C%EC%A0%84-%EA%B0%80%EB%8A%A5%EC%84%B1)
+>[4. 발전가능성](https://github.com/Fhwang0926/syncn_v1#%EB%B0%9C%EC%A0%84-%EA%B0%80%EB%8A%A5%EC%84%B1)
 >
->[4. 개발 환경]( https://github.com/Fhwang0926/syncn_v1#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD)
->
->[5. 설치](실행환경 언급해도 좋을듯)(rabbitmq 설치법 & 쉘스크립트, exe빌드 사용법, 사용된 라이브러리 등등)
+>[5. 개발 환경]( https://github.com/Fhwang0926/syncn_v1#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD)
 >
  >[6 데모]  
  
@@ -64,6 +64,39 @@ url입력칸 & exe파일 첨부 칸
 >* **SyncN**이 설치되어 있고 Email[인증](https://github.com/Fhwang0926/syncn_v1#2-인증)이 끝난 PC라면 이전과 같이 **Sticy Note**를 사용하시면 됩니다~
 
 트레이 아이콘 동기화 옵션 gif파일 첨부 칸
+
+## 설치
+
+1. Rabbit MQ 설치
+```bash
+# we need to install erlang for dependencies
+$ sudo apt-get install -y erlang logrotate
+$ sudo apt-get -f install
+
+# Download latest version of rabbitmq-server.deb
+$ wget https://github.com/rabbitmq/rabbitmq-$ server/releases/download/rabbitmq_v3_6_10/rabbitmq-server_3.6.10-1_all.deb
+$ dpkg -i rabbitmq-server_3.6.10-1_all.deb
+```
+
+2. Rabbit MQ 설정
+```bash
+# Plugin enable
+$ sudo rabbitmq-plugins enable rabbitmq_management
+# Make user
+$ sudo rabbitmqctl add_user [newuser] [password]
+# Grant authority
+$ sudo rabbitmqctl set_user_tags [newuser] administrator
+$ sudo rabbitmqctl set_permissions -p / [newuser] ".*" ".*" ".*"
+```
+
+3. Rabbit MQ 접속
+```url
+# Web default port is 15672
+# Data default port is 5672
+
+http://localhost:15672
+```
+<img src="https://github.com/Fhwang0926/syncn_v1/blob/master/Image/RabbitMq%20Enter.gif" width="60%"></img> 
 
 ## 장점
 >* DB가 필요없습니다!
