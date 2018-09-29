@@ -104,6 +104,20 @@ class MQ():
         self.channel.basic_publish(routing_key=queue, exchange='', body=msg, properties=option)
         if self.debug: print(" [x] publishQueue %r" % msg)
 
+    def get(self, queue='', isAck=True, ch=None):
+        ch = ch if ch else self.connection.createChannel()
+        method_frame, header_frame, body = ch.basic_get(queue)
+        rs = {}
+        if method_frame:
+            rs["cnt"] = method_frame.message_count
+            rs["msg"] = body
+            if self.debug: print("get msg {0} bytes".format(len(body)))
+        else:
+            rs["cnt"] = -1 # this mean no msg, like nodejs indexof function
+
+        if (isAck): ch.basic_ack(method_frame.delivery_tag)
+        ch.close()
+        return rs
     def worker(self, func=None, queue=''):
         if self.debug: print(' [*] start working')
         func = func if func else self.callback

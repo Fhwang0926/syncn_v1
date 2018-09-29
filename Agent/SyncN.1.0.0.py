@@ -112,21 +112,22 @@ class SyncN(object):
     # excute others agent disconnect all then only connect me
     def disconnectCMD(self):
         try:
-            config = Setting.syncn().config
-            consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
-            if consumerInfo.status_code == 200:
-                print("check info", json.loads(consumerInfo.text)["res"])
-                rs = json.loads(consumerInfo.text)["res"]["consumer"]
-                if not rs: print("Non running agent")
-                for x in range(0, rs):
-                    print("send exit cmd", x)
-                    self.th_mqSender.msg = "quit" # all client remove
-                    self.th_mqSender.start()
-                    self.th_mqSender.wait() # all client remove end
-                    time.sleep(1)
-            else:
-                print("check consumers failed")
-                if self.debug: print(json.loads(consumerInfo.text)['e'])
+            # config = Setting.syncn().config
+            # consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
+            # if consumerInfo.status_code == 200:
+            #     print("check info", json.loads(consumerInfo.text)["res"])
+            #     rs = json.loads(consumerInfo.text)["res"]["consumer"]
+            #     if not rs: print("Non running agent")
+            #     for x in range(0, rs):
+            #         print("send exit cmd", x)
+            #         self.th_mqSender.msg = "quit" # all client remove
+            #         self.th_mqSender.start()
+            #         self.th_mqSender.wait() # all client remove end
+            #         time.sleep(1)
+            # else:
+            #     print("check consumers failed")
+            #     if self.debug: print(json.loads(consumerInfo.text)['e'])
+            print(".")
         except Exception as e:
             print("{0} disconnectCMD, check this {1}".format(__file__, e))
             pass
