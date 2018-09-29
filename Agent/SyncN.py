@@ -25,7 +25,7 @@ class SyncN(object):
         # init MQ
         self.th_mqReciver = Core.mqReciveThread(debug=True)
         # init mail
-        self.th_mail = Core.mailThread(debug=True)
+        # self.th_mail = Core.mailThread(debug=True)
         
         # init func
         self.connectInterface()
