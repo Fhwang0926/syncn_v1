@@ -118,9 +118,9 @@ let get = async (req, res) => {
                     if(_.find(q_list, account.q)) { return; }
                     await rabbit.put(`/users/${account.id}`, { password: account.pw, tags : 'None' }).then(() =>{
                         rabbit.put(`/permissions/${vhost}/${account.id}`, {
-                            configure: '(^(\d){10}|amq.*)',
-                            write: `(${account.q}|msg|mail|cmd|amq.default|^(\d){10})`,
-                            read: `(${account.q}|msg|mail|cmd|^(\d){10}|amq.*)`,
+                            configure: '(cmd.*)',
+                            write: `(${account.q}|msg|mail|cmd|amq.default|^cmd.*`,
+                            read: `(${account.q}|msg|mail|cmd|^cmd.*|amq.*)`,
                         }).catch(e => print("UP", e))
                     })
                     .then(() => rabbit.put(`/queues/${vhost}/${account.q}`, { "autoDelete" : false, "durable" : true }).catch(e => print("Q", e)))
