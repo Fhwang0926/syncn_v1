@@ -12,7 +12,7 @@
 
  >[1. 사용법](https://github.com/Fhwang0926/syncn_v1/blob/master/README.MD#%EC%82%AC%EC%9A%A9%EB%B2%95)  
  >
- >[2. 설치]
+ >[2. 설치](https://github.com/Fhwang0926/syncn_v1#%EC%84%A4%EC%B9%98)
  >
 >[3. 장점](https://github.com/Fhwang0926/syncn_v1#%EC%9E%A5%EC%A0%90)
 >
