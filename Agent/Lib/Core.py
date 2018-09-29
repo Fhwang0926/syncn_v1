@@ -49,7 +49,7 @@ class mqSendThread(QThread):
         super().__init__()
         try:
             self.debug = debug
-            self.msg = ''
+            self.type = ""
             self.DAO = NoteSql.DAO()
             
         except Exception as e:
@@ -62,33 +62,31 @@ class mqSendThread(QThread):
     def run(self):
         try:
             ch = MQ.MQ()
-            msg = self.msg if self.msg else json.dumps(self.DAO.read())
-            opt = { "type" : "cmd" } if self.msg else { "type" : "msg" }
-            headers = { "host" : ch.config["id"] } if self.msg else ''
-            ch.publishExchange("msg", ch.queue, msg, opt=opt, head=headers)
-            if self.debug:
-                print("push : {0} {1} {2} bytes {3} {4} {5}".format(time.time(), "msg", ch.queue, len(msg), opt, headers), type(json.dumps(self.DAO.read())))
-            self.msg = ''    
-            
+            if self.type == "cmd":
+                ch.publishExchange("cmd", ch.queue, 'please exit!', opt={ "type" : "exit" })
+                self.type = ""
+                if self.debug: print("send exit signal to another Agent")
+            else:      
+                ch.publishExchange("msg", ch.queue, json.dumps(self.DAO.read()))
+                if self.debug: print("push : {0} {1}".format(time.time(), ch.queue))
 
-            # fix msg cnt
-            # continue msg get to until msg just 1 rest
-            rs = ch.get(ch.config["q"], isAck=False, ch=ch.createChannel())
-            print("result : {0}".format(rs))
-            if rs["cnt"] > 0: # 1
-                for x in range(0, rs["cnt"]):
-                    temp = ch.get(ch.config["q"], ch=ch.createChannel())
-                    if self.debug: print("msg cnt fix just 1, in queue cnt {0}".format(temp["cnt"]))
-                    
+                # fix msg cnt
+                # continue msg get to until msg just 1 rest
+                rs = ch.get(ch.config["q"], isAck=False, ch=ch.createChannel())
+                if rs["cnt"] > 0: # 1
+                    for x in range(0, rs["cnt"]):
+                        temp = ch.get(ch.config["q"], ch=ch.createChannel())
+                        if self.debug: print("msg cnt fix just 1, in queue cnt {0}".format(temp["cnt"]))
+                        
 
-            # queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-            # if queueInfo.status_code == 200:
-            #     rs = json.loads(queueInfo.text)["res"]
-            #     if rs["messages_ready"] > 0 or rs["messages"] > 1:
-            #         print("msg cnt fix just 1")
-            #         ch.worker(self.worker, ch.queue)
-            # else:
-            #     print("failed")
+                # queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
+                # if queueInfo.status_code == 200:
+                #     rs = json.loads(queueInfo.text)["res"]
+                #     if rs["messages_ready"] > 0 or rs["messages"] > 1:
+                #         print("msg cnt fix just 1")
+                #         ch.worker(self.worker, ch.queue)
+                # else:
+                #     print("failed")
             
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
@@ -199,34 +197,66 @@ class mqReciveThread(QThread):
             ch.close()
             print("worker, check this {0}".format(e))        
 
-class mailThread(QThread):
-    
+class cmdThread(QThread):
+    exitSignal = pyqtSignal(bool)
+
     def __init__(self, debug=False):
         super().__init__()
         self.isRun = False
         self.debug = debug
-        self.msg = ""
-        self.to = ""
 
     def __del__(self):
-        if self.debug: print(".... mailThread end thread.....")
+        if self.debug: print(".... cmdThread end thread.....")
+        self.wait()
+    
+    def run(self):
+        self.isRun = True
+        try:
+            mq = MQ.MQ(debug=True)
+            name = "cmd.{0}".format(str(int(time.time())))
+            mq.makeQueue(queue=name, auto_delete=True) #auto_delete=True
+            mq.makeBind(exchange="cmd", queue=name, routing_key=mq.queue)
+            mq.worker(self.listenCMD, name)
+            print(name)
+        except Exception as e:
+            print("cmdThread run, check this {0}".format(e))        
+
+    def listenCMD(self, ch, method, properties, body):
+        if properties.type == "exit" : 
+            self.exitSignal.emit(True)
+            print("get exit signal {0}".format(time.time()))
+        ch.basic_ack(delivery_tag = method.delivery_tag)
+
+class authTimer(QThread):
+    authTimerSignal = pyqtSignal(str)
+    authResetSignal = pyqtSignal(bool)
+
+    def __init__(self, debug=False):
+        super().__init__()
+        self.isRun = False
+        self.debug = debug
+
+    def __del__(self):
+        if self.debug: print(".... cmdThread end thread.....")
         self.wait()
     
     def run(self):
         try:
-            ch = MQ.MQ()
-            ch.publishQueue(queue="mail", msg=self.to, opt={ "type" : "mail" })
-            self.msg = ""
-            self.to = ""
-            print("request mail send")
+            self.run = True
+            for x in range(180, 0, -1):
+                print("{0}:{1}".format(int(x/60), int(x%60)))
+                self.authTimerSignal.emit("{0}:{1}".format(int(x/60), "{:02d}".format(int(x%60))))
+                time.sleep(1)
+            self.authTimerSignal.emit("0:00")
+            self.authResetSignal.emit(True)
+            if self.debug: print("send reset auth signal")
         except Exception as e:
-            print(e)
-        
+            print("authTimer run, check this {0}".format(e))
+
 if __name__ == "__main__":
     # here is test area in Qthread class
-    th_mail = mailThread()
-    th_mail.msg = ""
-    th_mail.to = ""
+    th_mail = authTimer()
     th_mail.start()
     while 1:
         time.sleep(1)
+        print("is main")

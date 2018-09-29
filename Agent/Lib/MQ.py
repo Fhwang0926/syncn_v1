@@ -49,8 +49,8 @@ class MQ():
             print("{0} build, check this {0}".format(__file__, e))
             return False
         
-    def makeQueue(self, name='', durable=True, opt={}):
-        self.channel.queue_declare(name, durable, opt)
+    def makeQueue(self, queue='', durable=True, auto_delete=False):
+        self.channel.queue_declare(queue=queue, auto_delete=auto_delete, durable=durable)
         pass
     
     def makeExchange(self, name='', ex_type='', opt={}):

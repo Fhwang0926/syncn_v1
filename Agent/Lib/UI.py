@@ -55,8 +55,6 @@ class UI(QMainWindow):
         self.btn_tray.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;\nfont-family:Corbel;\nfont-size:12px;\nfont-weight:900;")
         self.btn_tray.setObjectName("btn_tray")
         
-        
-
         self.btn_close = QtWidgets.QPushButton(self.w_main)
         self.btn_close.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_close.setFont(QtGui.QFont("Corbel", 12, 80))
@@ -64,7 +62,6 @@ class UI(QMainWindow):
         self.btn_close.setStyleSheet("background-color:rgb(255, 255, 127);\nborder-style:none;")
         self.btn_close.setObjectName("btn_close")
         
-
         self.btn_ok = QtWidgets.QPushButton(self.w_main)
         self.btn_ok.setEnabled(False)
         self.btn_ok.setMinimumSize(QtCore.QSize(280, 45))
@@ -97,7 +94,7 @@ class UI(QMainWindow):
         self.input_info.setFont(QtGui.QFont("Bahnschrift Condensed", 14))
         self.input_info.setStyleSheet("background-color:rgb(255, 255, 255);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.input_info.setClearButtonEnabled(True)
-        
+        self.input_info.setFocus(True);
         self.input_info.setObjectName("input_info")
         
 
@@ -153,10 +150,6 @@ class UI(QMainWindow):
         
 
     # function
-    def proExit(self):
-        self.close()
-        sys.exit(0)
-        
     def checkInput(self, to):
         chkBit = True if self.input_info.text() else False
         self.btn_ok.setEnabled(chkBit)

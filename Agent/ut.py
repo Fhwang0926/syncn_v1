@@ -1001,10 +1001,10 @@
 # print('Asynchronous:')
 # asynchronous()
 
-import asyncio
-import random
-from Core import *
-import time
+# import asyncio
+# import random
+# from Core import *
+# import time
 
 
 
@@ -1058,82 +1058,82 @@ import time
     
 
 # main()
-from PyQt5.QtCore import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from threading import Thread
-import time
-import sys
-import SyncN
-import time, os, datetime
-from PyQt5.QtCore import *
-try:
-    from Lib import Search
-except ImportError:
-    import Search
+# from PyQt5.QtCore import *
+# from PyQt5 import QtCore, QtGui, QtWidgets
+# from threading import Thread
+# import time
+# import sys
+# # import SyncN
+# import time, os, datetime
+# from PyQt5.QtCore import *
+# try:
+#     from Lib import Search
+# except ImportError:
+#     import Search
 
-class PrintA(QThread):
-    def __init__(self):
-        QThread.__init__(self)
-        self.running = True
-        self.isRun = False
-        self.debug = True
-        self.timestamp = 0;
-        self.cnt = 0
-        self.target = Search.PathSearcher().run()
+# class PrintA(QThread):
+#     def __init__(self):
+#         QThread.__init__(self)
+#         self.running = True
+#         self.isRun = False
+#         self.debug = True
+#         self.timestamp = 0;
+#         self.cnt = 0
+#         self.target = Search.PathSearcher().run()
 
-    def run(self):
-        while self.running:
-            if self.timestamp != os.path.getmtime(self.target):
-                # change detected
-                self.cnt = 0;
-                self.timestamp = os.path.getmtime(self.target)
-                if self.debug: print("user writting")
-            else:
-                pass
-                if self.cnt > 10:
-                    print("sync emit")
-                    self.sync.emit(True)
-                    self.cnt = 0;
-                else:
-                    if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
-                    self.cnt +=1
-            print('A')
-            time.sleep(1)
-    def stop(self):
-        self.running = False
+#     def run(self):
+#         while self.running:
+#             if self.timestamp != os.path.getmtime(self.target):
+#                 # change detected
+#                 self.cnt = 0;
+#                 self.timestamp = os.path.getmtime(self.target)
+#                 if self.debug: print("user writting")
+#             else:
+#                 pass
+#                 if self.cnt > 10:
+#                     print("sync emit")
+#                     self.sync.emit(True)
+#                     self.cnt = 0;
+#                 else:
+#                     if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+#                     self.cnt +=1
+#             print('A')
+#             time.sleep(1)
+#     def stop(self):
+#         self.running = False
 
-class printb(QThread):
-    sync = pyqtSignal(bool)
+# class printb(QThread):
+#     sync = pyqtSignal(bool)
 
-    def __init__(self):
-        QThread.__init__(self)
-        self.running = True
-        self.isRun = False
-        self.debug = True
-        self.timestamp = 0;
-        self.cnt = 0
-        self.target = Search.PathSearcher().run()
+#     def __init__(self):
+#         QThread.__init__(self)
+#         self.running = True
+#         self.isRun = False
+#         self.debug = True
+#         self.timestamp = 0;
+#         self.cnt = 0
+#         self.target = Search.PathSearcher().run()
 
-    def run(self):
-        while self.running:
-            if self.timestamp != os.path.getmtime(self.target):
-                # change detected
-                self.cnt = 0;
-                self.timestamp = os.path.getmtime(self.target)
-                if self.debug: print("user writting")
-            else:
-                pass
-                if self.cnt > 10:
-                    print("sync emit")
-                    self.sync.emit(True)
-                    self.cnt = 0;
-                else:
-                    if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
-                    self.cnt +=1
-            print('A')
-            time.sleep(1)
-    def stop(self):
-        self.running = False
+#     def run(self):
+#         while self.running:
+#             if self.timestamp != os.path.getmtime(self.target):
+#                 # change detected
+#                 self.cnt = 0;
+#                 self.timestamp = os.path.getmtime(self.target)
+#                 if self.debug: print("user writting")
+#             else:
+#                 pass
+#                 if self.cnt > 10:
+#                     print("sync emit")
+#                     self.sync.emit(True)
+#                     self.cnt = 0;
+#                 else:
+#                     if self.debug: print("Wait for Sync : ", 10 - self.cnt, " sec")
+#                     self.cnt +=1
+#             print('A')
+#             time.sleep(1)
+#     def stop(self):
+#         self.running = False
 
     # def __init__(self, sec=0, debug=False):
     #     QThread.__init__(self)
@@ -1189,21 +1189,24 @@ class printb(QThread):
     #             time.sleep(2)
     #     except Exception as e:
     #         print(e)
+# -------------------------------------------------------------
+# a = PrintA()
+# b = printb()
 
-a = PrintA()
-b = printb()
+# a.start()
+# b.start()
 
-a.start()
-b.start()
+# app = QtWidgets.QApplication(sys.argv)
+# application = SyncN.UI()
+# application.show()
+# sys.exit(app.exec_())
 
-app = QtWidgets.QApplication(sys.argv)
-application = SyncN.UI()
-application.show()
-sys.exit(app.exec_())
+# while True:
+#     print("non blokcing")
+#     time.sleep(1)
 
-while True:
-    print("non blokcing")
-    time.sleep(1)
+
+# -------------------------------------------------------------
 # time.sleep(10)
 # a.stop()
 # time.sleep(10)
@@ -1250,3 +1253,43 @@ while True:
  
 #     process_one.join()
 #     process_two.join()
+
+
+import pika
+from Lib import MQ
+# def test(method):
+#     print("asdasdas", method)
+
+# channel = MQ.MQ().channel
+# channel.queue_declare(test, queue='2222', passive=False, durable=False,
+#                       exclusive=False, auto_delete=False, nowait=False,
+#                       arguments=None)
+# print(channel.makeQueue("123"))
+
+channel = MQ.MQ().channel
+
+channel.queue_declare(queue='ttt', durable=True, auto_delete=True)
+print(' [*] Waiting for messages. To exit press CTRL+C')
+
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+    time.sleep(body.count(b'.'))
+    print(" [x] Done")
+    ch.basic_ack(delivery_tag = method.delivery_tag)
+
+# channel.basic_qos(prefetch_count=1)
+# channel.basic_consume(callback,
+#                       queue='ttt')
+
+# channel.start_consuming()
+
+import time
+
+time.sleep(10)
+# method_frame, header_frame, body = channel.basic_get('test')
+# if method_frame:
+#     print(method_frame.message_count)
+#     print(method_frame, header_frame, str(body))
+#     # channel.basic_ack(method_frame.delivery_tag)
+# else:
+#     print('No message returned')

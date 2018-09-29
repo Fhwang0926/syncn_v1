@@ -24,8 +24,12 @@ class SyncN(object):
         self.th_mqSender = Core.mqSendThread(debug=True)
         # init MQ
         self.th_mqReciver = Core.mqReciveThread(debug=True)
+        # init CMD
+        self.th_cmd = Core.cmdThread(debug=True)
         # init mail
         # self.th_mail = Core.mailThread(debug=True)
+        # init authTimer
+        self.th_authTimer = Core.authTimer(debug=True)
         
         # init func
         self.connectInterface()
@@ -35,9 +39,9 @@ class SyncN(object):
         #define UI
         self.UI.tray.accountAction.triggered.connect(self.UI.windowTrigger)
         self.UI.tray.activated.connect(self.UI.openWindow)
-        self.UI.tray.exitAction.triggered.connect(self.UI.proExit)
+        self.UI.tray.exitAction.triggered.connect(self.proExit)
         self.UI.input_info.textChanged.connect(self.UI.checkInput)
-        self.UI.btn_close.clicked.connect(self.UI.proExit)
+        self.UI.btn_close.clicked.connect(self.proExit)
         self.UI.btn_tray.clicked.connect(self.UI.windowTrigger)
 
         #define here
@@ -48,10 +52,28 @@ class SyncN(object):
 
     def setThreadChannel(self):
         self.th_signal.syncSignal.connect(self.th_mqSender.start)
-        self.th_mqReciver.exitSignal.connect(self.UI.proExit)
+        self.th_mqReciver.exitSignal.connect(self.proExit)
         self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
         self.th_mqReciver.execSignal.connect(self.openNote)
         self.th_mqReciver.killSignal.connect(self.closeNote)
+        self.th_cmd.exitSignal.connect(self.proExit)
+        self.th_authTimer.authResetSignal.connect(self.authReset)
+        self.th_authTimer.authTimerSignal.connect(lambda strTime:self.UI.l_info.setText("We Sended Auth mail\n{0}".format(strTime)))
+    
+    def authReset(self):
+        self.OTP.buildClear()
+        self.UI.l_info.setText("Typing Your E-mail")
+        self.UI.l_info.setStyleSheet("color:black;\n")
+        self.UI.btn_ok.setText("OK")
+
+    
+    def proExit(self, code=0):
+        if self.th_signal.isRunning(): self.th_cmd.terminate()
+        if self.th_cmd.isRunning(): self.th_cmd.terminate()
+        if self.th_mqSender.isRunning(): self.th_cmd.terminate()
+        if self.th_mqReciver.isRunning(): self.th_cmd.terminate()
+        self.UI.close()
+        sys.exit(code)
 
     def run(self):
         self.closeNote()
@@ -64,15 +86,14 @@ class SyncN(object):
         self.UI.show()
         if self.UI.auth:
             self.UI.windowTrigger()
-        
-        sys.exit(self.app.exec_())
+        self.proExit(self.app.exec_())
     
     def proAuth(self):
         if self.UI.auth: return self.UI.windowTrigger()
         if not self.OTP.isCreateOTP:
             # need create OTP
             if not self.OTP.build(self.UI.input_info.text(), "syncn.club:9759"):
-                self.UI.l_info.setText("Check Email Address")
+                self.UI.l_info.setText("Check Email Address\n%")
                 self.UI.l_info.setStyleSheet("color:red;\n")
                 return
             else:
@@ -80,8 +101,9 @@ class SyncN(object):
                     self.UI.l_info.setStyleSheet("color:green;\n")
                     self.UI.l_info.setText("We Sended Auth mail")
                     self.UI.btn_ok.setText("Auth OK ?")
+                    self.th_authTimer.start()
                 else:
-                    self.UI.l_info.setStyleSheet("color:red;\n")
+                    self.UI.l_info.setStyleSheet("color:red;")
                     self.UI.l_info.setText("Failed send Auth email")
         else:
             # need auth OTP
@@ -93,7 +115,7 @@ class SyncN(object):
                 self.th_signal.start()
             else:
                 self.UI.l_info.setStyleSheet("color:red;\n")
-                self.UI.l_info.setText("Auth Failed, Check Email")
+                self.UI.l_info.setText("Auth Failed, see email")
     
     def openNote(self):
         os.system("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App")
@@ -112,6 +134,9 @@ class SyncN(object):
     # excute others agent disconnect all then only connect me
     def disconnectCMD(self):
         try:
+            self.th_mqSender.type = "cmd"
+            self.th_mqSender.start()
+            self.th_cmd.start()
             # config = Setting.syncn().config
             # consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
             # if consumerInfo.status_code == 200:
