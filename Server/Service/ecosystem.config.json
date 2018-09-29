@@ -1,8 +1,8 @@
 {
     "apps": [
         {
-            "name": "Service plugin",
-            "script": "svc.plugin.js",
+            "name": "Service auth",
+            "script": "svc.auth.js",
             "description": "auth, mq info, etc...",
             "watch": false,
             "ignore_watch": [
