@@ -1,5 +1,6 @@
 
 
+
 # SyncN!
 **Sticy Note**를 사용하면서 icloud의 동기화가 부러웠던 적이 있으세요?? **SyncN**을 써보세요!!
 
@@ -75,7 +76,8 @@ $ sudo apt-get -f install
 
 # Download latest version of rabbitmq-server.deb
 $ wget https://github.com/rabbitmq/rabbitmq-$ server/releases/download/rabbitmq_v3_6_10/rabbitmq-server_3.6.10-1_all.deb
-$ dpkg -i rabbitmq-server_3.6.10-1_all.deb
+$ sudo dpkg -i rabbitmq-server_3.6.10-1_all.deb
+$ sudo apt install rabbitmq-server
 ```
 
 2. Rabbit MQ 설정
