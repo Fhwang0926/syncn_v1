@@ -116,20 +116,21 @@ class mqReciveThread(QThread):
 
     def run(self):
         self.isRun = True
-        # try:
-        ch = MQ.MQ()
-        queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-        if queueInfo.status_code == 200:
-            print("get info", queueInfo.text)
-            rs = json.loads(queueInfo.text)["res"]
-            if rs["messages_ready"] > 0 or rs["messages"] > 0:
-                ch.worker(self.worker, ch.queue)
+        try:
+            ch = MQ.MQ()
+            queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
+            if queueInfo.status_code == 200:
+                print("get info", queueInfo.text)
+                rs = json.loads(queueInfo.text)["res"]
+                if rs["messages_ready"] > 0 or rs["messages"] > 0:
+                    ch.worker(self.worker, ch.queue)
+                else:
+                    print("No msg So push this msg")
+                    self.syncSignal.emit(True)
             else:
-                print("No msg So push this msg")
-        else:
-            print("failed")
-        # except Exception as e:
-        #     print("mqReciveThread run, check this {0}".format(e))
+                print("failed")
+        except Exception as e:
+            print("mqReciveThread run, check this {0}".format(e))
             
 
     def worker(self, ch, method, properties, msg):

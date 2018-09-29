@@ -100,7 +100,6 @@ let get = async (req, res) => {
             } else {
                 res.writeHead(404);
                 res.write(auth_link.replace(/%script%/, `alert("Expired this URL, Restart SyncN program and again auth"); window.close();`));
-                // res.write(JSON.stringify({ e: "Expired this URL" }));
             }
         }
         // using account create

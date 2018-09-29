@@ -45,7 +45,7 @@ let mail = {
         const mailOptions = {
             from : 'syncn2018 < syncn2018@gmail.com >',
             to,
-            subject : 'SyncN Notify auth URL(this code remove to after 3 min)', //expire get from nconf
+            subject : 'SyncN Notify auth URL(this url remove after 3 min)',
             html: common.replace(/%type%/g, "SyncN Auth Notify").replace(/%title%/g, "Need to Auth for your sync").replace(/%code1%/g, tag).replace(/%code2%/g, `then Click "Auth OK ?" on Program`),
             //text
         };

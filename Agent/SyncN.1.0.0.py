@@ -63,7 +63,6 @@ class SyncN(object):
             self.th_signal.start()
         self.UI.show()
         if self.UI.auth:
-            print("dlksahvlkahdjkfvaskjldhfjkashdjklfhsakjhdfhaksjld")
             self.UI.windowTrigger()
         
         sys.exit(self.app.exec_())
