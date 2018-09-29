@@ -12,9 +12,9 @@
 
  >[1. 사용법](https://github.com/Fhwang0926/syncn_v1/blob/master/README.MD#%EC%82%AC%EC%9A%A9%EB%B2%95)  
  >
->[2. 장점]  
+>[2. 장점](https://github.com/Fhwang0926/syncn_v1#%EC%9E%A5%EC%A0%90)
 >
->[3. 발전가능성] 
+>[3. 발전가능성](https://github.com/Fhwang0926/syncn_v1#%EB%B0%9C%EC%A0%84-%EA%B0%80%EB%8A%A5%EC%84%B1)
 >
 >[4. 개발 환경]( https://github.com/Fhwang0926/syncn_v1#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD)
 >
