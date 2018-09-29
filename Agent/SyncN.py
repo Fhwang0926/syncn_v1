@@ -65,6 +65,7 @@ class SyncN(object):
         self.UI.l_info.setText("Typing Your E-mail")
         self.UI.l_info.setStyleSheet("color:black;\n")
         self.UI.btn_ok.setText("OK")
+        self.OTP.isCreateOTP = False
 
     
     def proExit(self, code=0):
