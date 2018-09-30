@@ -21,7 +21,7 @@
 >
 >[5. 개발 환경]( https://github.com/Fhwang0926/syncn_v1#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD)
 >
- >[6 데모]  
+ >[6 데모](https://github.com/Fhwang0926/syncn_v1#%EB%8D%B0%EB%AA%A8)
  
 
 
