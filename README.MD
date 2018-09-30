@@ -4,7 +4,7 @@
 # SyncN!
 **Sticy Note**를 사용하면서 icloud의 동기화가 부러웠던 적이 있으세요?? **SyncN**을 써보세요!!
 
- * 언제 어디서나 기록한 메모를 볼 수 있습니다. 매번 동기화를 하지 않아도 됩니다!!
+ * 언제 어디서나 기록한 메모를 볼 수 있습니다.
  * 기존에 사용하던 이메일로 로그인 하세요. 따로 회원가입이 필요 없습니다.
  * 더 이상 번거로운 프로그램을 사용하지 마세요. 간편한 “SyncN”으로 Sticky Note를 100% 활용해보세요
 
@@ -68,6 +68,8 @@ url입력칸 & exe파일 첨부 칸
 
 ## 설치
 
+Server Side
+
 1. Rabbit MQ 설치
 ```bash
 # we need to install erlang for dependencies
@@ -99,6 +101,10 @@ $ sudo rabbitmqctl set_permissions -p / [newuser] ".*" ".*" ".*"
 http://localhost:15672
 ```
 <img src="https://github.com/Fhwang0926/syncn_v1/blob/master/Image/RabbitMq%20Enter.gif" width="60%"></img> 
+
+만약 설치에 어려움이 있다면 운영체제에 맞게 공식 웹사이트 설치 가이드를 따라하시면 좋을 것 같습니다
+http://www.rabbitmq.com/#getstarted
+
 
 ## 장점
 >* DB가 필요없습니다!
