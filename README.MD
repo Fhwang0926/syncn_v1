@@ -136,4 +136,8 @@ http://www.rabbitmq.com/#getstarted
 >* [PyQt5 Designer](https://www.jetbrains.com/pycharm/download/#section=windows) 
 
 ## 데모
- [시연 동영상](https://www.youtube.com/watch?v=6jfhkHdDLSg&feature=youtu.be)
+*[Demo Link](https://www.youtube.com/watch?v=6jfhkHdDLSg&feature=youtu.be)
+
+
+[![demo](https://i.ytimg.com/vi/6jfhkHdDLSg/maxresdefault.jpg)](https://www.youtube.com/watch?v=6jfhkHdDLSg&feature=youtu.be)
+
