@@ -1267,15 +1267,30 @@ from Lib import MQ
 # print(channel.makeQueue("123"))
 
 channel = MQ.MQ().channel
+#!/usr/bin/python3
+import sys, os
+frozen = 'not'
+if getattr(sys, 'frozen', False):
+        # we are running in a bundle
+        frozen = 'ever so'
+        bundle_dir = sys._MEIPASS
+else:
+        # we are running in a normal Python environment
+        bundle_dir = os.path.dirname(os.path.abspath(__file__))
+print(getattr
+print( 'we are',frozen,'frozen')
+print( 'bundle dir is', bundle_dir )
+print( 'sys.argv[0] is', sys.argv[0] )
+print( 'sys.executable is', sys.executable )
+print( 'os.getcwd is', os.getcwd() )
+# channel.queue_declare(queue='ttt', durable=True, auto_delete=True)
+# print(' [*] Waiting for messages. To exit press CTRL+C')
 
-channel.queue_declare(queue='ttt', durable=True, auto_delete=True)
-print(' [*] Waiting for messages. To exit press CTRL+C')
-
-def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
-    time.sleep(body.count(b'.'))
-    print(" [x] Done")
-    ch.basic_ack(delivery_tag = method.delivery_tag)
+# def callback(ch, method, properties, body):
+#     print(" [x] Received %r" % body)
+#     time.sleep(body.count(b'.'))
+#     print(" [x] Done")
+#     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 # channel.basic_qos(prefetch_count=1)
 # channel.basic_consume(callback,
@@ -1283,9 +1298,9 @@ def callback(ch, method, properties, body):
 
 # channel.start_consuming()
 
-import time
+# import time
 
-time.sleep(10)
+# time.sleep(10)
 # method_frame, header_frame, body = channel.basic_get('test')
 # if method_frame:
 #     print(method_frame.message_count)

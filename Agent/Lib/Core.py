@@ -21,7 +21,8 @@ class signalThread(QThread):
         self.debug = debug
         self.target = Search.PathSearcher().run()
         self.signal = Signal.signal(debug=self.debug)
-        self.signalRunner = self.signal.connect()
+        # self.signalRunner = self.signal.connect()
+        
 
     def __del__(self):
         if self.debug: print(".... signalThread end.....")
@@ -29,8 +30,11 @@ class signalThread(QThread):
     
     def stop(self):
         self.isRun = False
+        self.signal.disconnect()
+        
 
     def run(self):
+        self.signalRunner = self.signal.connect()
         try:
             self.isRun = next(self.signalRunner)
             while self.isRun:
@@ -40,7 +44,6 @@ class signalThread(QThread):
                 time.sleep(1)
         except Exception as e:
             self.stop()
-            self.join()
             print("signalThread, check this {0}".format(e))
 
 class mqSendThread(QThread):
@@ -60,7 +63,7 @@ class mqSendThread(QThread):
         self.wait()
         
     def run(self):
-        try:
+        try: 
             ch = MQ.MQ()
             if self.type == "cmd":
                 ch.publishExchange("cmd", ch.queue, 'please exit!', opt={ "type" : "exit" })
@@ -77,16 +80,6 @@ class mqSendThread(QThread):
                     for x in range(0, rs["cnt"]):
                         temp = ch.get(ch.config["q"], ch=ch.createChannel())
                         if self.debug: print("msg cnt fix just 1, in queue cnt {0}".format(temp["cnt"]))
-                        
-
-                # queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-                # if queueInfo.status_code == 200:
-                #     rs = json.loads(queueInfo.text)["res"]
-                #     if rs["messages_ready"] > 0 or rs["messages"] > 1:
-                #         print("msg cnt fix just 1")
-                #         ch.worker(self.worker, ch.queue)
-                # else:
-                #     print("failed")
             
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
@@ -123,46 +116,32 @@ class mqReciveThread(QThread):
 
     def run(self):
         self.isRun = True
-        # try:
-        ch = MQ.MQ(debug=True)
+        try:
+            ch = MQ.MQ(debug=True)
 
-        # if no msg, i push now msg!!
+            # if no msg, push now msg!!
+            rs = ch.get(ch.config["q"], isAck=False, ch=ch.createChannel())
 
-        rs = ch.get(ch.config["q"], isAck=False, ch=ch.createChannel())
-
-        if rs["cnt"] >= 0: # 1
-            self.killSignal.emit(True)
-            
-            DAO = NoteSql.DAO()
-            if self.once:
-                DAO.sync(json.loads(rs["msg"])["res"])["res"]
-                self.once = False
-                print("sycn when start app")
+            if rs["cnt"] >= 0: # 1
+                self.killSignal.emit(True)
+                
+                DAO = NoteSql.DAO()
+                if self.once:
+                    DAO.sync(json.loads(rs["msg"])["res"])["res"]
+                    self.once = False
+                    print("sycn when start app")
+                else:
+                    temp = ch.get(ch.config["q"])
+                    DAO.sync(json.loads(temp["msg"])["res"])["res"]
+                    print("sycn when change")
+                self.execSignal.emit(True)
+                print("[+] OK - sync send mail")
             else:
-                temp = ch.get(ch.config["q"])
-                DAO.sync(json.loads(temp["msg"])["res"])["res"]
-                print("sycn when change")
-            self.execSignal.emit(True)
-            print("[+] OK - sync send mail")
-        else:
-            print("No msg So push this msg")
-            self.syncSignal.emit(True)
+                print("No msg So push this msg")
+                self.syncSignal.emit(True)
+        except Exception as e:
+            print("mqReciveThread run, check this {0}".format(e))        
 
-
-            # queueInfo = requests.get(url="{0}/info/queue/{1}".format(ch.config["service"], ch.config["q"]))
-            # if queueInfo.status_code == 200:
-            #     print("get info", queueInfo.text)
-            #     rs = json.loads(queueInfo.text)["res"]
-            #     if rs["messages_ready"] > 0 or rs["messages"] > 0:
-            #         ch.worker(self.worker, ch.queue)
-            #     else:
-            #         print("No msg So push this msg")
-            #         self.syncSignal.emit(True)
-            # else:
-            #     print("failed")
-        # except Exception as e:
-        #     print("mqReciveThread run, check this {0}".format(e))
-            
 
     def worker(self, ch, method, properties, msg):
         try:
@@ -195,7 +174,7 @@ class mqReciveThread(QThread):
         except Exception as e:
             ch.cancel()
             ch.close()
-            print("worker, check this {0}".format(e))        
+            print("worker, check this {0}".format(e))
 
 class cmdThread(QThread):
     exitSignal = pyqtSignal(bool)
@@ -230,6 +209,7 @@ class cmdThread(QThread):
 class authTimer(QThread):
     authTimerSignal = pyqtSignal(str)
     authResetSignal = pyqtSignal(bool)
+    authOKSignal = pyqtSignal(bool)
 
     def __init__(self, debug=False):
         super().__init__()
@@ -240,15 +220,20 @@ class authTimer(QThread):
         if self.debug: print(".... cmdThread end thread.....")
         self.wait()
     
+    def stop(self):
+        self.isRun = False
+        
     def run(self):
         try:
-            self.run = True
+            self.isRun = True
             for x in range(180, 0, -1):
-                print("{0}:{1}".format(int(x/60), int(x%60)))
+                if not self.isRun: print("stopped!!!!"); return
                 self.authTimerSignal.emit("{0}:{1}".format(int(x/60), "{:02d}".format(int(x%60))))
                 time.sleep(1)
-            self.authTimerSignal.emit("0:00")
-            self.authResetSignal.emit(True)
+                
+            if self.isRun: self.authTimerSignal.emit("0:00")
+            if self.isRun: self.authResetSignal.emit(True)
+            if not self.isRun: self.authOKSignal.emit(True)
             if self.debug: print("send reset auth signal")
         except Exception as e:
             print("authTimer run, check this {0}".format(e))

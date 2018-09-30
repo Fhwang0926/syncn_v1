@@ -203,16 +203,17 @@ class UI(QMainWindow):
             print("{0} openWindow, check this {0}".format(__file__, e))
             pass
         
-    
-    # QMessageBox.about(None, "Notify", "try check email address detail", )
-    # self.msg("Notify", "Try Check Email Address Correctly")
-    # def msg(self, title, body):
-    #     msg = QMessageBox()
-    #     msg.setIcon(QtGui.QIcon(self.syncn["trayicon"])) 
-    #     msg.setWindowTitle(title)
-    #     msg.setText(body)
-    #     msg.setStandardButtons(QMessageBox.Ok)
-    #     msg.exec_()
+    # def msg(self, title="Notify", msg="test"):
+    #     QMessageBox.about(QMessageBox.Information, title, msg)
+    #     # msg = QMessageBox()
+        
+    #     # msg.setWindowTitle(title)
+    #     # msg.setText(msg)
+    #     # msg.setStandardButtons(QMessageBox.Ok)
+    #     # msg.exec_()
+    #     msgBox = QMessageBox(QMessageBox.Information, ' ', 'Completed')
+    #     msgBox.setWindowIcon(QtGui.QIcon("..//"+self.syncn["trayicon"]))
+    #     msgBox.exec_()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -259,6 +260,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     application = UI()
     application.show()
+    application.msg()
     sys.exit(app.exec_())
     
     

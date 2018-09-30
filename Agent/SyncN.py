@@ -1,4 +1,4 @@
-from Lib import Core, UI, Setting, Auth, NoteSql
+from Lib import Core, UI, Setting, Auth, NoteSql, Search
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import time
@@ -30,6 +30,11 @@ class SyncN(object):
         # self.th_mail = Core.mailThread(debug=True)
         # init authTimer
         self.th_authTimer = Core.authTimer(debug=True)
+        # init target
+        target = Search.PathSearcher()
+        target.run()
+        target = target.findPath.split("\\")
+        self.target = target[len(target)-2].split("_")[1]
         
         # init func
         self.connectInterface()
@@ -40,6 +45,7 @@ class SyncN(object):
         self.UI.tray.accountAction.triggered.connect(self.UI.windowTrigger)
         self.UI.tray.activated.connect(self.UI.openWindow)
         self.UI.tray.exitAction.triggered.connect(self.proExit)
+        self.UI.tray.syncAction.triggered.connect(self.sycnTrigger)
         self.UI.input_info.textChanged.connect(self.UI.checkInput)
         self.UI.btn_close.clicked.connect(self.proExit)
         self.UI.btn_tray.clicked.connect(self.UI.windowTrigger)
@@ -59,6 +65,7 @@ class SyncN(object):
         self.th_cmd.exitSignal.connect(self.proExit)
         self.th_authTimer.authResetSignal.connect(self.authReset)
         self.th_authTimer.authTimerSignal.connect(lambda strTime:self.UI.l_info.setText("We Sended Auth mail\n{0}".format(strTime)))
+        self.th_authTimer.authOKSignal.connect(self.UI.authStyle)
     
     def authReset(self):
         self.OTP.buildClear()
@@ -67,14 +74,26 @@ class SyncN(object):
         self.UI.btn_ok.setText("OK")
         self.OTP.isCreateOTP = False
 
+    def sycnTrigger(self):
+        if self.th_signal.isRun:
+            self.th_signal.stop()
+            print("sycn stop")
+        else:
+            self.th_signal.start()
+            print("sycn start")
     
     def proExit(self, code=0):
-        if self.th_signal.isRunning(): self.th_cmd.terminate()
-        if self.th_cmd.isRunning(): self.th_cmd.terminate()
-        if self.th_mqSender.isRunning(): self.th_cmd.terminate()
-        if self.th_mqReciver.isRunning(): self.th_cmd.terminate()
-        self.UI.close()
-        sys.exit(code)
+        if code == 2:
+            self.windowTrigger()
+            self.UI.l_info.setText("Sync Stop!!\nAnother PC login")
+            self.sycnTrigger()
+        else:
+            if self.th_signal.isRunning(): self.th_cmd.terminate()
+            if self.th_cmd.isRunning(): self.th_cmd.terminate()
+            if self.th_mqSender.isRunning(): self.th_cmd.terminate()
+            if self.th_mqReciver.isRunning(): self.th_cmd.terminate()
+            self.UI.close()
+            sys.exit(code)
 
     def run(self):
         self.closeNote()
@@ -108,7 +127,9 @@ class SyncN(object):
                     self.UI.l_info.setText("Failed send Auth email")
         else:
             # need auth OTP
-            if self.OTP.authOTP():
+            if self.OTP.authOTP(self.UI.input_info.text()):
+                self.th_authTimer.stop()
+                self.th_authTimer.wait()
                 self.UI.authStyle()
                 self.disconnectCMD()
                 self.th_mqReciver.once = True
@@ -119,10 +140,11 @@ class SyncN(object):
                 self.UI.l_info.setText("Auth Failed, see email")
     
     def openNote(self):
-        os.system("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App")
+        subprocess.call("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_{0}!App".format(self.target), creationflags=0x08000000)
     
     def closeNote(self):
-        os.system('taskkill /f /im Microsoft.Notes.exe')
+        subprocess.call('taskkill /f /im Microsoft.Notes.exe', creationflags=0x08000000)
+        subprocess.call('taskkill /f /im Microsoft.StickyNotes.exe', creationflags=0x08000000)
 
     def proLogout(self):
         try:
@@ -138,22 +160,6 @@ class SyncN(object):
             self.th_mqSender.type = "cmd"
             self.th_mqSender.start()
             self.th_cmd.start()
-            # config = Setting.syncn().config
-            # consumerInfo = requests.get(url="{0}/info/queue/{1}".format(config["service"], config["q"]))
-            # if consumerInfo.status_code == 200:
-            #     print("check info", json.loads(consumerInfo.text)["res"])
-            #     rs = json.loads(consumerInfo.text)["res"]["consumer"]
-            #     if not rs: print("Non running agent")
-            #     for x in range(0, rs):
-            #         print("send exit cmd", x)
-            #         self.th_mqSender.msg = "quit" # all client remove
-            #         self.th_mqSender.start()
-            #         self.th_mqSender.wait() # all client remove end
-            #         time.sleep(1)
-            # else:
-            #     print("check consumers failed")
-            #     if self.debug: print(json.loads(consumerInfo.text)['e'])
-            print(".")
         except Exception as e:
             print("{0} disconnectCMD, check this {1}".format(__file__, e))
             pass
