@@ -6,12 +6,15 @@ import os
 import requests
 import json
 import subprocess
-
+import os, sys
+from win32com.client import GetObject as scanProcess
+ 
 class SyncN(object):
     def __init__(self):
         super().__init__()
         # init
         self.debug = True
+        self.checkProcessMe()
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
@@ -63,7 +66,7 @@ class SyncN(object):
         self.th_mqReciver.syncSignal.connect(self.th_mqSender.start)
         self.th_mqReciver.execSignal.connect(self.openNote)
         self.th_mqReciver.killSignal.connect(self.closeNote)
-        self.th_cmd.exitSignal.connect(self.proExit)
+        self.th_cmd.exitSignal.connect(lambda n:self.proExit(code=n))
         self.th_authTimer.authResetSignal.connect(self.authReset)
         self.th_authTimer.authTimerSignal.connect(lambda strTime:self.UI.l_info.setText("We Sended Auth mail\n{0}".format(strTime)))
         self.th_authTimer.authOKSignal.connect(self.UI.authStyle)
@@ -85,16 +88,16 @@ class SyncN(object):
     
     def proExit(self, code=0):
         if code == 2:
-            self.windowTrigger()
-            self.UI.l_info.setText("Sync Stop!!\nAnother PC login")
             self.sycnTrigger()
+            self.UI.windowTrigger()
+            self.UI.msg(msg="Sync Stop!!\n\nAnother PC login")
         else:
             if self.th_signal.isRunning(): self.th_cmd.terminate()
             if self.th_cmd.isRunning(): self.th_cmd.terminate()
             if self.th_mqSender.isRunning(): self.th_cmd.terminate()
             if self.th_mqReciver.isRunning(): self.th_cmd.terminate()
-            self.UI.close()
-            sys.exit(code)
+        self.UI.close()
+        sys.exit(code)
 
     def run(self):
         self.closeNote()
@@ -164,7 +167,21 @@ class SyncN(object):
         except Exception as e:
             print("{0} disconnectCMD, check this {1}".format(__file__, e))
             pass
+    
+    def checkProcessMe(self):
+        psAll = scanProcess('winmgmts:').InstancesOf('Win32_Process')
+        me = os.path.basename(__file__)
+        
+        for ps in psAll:
+            if self.debug: print(me, ps.Properties_('Name').Value)
+            if me == ps.Properties_('Name').Value:
+                if self.debug: print("Same Process is running, me is exit!")
+                sys.exit(0)
+        else:
+            print("No process, me is run!")
+        
 
 if __name__ == '__main__':
     main = SyncN()
     main.run()
+    # main.checkProcessMe()

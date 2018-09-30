@@ -177,7 +177,7 @@ class mqReciveThread(QThread):
             print("worker, check this {0}".format(e))
 
 class cmdThread(QThread):
-    exitSignal = pyqtSignal(bool)
+    exitSignal = pyqtSignal(int)
 
     def __init__(self, debug=False):
         super().__init__()
@@ -202,7 +202,7 @@ class cmdThread(QThread):
 
     def listenCMD(self, ch, method, properties, body):
         if properties.type == "exit" : 
-            self.exitSignal.emit(True)
+            self.exitSignal.emit(2)
             print("get exit signal {0}".format(time.time()))
         ch.basic_ack(delivery_tag = method.delivery_tag)
 

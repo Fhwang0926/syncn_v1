@@ -143,29 +143,6 @@ let get = async (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.write(JSON.stringify({ res: notice }));
         }
-        // will remove this code
-        // if (code[1] == 'info') { // return info
-        //     const vhost = config.get('mq:vhost');
-        //     let queue = code[3];
-            
-        //     if (code[2] == 'queue') {
-        //         await rabbit.get(`/queues/${vhost}/${queue}`).then(async rs => {
-        //             res.writeHead(200, { 'Content-Type': 'application/json' });
-        //             res.write(JSON.stringify({ res: _.assign({ consumer: rs.data.consumer_details.length }, _.pick(await rs.data, ["messages", "messages_ready", "messages_unacked"])) }));
-        //         }).catch((e) => { console.log(e, `/queues/${vhost}/${queue}`); throw new Error('MQ error'); })
-        //     } else if (code[2] == 'consumers') {
-        //         let queue = code[3];
-        //         await rabbit.get(`/consumers/${vhost}/`).then(async rs => {
-        //             let cnt = 0;
-        //             _.forEach(rs.data, r => { if (r.queue.name == queue) { cnt+=1 }})
-        //             res.writeHead(200, { 'Content-Type': 'application/json' });
-        //             res.write(JSON.stringify({ res: cnt }));
-        //         }).catch((e) => { console.log(e, `/queues/${vhost}/${queue}`); throw new Error('MQ error'); })
-        //     } else{
-        //         res.writeHead(200, { 'Content-Type': 'application/json' });
-        //         res.write(JSON.stringify({ e : "failed" }));
-        //     }
-        // }
         res.end();  
     } catch (e) {
         console.log(e)

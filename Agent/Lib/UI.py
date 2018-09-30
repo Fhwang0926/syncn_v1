@@ -17,12 +17,12 @@ class UI(QMainWindow):
         self.debug = True
         self.auth = False
         self.syncn = {
-                "icon" : "UI/images/sync.ico",
-                "trayicon" : "UI/images/sync.png",
+                "icon" : "images/sync.ico",
+                "trayicon" : "images/sync.png",
                 "config" : "setting.syncn"
         }
         self.setObjectName("MainWindow")
-
+        
         # icon
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(self.syncn["icon"]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -150,6 +150,9 @@ class UI(QMainWindow):
         
 
     # function
+    def msg(self, title="Notify", msg=""):
+        QMessageBox.about(None, title, msg)
+
     def checkInput(self, to):
         chkBit = True if self.input_info.text() else False
         self.btn_ok.setEnabled(chkBit)
@@ -202,18 +205,6 @@ class UI(QMainWindow):
         except Exception as e:
             print("{0} openWindow, check this {0}".format(__file__, e))
             pass
-        
-    # def msg(self, title="Notify", msg="test"):
-    #     QMessageBox.about(QMessageBox.Information, title, msg)
-    #     # msg = QMessageBox()
-        
-    #     # msg.setWindowTitle(title)
-    #     # msg.setText(msg)
-    #     # msg.setStandardButtons(QMessageBox.Ok)
-    #     # msg.exec_()
-    #     msgBox = QMessageBox(QMessageBox.Information, ' ', 'Completed')
-    #     msgBox.setWindowIcon(QtGui.QIcon("..//"+self.syncn["trayicon"]))
-    #     msgBox.exec_()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -254,13 +245,11 @@ class syncNTray(QtWidgets.QSystemTrayIcon):
         self.setContextMenu(menu)
         self.setToolTip("SyncN[:Sync Note on Windows]!")
 
-
 if __name__ == "__main__":
     print("Start application")
     app = QtWidgets.QApplication(sys.argv)
     application = UI()
     application.show()
-    application.msg()
     sys.exit(app.exec_())
     
     
