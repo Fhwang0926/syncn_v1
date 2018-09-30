@@ -134,3 +134,6 @@ http://www.rabbitmq.com/#getstarted
 >* [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
 >* [PyCharm Community 2018](https://www.jetbrains.com/pycharm/download/#section=windows)
 >* [PyQt5 Designer](https://www.jetbrains.com/pycharm/download/#section=windows) 
+
+## 데모
+ [시연 동영상](https://www.youtube.com/watch?v=6jfhkHdDLSg&feature=youtu.be)
