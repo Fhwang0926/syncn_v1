@@ -8,7 +8,7 @@ import json
 import subprocess
 import os, sys
 from win32com.client import GetObject as scanProcess
- 
+
 class SyncN(object):
     def __init__(self):
         super().__init__()
