@@ -14,7 +14,6 @@ class SyncN(object):
         super().__init__()
         # init
         self.debug = True
-        self.checkProcessMe()
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
@@ -176,6 +175,7 @@ class SyncN(object):
             if self.debug: print(me, ps.Properties_('Name').Value)
             if me == ps.Properties_('Name').Value:
                 if self.debug: print("Same Process is running, me is exit!")
+                self.UI.msg(msg="Process is running already")
                 sys.exit(0)
         else:
             print("No process, me is run!")
@@ -183,5 +183,6 @@ class SyncN(object):
 
 if __name__ == '__main__':
     main = SyncN()
+    main.checkProcessMe()
     main.run()
-    # main.checkProcessMe()
+    
