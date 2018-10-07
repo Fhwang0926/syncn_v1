@@ -1,6 +1,7 @@
 
 
 
+
 # SyncN!
 **Sticy Note**를 사용하면서 icloud의 동기화가 부러웠던 적이 있으세요?? **SyncN**을 써보세요!!
 
@@ -21,9 +22,10 @@
 >
 >[5. 개발 환경]( https://github.com/Fhwang0926/syncn_v1#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD)
 >
- >[6 데모](https://github.com/Fhwang0926/syncn_v1#%EB%8D%B0%EB%AA%A8)
+ >[6. 데모](https://github.com/Fhwang0926/syncn_v1#%EB%8D%B0%EB%AA%A8)
+ >
+ >[7. EXE빌드]
  
-
 
 ## 사용법
 
@@ -141,3 +143,38 @@ http://www.rabbitmq.com/#getstarted
 
 [![demo](https://i.ytimg.com/vi/6jfhkHdDLSg/maxresdefault.jpg)](https://www.youtube.com/watch?v=6jfhkHdDLSg&feature=youtu.be)
 
+## EXE 빌드
+1. pyinstaller 다운로드
+```cmd
+pip install pyinstaller 
+or
+python -m pip install pyinstaller
+```
+2. exe 빌드
+```cmd
+pyinstaller --windowed --icon=ICONPATH --clean FILEPATH
+```
+
+3. installer 생성
+>*  [HM NIS edit 설치](http://hmne.sourceforge.net/) -> setup.exe 스크립트 생성
+>
+>*  [NSIS 설치](https://sourceforge.net/projects/nsis/)  -> 스크립트 Compile
+>
+>* HM NIS edit실행
+>
+>* 메뉴 > 파일 > 스크립트 작성 마법사 실행 (Ctrl + w)
+>프로그램 정보 입력 > 다음 >
+>프로그램 옵션 PASS > 다음 >
+>라이센스 파일 경로 선택 > 다음 >
+>프로그램 파일 또는 디렉토리 경로 설정 >다음 >
+>시작메뉴에 추가할 프로그램 설정 > 다음 >
+>설치 완료 후 실행할 파일 설정 > 다음 >
+>Uninstaller 설정 > 다음 >
+>스크립트 저장
+>* NSIS 실행 > Compile NSI Scripts 선택 > 스크립트 선택 > Setup.exe 생성
+>
+
+### 참조
+> pyinstaller: https://pythonhosted.org/PyInstaller/usage.html
+
+> dll 오류: 
