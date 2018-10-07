@@ -49,6 +49,7 @@ class EmailCert():
     
     def createOTP(self):
         try:
+            if self.debug: print("request : ", self.url + self.sub['code'])
             otpResult = requests.post(url=self.url + self.sub['code'], data=self.email)
             if otpResult.status_code == 200:
                 self.otpCode = otpResult.json()['res']

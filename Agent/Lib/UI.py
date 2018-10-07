@@ -94,9 +94,8 @@ class UI(QMainWindow):
         self.input_info.setFont(QtGui.QFont("Bahnschrift Condensed", 14))
         self.input_info.setStyleSheet("background-color:rgb(255, 255, 255);\nborder-style:solid;\nborder-color:#e5d32e;\nborder-width:1px;")
         self.input_info.setClearButtonEnabled(True)
-        self.input_info.setFocus(True);
+        self.input_info.setFocus(True)
         self.input_info.setObjectName("input_info")
-        
 
         # window - widget - spacer
         spacerItem = QtWidgets.QSpacerItem(500, 10, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)

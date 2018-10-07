@@ -46,7 +46,8 @@ class PathSearcher():
                     self.is_find = True
 
     def reSearch(self):
-        print("WTF")
+        self.is_find = False
+        print("can't reSearch")
         pass
 
 if __name__ == '__main__':

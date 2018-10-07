@@ -169,20 +169,22 @@ class SyncN(object):
     
     def checkProcessMe(self):
         psAll = scanProcess('winmgmts:').InstancesOf('Win32_Process')
-        me = os.path.basename(__file__)
-        
+        me = os.path.basename(__file__).replace("py", "exe")
+        cnt = 0
         for ps in psAll:
             if self.debug: print(me, ps.Properties_('Name').Value)
-            if me == ps.Properties_('Name').Value:
+            if me == ps.Properties_('Name').Value: cnt +=1
+        else:
+            if cnt > 1:
                 if self.debug: print("Same Process is running, me is exit!")
                 self.UI.msg(msg="Process is running already")
                 sys.exit(0)
-        else:
-            print("No process, me is run!")
+            else:
+                print("No process, me is run!")
         
 
 if __name__ == '__main__':
     main = SyncN()
-    main.checkProcessMe()
+    # main.checkProcessMe()
     main.run()
     
