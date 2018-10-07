@@ -1,3 +1,6 @@
+REM https://winterj.me/pyinstaller/
+REM http://tina0430.tistory.com/34
+REM https://www.bountysource.com/issues/39246634-warning-lib-not-found-api-ms-win-crt-stdio-l1-1-0-dll
 echo off
 cls
 rmdir /s /q dist
