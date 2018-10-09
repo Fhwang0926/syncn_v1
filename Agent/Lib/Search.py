@@ -50,7 +50,20 @@ class PathSearcher():
         print("can't reSearch")
         pass
 
+    def test(self, file='', dir='', drive="c" ):
+        self.file = file
+        self.dir = dir
+        self.drive = drive
+        if self.file == '' and self.dir == '':
+            print("please input file name or directory name")
+        elif not self.file == '':
+            for (path, dirname, files) in os.walk(self.drive + ":/"):
+                for filename in files:
+                    self.filename = os.path.splitext(filename)[0]
+                    if self.filename == self.file:
+                        print("%s/%s" % (path, filename))
 if __name__ == '__main__':
     proc = PathSearcher()
-    target = proc.run()
-    print(target)
+    proc.test(file="setting")
+    # target = proc.run()
+    # print(target)
