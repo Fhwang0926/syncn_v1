@@ -10,8 +10,9 @@ class syncn(object):
     def __init__(self, path='', debug=False):
         try:
             self.debug = debug
-            self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
-            if self.debug: print(self.path)
+            self.path = os.getcwd()+"\\setting.syncn"
+            # self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
+            if self.debug: print("exe location : {0}".format(self.path))
             self.config = json.loads(open(self.path, 'r').read())
         except Exception as e:
             print(__file__, e)
@@ -20,8 +21,8 @@ class syncn(object):
     def readSetting(self):
         return json.loads(open(self.path, 'r').read())
     
-    def writeSetting(self, data):
-        setting = open(self.path, 'w')
+    def writeSetting(self, data, mode='w'):
+        setting = open(self.path, mode)
         data = json.dumps(data) if isinstance(data, dict) else data
         setting.write(data)
         return setting.close()
@@ -30,7 +31,7 @@ class syncn(object):
         rs = self.readSetting()
         rs[str(key)] = value
         return self.writeSetting(rs)
-        
+
 if __name__ == '__main__':
     import time
     test = syncn()

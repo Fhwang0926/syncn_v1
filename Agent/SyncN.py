@@ -17,8 +17,7 @@ class SyncN(object):
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
-        if os.path.exists(Setting.syncn().path):
-            self.UI.authStyle()
+        if Setting.syncn().config["init"]: self.UI.authStyle()
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
         # init signal
