@@ -1,20 +1,22 @@
 # auth : wdt0818@naver.com, bluehdh0926@gmail.com
-# 
+#
 import os
+
 
 class PathSearcher():
     def __init__(self):
-        
-        self.setPath(os.environ['HOMEDRIVE']+os.environ['HOMEPATH']+"\AppData\Local\Packages")
+
+        self.setPath(os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + "\AppData\Local\Packages")
         self.is_find = False
         self.findPath = ""
-    
+        self.debug = False
+
     def setPath(self, path):
         self.default_path = path
-    
+
     def getPath(self):
         return self.default_path
-    
+
     def getFindPath(self):
         return self.findPath
 
@@ -35,7 +37,7 @@ class PathSearcher():
             print("{0} search, check this {0}".format(__file__, e))
             pass
         if not self.is_find: self.reSearch()
-    
+
     def detailSearch(self, rootPath):
         for (path, dirname, files) in os.walk(rootPath):
             for f in files:
@@ -50,20 +52,40 @@ class PathSearcher():
         print("can't reSearch")
         pass
 
-    def test(self, file='', dir='', drive="c" ):
+    def fileSearch(self, file, extension='', drive="c"):
         self.file = file
-        self.dir = dir
-        self.drive = drive
-        if self.file == '' and self.dir == '':
-            print("please input file name or directory name")
-        elif not self.file == '':
-            for (path, dirname, files) in os.walk(self.drive + ":/"):
+        self.extension = extension
+        self.searchFileList = []
+        if self.extension is '':
+            for (path, dirname, files) in os.walk(drive + ":/"):
                 for filename in files:
                     self.filename = os.path.splitext(filename)[0]
                     if self.filename == self.file:
-                        print("%s/%s" % (path, filename))
+                        if self.debug: print("%s\%s" % (path, filename))
+                        self.searchFileList.append(path + "\\" + filename)
+
+        else:
+            for (path, dirname, files) in os.walk(drive + ":/"):
+                for filename in files:
+                    self.pullfilename = self.file + "." + self.extension
+                    if filename == self.pullfilename:
+                        if self.debug: print("%s\%s" % (path, filename))
+                        self.searchFileList.append(path + "\\" + filename)
+        return self.searchFileList
+
+    def dirSearch(self, dir, drive="c"):
+        self.dir = dir.upper()
+        self.searchDirList = []
+        for (path, dirnames, files) in os.walk(drive + ":/"):
+            for dirname in dirnames:
+                if dirname.upper() == self.dir:
+                    if self.debug: print("%s\%s" % (path, dirname))
+                    self.searchDirList.append(path + "\\" + dirname)
+        return self.searchDirList
+
 if __name__ == '__main__':
     proc = PathSearcher()
-    proc.test(file="setting")
-    # target = proc.run()
-    # print(target)
+    # proc.dirSearch(dir="syncn")
+    # proc.fileSearch(file="setting")
+    target = proc.run()
+    print(target)
