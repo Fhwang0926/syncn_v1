@@ -70,10 +70,11 @@ class EmailCert():
         try:
             authResult = requests.get(url=self.url + self.sub['account'] + self.otpCode)
             if authResult.status_code == 200:
-                config = syncn()
                 rs = authResult.json()['res']
                 if email: rs["me"] = email
-                config.writeSetting(rs)
+                config = syncn()
+                config.writeSetting(rs, 'w+')
+                config.addSetting("init", "true")
                 if self.debug: print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)
                 return True
