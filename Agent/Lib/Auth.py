@@ -73,7 +73,7 @@ class EmailCert():
                 rs = authResult.json()['res']
                 if email: rs["me"] = email
                 config = syncn()
-                config.writeSetting(rs, 'w+')
+                config.writeSetting(rs)
                 config.addSetting("init", "true")
                 if self.debug: print("save setting!! ready to sync")
                 if self.debug: print(authResult.text)
