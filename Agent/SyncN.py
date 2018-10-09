@@ -48,6 +48,7 @@ class SyncN(object):
         self.UI.tray.activated.connect(self.UI.openWindow)
         self.UI.tray.exitAction.triggered.connect(self.proExit)
         self.UI.tray.syncAction.triggered.connect(self.sycnTrigger)
+        self.UI.tray.syncNoteAction.triggered.connect(self.sycnTrigger)
         self.UI.input_info.textChanged.connect(self.UI.checkInput)
         self.UI.btn_close.clicked.connect(self.proExit)
         self.UI.btn_tray.clicked.connect(self.UI.windowTrigger)
@@ -102,9 +103,11 @@ class SyncN(object):
         self.setThreadChannel()
         if self.UI.auth:
             self.disconnectCMD()
-            self.th_mqReciver.once = True
-            self.th_mqReciver.start()
-            self.th_signal.start()
+            # sync note start
+            if self.UI.tray.syncNoteAction.isChecked:
+                self.th_mqReciver.once = True
+                self.th_mqReciver.start()
+                self.th_signal.start()
         self.UI.show()
         if self.UI.auth:
             self.UI.windowTrigger()
