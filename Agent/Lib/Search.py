@@ -18,15 +18,14 @@ class PathSearcher():
         return self.default_path
 
     def getFindPath(self):
-        return self.findPath
+        return self.searchFileList
 
     def getFindDir(self):
         self.search(self.default_path)
         return self.findDir
 
-    def run(self):
-        self.search(self.default_path)
-        return self.getFindPath()
+    def run(self, file, extension='', drive="c", detailPath = ''):
+        return self.fileSearch(file=file, extension= extension, drive=drive, detailPath=detailPath)
 
     def search(self, path):
         try:
@@ -52,12 +51,16 @@ class PathSearcher():
         print("can't reSearch")
         pass
 
-    def fileSearch(self, file, extension='', drive="c"):
+    def fileSearch(self, file, extension='', drive="c", detailPath = ''):
         self.file = file
         self.extension = extension
         self.searchFileList = []
+        if detailPath == '':
+            self.detailPath = drive + ":/"
+        else:
+            self.detailPath = detailPath
         if self.extension is '':
-            for (path, dirname, files) in os.walk(drive + ":/"):
+            for (path, dirname, files) in os.walk(self.detailPath):
                 for filename in files:
                     self.filename = os.path.splitext(filename)[0]
                     if self.filename == self.file:
@@ -86,6 +89,6 @@ class PathSearcher():
 if __name__ == '__main__':
     proc = PathSearcher()
     # proc.dirSearch(dir="syncn")
-    # proc.fileSearch(file="setting")
-    target = proc.run()
-    print(target)
+    print(proc.run(file="plum", detailPath="c:/Users\jis\AppData\Local\Packages"))
+    # target = proc.run()
+    # print(target)

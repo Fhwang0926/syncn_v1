@@ -17,15 +17,25 @@ class SyncN(object):
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
-        if Setting.syncn().config["init"]: self.UI.authStyle()
+        try:
+            self.detailPath = Search.PathSearcher().getPath()
+            target = Search.PathSearcher()
+            # self.target = target.run(file="plum", detailPath=self.detailPath)[0]
+            self.target = target.run(file="plum")[0]
+        except Exception as e:
+            print(e)
+        try:
+            if Setting.syncn().config["init"]: self.UI.authStyle()
+        except Exception:
+            pass
         #init auth
         self.OTP = Auth.EmailCert(debug=True)
         # init signal
-        self.th_signal = Core.signalThread(debug=True)
+        self.th_signal = Core.signalThread(target= self.target ,debug=True)
         # init MQ
-        self.th_mqSender = Core.mqSendThread(debug=True)
+        self.th_mqSender = Core.mqSendThread(target = self.target,debug=True)
         # init MQ
-        self.th_mqReciver = Core.mqReciveThread(debug=True)
+        self.th_mqReciver = Core.mqReciveThread(target= self.target, debug=True)
         # init CMD
         self.th_cmd = Core.cmdThread(debug=True)
         # init mail
@@ -33,10 +43,8 @@ class SyncN(object):
         # init authTimer
         self.th_authTimer = Core.authTimer(debug=True)
         # init target
-        target = Search.PathSearcher()
-        target.run()
-        target = target.findPath.split("\\")
-        self.target = target[len(target)-2].split("_")[1]
+        target = self.target.split("\\")
+        self.sticky = target[len(target)-3].split("_")[1]
         
         # init func
         self.connectInterface()
@@ -145,7 +153,7 @@ class SyncN(object):
                 self.UI.l_info.setText("Auth Failed, see email")
     
     def openNote(self):
-        subprocess.call("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_{0}!App".format(self.target), creationflags=0x08000000)
+        subprocess.call("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_{0}!App".format(self.sticky), creationflags=0x08000000)
     
     def closeNote(self):
         subprocess.call('taskkill /f /im Microsoft.Notes.exe', creationflags=0x08000000)

@@ -15,12 +15,12 @@ import requests
 class signalThread(QThread):
     syncSignal = pyqtSignal(bool)
     
-    def __init__(self, debug=False):
+    def __init__(self,target, debug=False):
         super().__init__()
         self.isRun = False
         self.debug = debug
-        self.target = Search.PathSearcher().run()
-        self.signal = Signal.signal(debug=self.debug)
+        self.target = target
+        self.signal = Signal.signal(target=target, debug=self.debug)
         # self.signalRunner = self.signal.connect()
         
 
@@ -48,12 +48,12 @@ class signalThread(QThread):
 
 class mqSendThread(QThread):
     reciveSignal = pyqtSignal(bool)
-    def __init__(self, debug=False):
+    def __init__(self,target ,debug=False):
         super().__init__()
         try:
             self.debug = debug
             self.type = ""
-            self.DAO = NoteSql.DAO()
+            self.DAO = NoteSql.DAO(fullpath=target)
             
         except Exception as e:
             print("mqSendThread, check this {0}".format(e))
@@ -97,12 +97,13 @@ class mqReciveThread(QThread):
     killSignal = pyqtSignal(bool)
     execSignal = pyqtSignal(bool)
 
-    def __init__(self, debug=False):
+    def __init__(self,target, debug=False):
         super().__init__()
         try:
             self.isRun = False
             self.once = False
             self.debug = True
+            self.target = target
         except Exception as e:
             print("mqReciveThread init, check this {0}".format(e))
             pass
@@ -125,7 +126,7 @@ class mqReciveThread(QThread):
             if rs["cnt"] >= 0: # 1
                 self.killSignal.emit(True)
                 
-                DAO = NoteSql.DAO()
+                DAO = NoteSql.DAO(fullpath=self.target)
                 if self.once:
                     DAO.sync(json.loads(rs["msg"])["res"])["res"]
                     self.once = False

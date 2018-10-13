@@ -11,11 +11,11 @@ except ImportError:
 
 class signal(object):
 
-    def __init__(self, debug=False):
+    def __init__(self,target, debug=False):
         object.__init__(self)
         self.isRun = False
         self.debug = debug
-        self.target = Search.PathSearcher().run()
+        self.target = target
         self.timestamp = os.path.getmtime(self.target);
         self.cnt = 0
         self.isSended = True
