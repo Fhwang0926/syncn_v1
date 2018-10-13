@@ -18,10 +18,10 @@ class SyncN(object):
         # init UI
         self.UI = UI.UI()
         try:
-            self.detailPath = Search.PathSearcher().getPath()
+            # self.detailPath = Search.PathSearcher().getPath()
             target = Search.PathSearcher()
             # self.target = target.run(file="plum", detailPath=self.detailPath)[0]
-            self.target = target.run(file="plum")[0]
+            self.target = target.run(file="plum", detailPath=target.getPath())[0]
         except Exception as e:
             print(e)
         try:
