@@ -17,6 +17,8 @@ class SyncN(object):
         self.app = QtWidgets.QApplication(sys.argv)
         # init UI
         self.UI = UI.UI()
+
+        # set the path
         try:
             # self.detailPath = Search.PathSearcher().getPath()
             target = Search.PathSearcher()

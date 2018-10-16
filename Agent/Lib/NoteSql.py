@@ -12,7 +12,7 @@ except ImportError:
 class DAO():
     def __init__(self, fullpath='', debug=False):
         # set variables
-        self.fullpath = fullpath if fullpath else Search.PathSearcher().run()
+        self.fullpath = fullpath if fullpath else Search.PathSearcher().run(file="plum", detailPath=Search.PathSearcher().getPath())[0]
         self.path = ''
         self.db = None
         self.conn = None
@@ -20,12 +20,36 @@ class DAO():
         self.noteCnt = 0
         self.temp = None
         self.debug = debug
-        
+        self.is_dbFile = False
+        self.is_textFile = False
+
+        # file type check
+        self.fileCheck(self.fullpath)
+        if self.is_dbFile:
+            # set function
+            self.initDb(self.fullpath)
+            self.readUser()
+            self.dumpBackupOneRow()
+
+        elif self.is_textFile:
+            self.initText(self.fullpath)
+
         # set function
-        self.init(self.fullpath)
-        self.readUser()
-        self.dumpBackupOneRow()
-        pass
+        # self.init(self.fullpath)
+        # self.readUser()
+        # self.dumpBackupOneRow()
+
+    def fileCheck(self, file):
+        self.file = file.split("\\")
+        self.extension = self.file[-1].split(".")[-1]
+        try:
+            if "sql" in self.extension:
+                self.is_dbFile = True
+            else:
+                self.is_textFile = True
+        # other file check
+        except Exception as e:
+            if self.debug: print(e)
 
     def close(self):
         try:
@@ -34,15 +58,24 @@ class DAO():
             return { "e" : e }
 
     def read(self):
-        try:
-            # self.readUser()
-            col = ["Text", "WindowPosition", "Theme"]
-            limit = "limit 2" if self.debug else ''
-            rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' {2}".format(_.join(col, ','), self.id, limit))
-            return { "res" : self.convert(rs)['res'] }
-        except Exception as e:
-            return { "e" : e }
-    
+
+        if self.is_dbFile:
+            try:
+                # self.readUser()
+                col = ["Text", "WindowPosition", "Theme"]
+                limit = "limit 2" if self.debug else ''
+                rs = self.db.execute("SELECT {0} FROM Note WHERE ParentId='{1}' {2}".format(_.join(col, ','), self.id, limit))
+                return { "res" : self.convert(rs)['res'] }
+            except Exception as e:
+                return { "e" : e }
+        elif self.is_textFile:
+            try:
+                # self.content.update("Extension":self.extension)
+                return {"res" : self.content, "extention" : self.extension}
+            except Exception as e :
+                return { "e" : e }
+
+
     def readUser(self): # version 1.0 consider 1 account in host
         try:
             col = "id"
@@ -53,7 +86,7 @@ class DAO():
         except Exception as e:
             return { "e" : e }
         
-    def init(self, path):
+    def initDb(self, path):
         try:
             self.path = path
             self.conn = sqlite3.connect(path, check_same_thread=False )
@@ -61,6 +94,14 @@ class DAO():
             return { "res" : True }
         except Exception as e:
             return { "e" : e }
+
+    def initText(self,path):
+        try:
+            with open(path, 'r') as f:
+                self.content = f.read()
+            if self.debug: print(self.content)
+        except Exception as e:
+            print(e)
 
     def sync(self, notes):
         try:
@@ -124,18 +165,18 @@ class DAO():
             return { "e" : e }
         
 if __name__ == '__main__':
-    msg += "# windows RS4 under version location is C:\\Users\\Username\\AppData\\Roaming\\Microsoft\\Sticky Notes\\StickyNotes.snt"
-    msg += "# ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9"
-    msg += "# Smaple location"
-    msg += "# C:\\Users\\hdh09\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite"
-    msg += "# if update input type is string, using json parser"
-    msg += "# data = '{\"1\": {\"Text\": \"test\", \"WindowPosition\": \"V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=\", \"Theme\": \"Yellow\"}}"
-    msg += "# dao.sync(json.loads(data))"
-    msg += "# dao.update(\"132\")"
-    msg += "\n"
+    # msg += "# windows RS4 under version location is C:\\Users\\Username\\AppData\\Roaming\\Microsoft\\Sticky Notes\\StickyNotes.snt"
+    # msg += "# ref http://pythonstudy.xyz/python/article/204-SQLite-%EC%82%AC%EC%9A%A9"
+    # msg += "# Sample location"
+    # msg += "# C:\\Users\\hdh09\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite"
+    # msg += "# if update input type is string, using json parser"
+    # msg += "# data = '{\"1\": {\"Text\": \"test\", \"WindowPosition\": \"V1NERgMAAAABAAAAAaoJAADcAQAAEgIAANcCAAAAAAA=\", \"Theme\": \"Yellow\"}}"
+    # msg += "# dao.sync(json.loads(data))"
+    # msg += "# dao.update(\"132\")"
+    # msg += "\n"
 
-    print(msg)
-    dao = DAO()
+    # print(msg)
+    dao = DAO(fullpath="C:\\Users\\전인석\\Desktop\\SyncN.spec")
     print(dao.read())
 
     pass
