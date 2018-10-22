@@ -71,7 +71,7 @@ class DAO():
         elif self.is_textFile:
             try:
                 # self.content.update("Extension":self.extension)
-                return {"res" : self.content, "extention" : self.extension}
+                return {"res" : self.content, "extention" : self.extension, "path" : self.fullpath}
             except Exception as e :
                 return { "e" : e }
 

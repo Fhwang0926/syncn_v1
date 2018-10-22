@@ -105,7 +105,8 @@ class MQ():
         if self.debug: print(" [x] publishQueue %r" % msg)
 
     def get(self, queue='', isAck=True, ch=None):
-        ch = ch if ch else self.connection.createChannel()
+        # ch = ch if ch else self.connection.createChannel()
+        ch = ch if ch else self.createChannel()
         method_frame, header_frame, body = ch.basic_get(queue)
         rs = {}
         if method_frame:
@@ -148,14 +149,15 @@ if __name__ == '__main__':
         # mq.makeExchange(name='test', ex_type='fanout')
         # mq.makeBind(exchange='test', queue='test')
         # mq.publishExchange(exchange='test', msg='test')
-        
-        # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })
-        mq.publishQueue(queue="mail", msg="hdh0926@naver.com", opt={ "type" : "mail" })
-        print("send!!")
-        # print("start consume")
-        # mq.worker(queue='mail')
+
+        # # mq.publishExchange("msg", "c.6a61bb6e853cefcbb3b7de16259567c1", msg="test", opt={ "type" : "cmd" })
+        # mq.publishQueue(queue="mail", msg="hdh0926@naver.com", opt={ "type" : "mail" })
+        # print("send!!")
+        # # print("start consume")
+        # # mq.worker(queue='mail')
+        mq.get()
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass
-    
+
 

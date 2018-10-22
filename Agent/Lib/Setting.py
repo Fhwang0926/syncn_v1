@@ -11,7 +11,7 @@ class syncn(object):
         try:
             self.debug = debug
             self.path = os.getcwd()+"\\setting.syncn"
-            # self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
+            self.path = path if path else str(os.path.dirname(os.path.realpath(__file__))).replace("Lib", '')+"setting.syncn"
             if self.debug: print("exe location : {0}".format(self.path))
             self.config = json.loads(open(self.path, 'r').read())
         except Exception as e:
