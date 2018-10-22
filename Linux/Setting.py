@@ -22,21 +22,34 @@ class DataSet():
             infoFiles = self.listFile()
             for infoFile in infoFiles:
                 data = {}
-                with open(self.path + "/" + infoFile, "r") as f:
+                infoPath = self.path + "/" + infoFile
+                with open(infoPath, "r") as f:
                     contentName = f.readlines()[-1].split()[1]
+                    contentPath = self.path + "/" + contentName
                     f.seek(0)
-                    with open(self.path + "/" + contentName) as ff:
+                    with open(contentPath, "r") as ff:
                         data.update({"data": ff.read()})
                     data.update({"info": f.read()})
                     data.update({"content": contentName})
+                    data.update({"infoPath": self.getExtension(infoPath)})
+                    data.update({"contentPath": self.getExtension(contentPath)})
+                    # data.update({"info": f.read()},
+                    #             {"content": contentName},
+                    #             {"infoPath": self.getExtension(infoPath)},
+                    #             {"contentPath": self.getExtension(contentPath)})
                 index = infoFile + "/" + contentName
                 self.result.update({index: data})
             return self.result
         except Exception as e:
             print(e)
 
-    def getExtension(self):
-
+    def getExtension(self, path):
+        try:
+            tmp = path.split("\\")
+            extension = tmp[-1].split(".")[-1]
+            return extension
+        except Exception as e:
+            print(e)
 
     # If you want to show the path, call this method
     def getPath(self):
