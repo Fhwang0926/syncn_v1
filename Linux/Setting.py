@@ -1,5 +1,6 @@
 import os
 import re
+import pdb
 
 class DataSet():
     def __init__(self, debug=False):
@@ -19,7 +20,7 @@ class DataSet():
         try:
             self.result = {}
             self.is_run = True
-            infoFiles = self.listFile()
+            infoFiles = self.getInfo()
             for infoFile in infoFiles:
                 data = {}
                 infoPath = self.path + "/" + infoFile
@@ -29,14 +30,14 @@ class DataSet():
                     f.seek(0)
                     with open(contentPath, "r") as ff:
                         data.update({"data": ff.read()})
-                    data.update({"info": f.read()})
-                    data.update({"content": contentName})
-                    data.update({"infoPath": self.getExtension(infoPath)})
-                    data.update({"contentPath": self.getExtension(contentPath)})
-                    # data.update({"info": f.read()},
-                    #             {"content": contentName},
-                    #             {"infoPath": self.getExtension(infoPath)},
-                    #             {"contentPath": self.getExtension(contentPath)})
+                    #data.update({"info": f.read()})
+                    #data.update({"contentemt": contentName})
+                    #data.update({"infoPath": self.getExtension(infoPath)})
+                    #data.update({"contentPath": self.getExtension(contentPath)})
+                    data.update({"info": f.read(),
+                                "content": contentName,
+                                "infoExtension": self.getExtension(infoPath),
+                                "contentExtension": self.getExtension(contentPath)})
                 index = infoFile + "/" + contentName
                 self.result.update({index: data})
             return self.result
@@ -45,9 +46,16 @@ class DataSet():
 
     def getExtension(self, path):
         try:
-            tmp = path.split("\\")
-            extension = tmp[-1].split(".")[-1]
-            return extension
+            tmp = path.split("/")
+            extension = tmp[-1].split(".")
+            if len(extension) == 2:
+                extension = extension[-1]
+                return extension
+            elif len(extension) == 1:
+                extension = "txt"
+                return extension
+            else:
+                if self.debug: print("getextension method error")
         except Exception as e:
             print(e)
 
@@ -91,4 +99,6 @@ class DataSet():
 if __name__ == '__main__':
     ob = DataSet()
     print(ob.run())
+    print()
+    print("Number of note: ", len(ob.run()))
 
