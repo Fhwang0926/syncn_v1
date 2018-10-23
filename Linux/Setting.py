@@ -3,7 +3,7 @@ import re
 import pdb
 
 class DataSet():
-    def __init__(self, debug=False):
+    def __init__(self, debug=True):
         try:
             # Use Search angine
             self.path = os.environ['HOME'] + "/.config/xpad"
@@ -40,6 +40,7 @@ class DataSet():
                                 "contentExtension": self.getExtension(contentPath)})
                 index = infoFile + "/" + contentName
                 self.result.update({index: data})
+            if self.debug: print("Get Data: {0}\n\nNumber of Note: {1}".format(self.result, len(self.result)))
             return self.result
         except Exception as e:
             print(e)
@@ -69,7 +70,7 @@ class DataSet():
             self.files = []
             for (dirpath, dirname, filename) in os.walk(self.path):
                 self.files = filename
-            if self.debug: print(self.files)
+            if self.debug: print("List Files: {0}\n".format(self.files))
             return self.files
         except Exception as e:
             print(e)
@@ -79,7 +80,7 @@ class DataSet():
             # content-xxxxx
             r = re.compile("^[content]+[-]+[a-zA-Z0-9]")
             self.contentFile = list(filter(r.search, self.files))
-            if self.debug: print(self.contentFile)
+            if self.debug: print("Content files: {0}\n".format(self.contentFile))
             return self.contentFile
         except Exception as e:
             print(e)
@@ -90,7 +91,7 @@ class DataSet():
             # info-xxxxx
             r = re.compile("^[info]+[-]+[a-zA-Z0-9]")
             self.infoFile = list(filter(r.search, self.files))
-            if self.debug: print(self.infoFile)
+            if self.debug: print("Info files: {0}\n".format(self.infoFile))
             return self.infoFile
         except Exception as e:
             print(e)
@@ -98,7 +99,4 @@ class DataSet():
 
 if __name__ == '__main__':
     ob = DataSet()
-    print(ob.run())
-    print()
-    print("Number of note: ", len(ob.run()))
-
+    ob.run()
