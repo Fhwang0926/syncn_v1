@@ -1,9 +1,12 @@
 import pika
-
+import Setting
 
 class MQ():
-    def __init__(self, debug=True):
+    def __init__(self, debug=False):
         try:
+            # get data
+            self.Msg = Setting.DataSet()
+
             self.debug = debug
             self.para = None
             self.con = None
@@ -14,21 +17,22 @@ class MQ():
             self.userPwd = "syncn"
             self.url = "jis5376.iptime.org"
 
-            # set connection
-            # self.connection()
+            # init
+            self.connection()
+            self.data.run()
         except Exception as e:
             print(e)
 
-    def run(self):
-        try:
-            self.connection()
-            # self.makeQueue(queue="test")
-            self.queueBind(exchange="msg", queue="test")
-            self.sendMsg(msg="It's a test msg",routing_key="test")
-        except Exception as e:
-            print(e)
-        finally:
-            self.con.close()
+    # def run(self):
+    #     try:
+    #         self.connection()
+    #         # self.makeQueue(queue="test")
+    #         self.queueBind(exchange="msg", queue="test")
+    #         self.sendMsg(msg="It's a test msg",routing_key="test")
+    #     except Exception as e:
+    #         print(e)
+    #     finally:
+    #         self.con.close()
 
     def connection(self):
         self.para = pika.URLParameters("amqp://{0}:{1}@{2}:{3}/{4}".format(self.userId,
@@ -59,8 +63,23 @@ class MQ():
         self.ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
         if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
 
-    def receiveMsg(self,):
+    def receiveMsg(self, queue):
+        try:
+            method_frame, header_frame, body = self.ch.basic_get(queue=queue)
+            if method_frame.message_count == 0:
+                if self.debug:
+                    print("Number of Message: {0}, The delivery_tag was not sent\n".format(method_frame.message_count))
+                    print("Receive Message: {0}\n".format(body))
+            elif method_frame.message_count > 0:
+                self.ch.basic_ack(method_frame.delivery_tag)
+                if self.debug: print("Number of Message: {0}, The delivery_tag was sent\n".format(method_frame.message_count))
+            else:
+                if self.debug: print("Number of Message: {0}, No Message in the queue\n".format(method_frame.message_count))
+        except Exception as e:
+            print(e)
+
 
 if __name__ == '__main__':
     test = MQ()
-    test.run()
+    # test.sendMsg(routing_key="test", msg="Please get the MSG")
+    # test.receiveMsg(queue="test")
