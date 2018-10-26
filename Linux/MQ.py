@@ -58,10 +58,12 @@ class MQ():
         self.ch.queue_bind(exchange=exchange, queue=queue)
         if self.debug: print("Binding is completed\nExchange: {0} ====> Queue: {1}\n".format(exchange, queue))
 
-
     def sendMsg(self, exchange='', routing_key='', msg='', properties=None, mandatory=False, immediate=False):
-        self.ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
-        if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
+        try:
+            self.ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
+            if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
+        except Exception as e:
+            print("sendMsg method error, message: {0}".format(e))
 
     def receiveMsg(self, queue):
         try:
@@ -76,7 +78,7 @@ class MQ():
             else:
                 if self.debug: print("Number of Message: {0}, No Message in the queue\n".format(method_frame.message_count))
         except Exception as e:
-            print(e)
+            print("receiveMsg method error, message: {0}".format(e))
 
 
 if __name__ == '__main__':

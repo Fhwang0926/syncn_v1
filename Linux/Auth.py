@@ -1,4 +1,5 @@
 import requests, re
+import time
 
 class EmailCert():
     def __init__(self, debug=False):
@@ -10,7 +11,12 @@ class EmailCert():
             "account": "/account/",
             "remove": "/remove/",
         }
+    def build(self, email):
+        if self.emailCheck(email):
+            self.email = email
+            self.server = "http://syncn.club:9759"
 
+    # Inputed email confirm
     def emailCheck(self, email):
         r = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9+-_.]+\.[a-zA-Z0-9+-_.]")
         if r.match(email) == None:
@@ -19,16 +25,31 @@ class EmailCert():
             if self.debug: print(r.match(email))
             return True
 
+    # Send the Url to email to confirm the user
     def sendUrl(self):
-        if self.emailCheck(self.email):
-            postUrl = requests.post(url=self.server + self.sub['code'], data=self.email)
-            if self.debug: print("")
-            if postUrl.status_code == 200:
-                code = postUrl.json()['res']
+        try:
+            if self.emailCheck(self.email):
+                postUrl = requests.post(url=self.server + self.sub['code'], data=self.email)
+                if postUrl.status_code == 200:
+                    self.code = postUrl.json()['res']
+                    if self.debug: print("State code: {0}, message: {1}".format(postUrl.status_code, self.code))
+        except Exception as e:
+            print("sendUrl method error, message: {0}".format(e))
 
-
-
+    # After click the Url, request the info of the MQ server to email server
+    def getServerInfo(self):
+        try:
+            infoRequest = requests.get(url=self.server + self.sub['account'] + self.code)
+            if infoRequest.status_code == 200:
+                pass
+            else:
+                print("Status code: {0}, please check your email".format(infoRequest.status_code))
+        except Exception as e:
+            print("getServerInfo mehtod error, message: {0}".format(e))
 
 if __name__ == '__main__':
     test = EmailCert(debug=True)
-    test.emailCheck(email="wdt0818@naver.com")
+    test.build(email="wdt0818@naver.com")
+    test.sendUrl()
+    time.sleep(10)
+    test.getServerInfo()
