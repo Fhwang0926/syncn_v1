@@ -1,17 +1,18 @@
-import os
-import re
-import pdb
+import os, re, pdb
+import Search
 
 class DataSet():
     def __init__(self, debug=True):
         try:
+            # Load module
+            self.search = Search.PathSearch()
             # Use Search angine
             self.path = os.environ['HOME'] + "/.config/xpad"
             self.debug = debug
             self.is_run = False
 
             # Set xpad files
-            self.listFile()
+            self.files = self.search.listfile()
         except Exception as e:
             print(e)
 
@@ -64,16 +65,17 @@ class DataSet():
     def getPath(self):
         return self.path
 
-    # Get the files in path
-    def listFile(self):
-        try:
-            self.files = []
-            for (dirpath, dirname, filename) in os.walk(self.path):
-                self.files = filename
-            if self.debug: print("List Files: {0}\n".format(self.files))
-            return self.files
-        except Exception as e:
-            print(e)
+    # # Get the files in path
+    # def listFile(self):
+    #     try:
+    #         self.files = []
+    #         for (dirpath, dirname, filename) in os.walk(self.path):
+    #             self.files = filename
+    #         if self.debug: print("List Files: {0}\n".format(self.files))
+    #         return self.files
+    #     except Exception as e:
+    #         print(e)
+
     # Get only "content-xxxx" files in path
     def getContent(self):
         try:

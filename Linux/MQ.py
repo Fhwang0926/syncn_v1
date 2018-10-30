@@ -1,27 +1,38 @@
 import pika
-import Setting
+import Setting, Conf
 
 class MQ():
     def __init__(self, debug=False):
         try:
             # get data
-            self.Msg = Setting.DataSet()
+            # self.Msg = Setting.DataSet()
 
             self.debug = debug
             self.para = None
             self.con = None
             self.ch = None
-            self.vhost = "syncn"
-            self.port = 5672
-            self.userId = "syncn"
-            self.userPwd = "syncn"
-            self.url = "jis5376.iptime.org"
+            self.vhost = ''
+            self.port = ''
+            self.userId = ''
+            self.userPwd = ''
+            self.url = ''
 
             # init
+            self.build()
             self.connection()
-            self.data.run()
         except Exception as e:
             print(e)
+
+    def build(self):
+        self.config = Conf.Conf().read()
+        self.queue = self.config['q']
+        self.userId = self.config['id']
+        self.userPwd = self.config['pw']
+        self.url = self.config['host']
+        self.port = self.config['port']
+        self.vhost = self.config['vhost']
+        self.init = self.config['init']
+
 
     # def run(self):
     #     try:
@@ -83,5 +94,6 @@ class MQ():
 
 if __name__ == '__main__':
     test = MQ()
+    test.sendMsg(routing_key=test.queue, msg=Setting.DataSet())
     # test.sendMsg(routing_key="test", msg="Please get the MSG")
     # test.receiveMsg(queue="test")
