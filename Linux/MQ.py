@@ -1,5 +1,4 @@
 import pika
-import Setting, Conf
 
 class MQ():
     def __init__(self, debug=False):
@@ -17,43 +16,43 @@ class MQ():
             self.userPwd = ''
             self.url = ''
 
-            # init
-            self.build()
-            self.connection()
+            # self.connection()
         except Exception as e:
             print(e)
 
-    def build(self):
-        self.config = Conf.Conf().read()
-        self.queue = self.config['q']
-        self.userId = self.config['id']
-        self.userPwd = self.config['pw']
-        self.url = self.config['host']
-        self.port = self.config['port']
-        self.vhost = self.config['vhost']
-        self.init = self.config['init']
+    def build(self, data):
+        try:
+            self.config = data
+            self.queue = self.config['q']
+            self.userId = self.config['id']
+            self.userPwd = self.config['pw']
+            self.url = self.config['host']
+            self.port = self.config['port']
+            self.vhost = self.config['vhost']
+            self.init = self.config['init']
+        except Exception as e:
+            print("build method error, message: {0}".format(e))
 
+    def run(self, msg):
+        try:
+            self.connection()
+            self.sendMsg(exchange="msg", routing_key=self.queue, msg=msg)
+        except Exception as e:
+            print("MQ run method error, message: {0}".format(e))
 
-    # def run(self):
-    #     try:
-    #         self.connection()
-    #         # self.makeQueue(queue="test")
-    #         self.queueBind(exchange="msg", queue="test")
-    #         self.sendMsg(msg="It's a test msg",routing_key="test")
-    #     except Exception as e:
-    #         print(e)
-    #     finally:
-    #         self.con.close()
 
     def connection(self):
-        self.para = pika.URLParameters("amqp://{0}:{1}@{2}:{3}/{4}".format(self.userId,
-                                                                           self.userPwd,
-                                                                           self.url,
-                                                                           self.port,
-                                                                           self.vhost))
-        self.con = pika.BlockingConnection(self.para)
-        self.ch =  self.con.channel()
-        if self.debug: print("Connected with Server\n")
+        try:
+            self.para = pika.URLParameters("amqp://{0}:{1}@{2}:{3}/{4}".format(self.userId,
+                                                                               self.userPwd,
+                                                                               self.url,
+                                                                               self.port,
+                                                                               self.vhost))
+            self.con = pika.BlockingConnection(self.para)
+            self.ch =  self.con.channel()
+            if self.debug: print("Connected with Server\n")
+        except Exception as e:
+            print("connection method error, message: {0}".format(e))
 
     def makeQueue(self, queue, passive=False, durable=True, exclusive=False, auto_delete=False, arguments=None):
         self.ch.queue_declare(queue=queue, passive=passive, durable=durable, exclusive=exclusive,
@@ -71,6 +70,7 @@ class MQ():
 
     def sendMsg(self, exchange='', routing_key='', msg='', properties=None, mandatory=False, immediate=False):
         try:
+            self.connection()
             self.ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
             if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
         except Exception as e:
@@ -78,6 +78,7 @@ class MQ():
 
     def receiveMsg(self, queue):
         try:
+            self.connection()
             method_frame, header_frame, body = self.ch.basic_get(queue=queue)
             if method_frame.message_count == 0:
                 if self.debug:
@@ -94,6 +95,8 @@ class MQ():
 
 if __name__ == '__main__':
     test = MQ()
-    test.sendMsg(routing_key=test.queue, msg=Setting.DataSet())
+    data=Conf.Conf.read()
+    test.build(data)
+    test.sendMsg(routing_key=test.queue, msg=" It's a test MSG")
     # test.sendMsg(routing_key="test", msg="Please get the MSG")
-    # test.receiveMsg(queue="test")
+    test.receiveMsg(queue="test")

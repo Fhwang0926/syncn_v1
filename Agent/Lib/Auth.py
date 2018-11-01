@@ -90,7 +90,7 @@ class EmailCert():
 if __name__ == '__main__':
 
     client = EmailCert()
-    client.build(syncn().config["service"],"hdh0926@naver.com")
+    client.build(syncn().config["service"],"wdt0818@naver.com")
     client.createOTP()
     time.sleep(60)
     client.authOTP()

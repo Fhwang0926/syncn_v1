@@ -1,11 +1,10 @@
 import os, re, pdb
-import Search
 
 class DataSet():
-    def __init__(self, debug=True):
+    def __init__(self, search, debug=True):
         try:
             # Load module
-            self.search = Search.PathSearch()
+            self.search = search
             # Use Search angine
             self.path = os.environ['HOME'] + "/.config/xpad"
             self.debug = debug

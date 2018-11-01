@@ -1,12 +1,12 @@
 import json, os
-import Search
+
 
 class Conf():
-    def __init__(self, debug=True):
+    def __init__(self, search, debug=True):
         self.debug = debug
         self.path = os.path.dirname(os.path.dirname(__file__))
         # init
-        self.search = Search.PathSearch()
+        self.search = search
 
     def read(self):
         try:
