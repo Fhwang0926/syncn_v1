@@ -30,10 +30,6 @@ class DataSet():
                     f.seek(0)
                     with open(contentPath, "r") as ff:
                         data.update({"data": ff.read()})
-                    #data.update({"info": f.read()})
-                    #data.update({"contentemt": contentName})
-                    #data.update({"infoPath": self.getExtension(infoPath)})
-                    #data.update({"contentPath": self.getExtension(contentPath)})
                     data.update({"info": f.read(),
                                 "content": contentName,
                                 "infoExtension": self.getExtension(infoPath),
@@ -64,17 +60,6 @@ class DataSet():
     def getPath(self):
         return self.path
 
-    # # Get the files in path
-    # def listFile(self):
-    #     try:
-    #         self.files = []
-    #         for (dirpath, dirname, filename) in os.walk(self.path):
-    #             self.files = filename
-    #         if self.debug: print("List Files: {0}\n".format(self.files))
-    #         return self.files
-    #     except Exception as e:
-    #         print(e)
-
     # Get only "content-xxxx" files in path
     def getContent(self):
         try:
@@ -97,7 +82,68 @@ class DataSet():
         except Exception as e:
             print(e)
 
+class DataApply():
+    def __init__(self, debug=True):
+        self.debug = debug
+        # self.search = search
+        self.path = os.environ['HOME'] + "/.config/xpad"
+        self.data = ''
+        self.keyList = []
+        self.valueList = []
+
+    # A number of Xpad counter
+    def noteNum(self):
+        return len(self.data) + 1
+
+    # Distribute key and value
+    def dataParse(self, data):
+        try:
+            # Parameter type check
+            if isinstance(data, dict):
+                self.data = data
+            else:
+                print("DataApply Class __init__ error, message: parameter type is not dict, should be input dictionary")
+
+            dist = self.data
+            for key,value in dist.items():
+                self.keyList.append(key)
+                self.valueList.append(dict(value))
+            if self.debug:
+                print("Key list: {0}\n".format(self.keyList))
+                print("Value list: {0}\n".format(self.valueList))
+            return True
+        except Exception as e:
+            print("dataParse method error, message: {0}\n".format(e))
+
+    def dataApply(self):
+        keyList = self.getKeyList()
+        valueList = self.getValueList()
+        for i in range(self.noteNum()):
+            self.dataSet(keyList[i], valueList[i])
+            with open(self.path + "/" + self.infoName, "w") as f:
+                f.write(self.infoData)
+            with open(self.path + "/" + self.contentName, "w") as f:
+                f.write(self.contentData)
+
+    def dataSet(self, key, value):
+        try:
+            self.infoName = key.split("/")[0]
+            self.contentName = key.split("/")[1]
+            self.infoData = value['info']
+            self.contentData = value['data']
+            self.infoExtension = value['infoExtension']
+            self.contentExtension = value['contentExtension']
+        except Exception as e:
+            print("dataSet method error, message: {0}\n".format(e))
+
+    def getKeyList(self):
+        return self.keyList
+
+    def getValueList(self):
+        return self.valueList
 
 if __name__ == '__main__':
-    ob = DataSet()
-    ob.run()
+    test = DataApply(data={"info-C9MPRZ/content-ABNPRZ": {"data": "#!@#!@%!@$!$", "content": "content-ABNPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 257\ny 649\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-ABNPRZ\n"}, "info-IMSZRZ/content-0NXZRZ": {"data": "sdfsdfsdf", "content": "content-0NXZRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 105\ny 160\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0NXZRZ\n"}, "info-86NPRZ/content-VZPPRZ": {"data": "vzxcvzxcvzxcv", "content": "content-VZPPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 182\ny 769\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 0\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-VZPPRZ\n"}, "info-G6MPRZ/content-0ZOPRZ": {"data": "23414234242424", "content": "content-0ZOPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 362\ny 383\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0ZOPRZ\n"}}
+)
+    test.dataParse()
+    test.dataApply()

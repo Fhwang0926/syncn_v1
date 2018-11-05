@@ -8,7 +8,8 @@ class Control():
         self.auth = Auth.EmailCert(debug=debug)
         self.conf = Conf.Conf(search=self.search,debug=debug)
         self.mq = MQ.MQ(debug=debug)
-        self.setting = Setting.DataSet(search=self.search, debug=debug)
+        self.getSetting = Setting.DataSet(search=self.search, debug=debug)
+        self.applySetting = Setting.DataApply()
 
         # Email auth
         # self.auth.build("wdt0818@naver.com")
@@ -17,12 +18,16 @@ class Control():
         # self.auth.getServerInfo()
 
         # Set the setting file data
-        # setFile = self.conf.read()
-        # self.mq.build(setFile)
-        # self.result = self.setting.run()
-        # self.mq.run(msg=json.dumps(self.result))
-        self.mq.sendMsg(exchange="msg", routing_key="test", msg="tsdjajsdgjsdjagja")
-        print(self.mq.receiveMsg(queue="test"))
+        setFile = self.conf.read()
+        self.mq.build(setFile)
+
+        # Get xpad data
+        self.result = self.setting.run()
+
+        # Send and Receive message
+        self.mq.connection()
+        self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.result))
+        self.mq.receiveMsg(queue=self.mq.queue)
 
 
 

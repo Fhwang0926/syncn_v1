@@ -11,17 +11,17 @@ class MQ():
             self.para = None
             self.con = None
             self.ch = None
-            # self.vhost = ''
-            # self.port = ''
-            # self.userId = ''
-            # self.userPwd = ''
-            # self.url = ''
-            self.vhost = 'syncn'
-            self.port = '5672'
-            self.userId = 'syncn'
-            self.userPwd = 'syncn'
-            self.url = 'jis5376.iptime.org'
-            self.queue = "djfjsjeifjsj"
+            self.vhost = ''
+            self.port = ''
+            self.userId = ''
+            self.userPwd = ''
+            self.url = ''
+            # self.vhost = 'syncn'
+            # self.port = '5672'
+            # self.userId = 'syncn'
+            # self.userPwd = 'syncn'
+            # self.url = 'jis5376.iptime.org'
+            # self.queue = "djfjsjeifjsj"
 
         except Exception as e:
             print(e)
@@ -84,6 +84,7 @@ class MQ():
             ch = self.createChannel()
             ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
             if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
+            return True
         except Exception as e:
             print("sendMsg method error, message: {0}".format(e))
 
@@ -95,13 +96,19 @@ class MQ():
                 if self.debug:
                     print("Number of Message: {0}, The delivery_tag was not sent\n".format(method_frame.message_count))
                     print("Receive Message: {0}\n".format(body))
+                return body
             elif method_frame.message_count > 0:
                 ch.basic_ack(method_frame.delivery_tag)
                 if self.debug: print("Number of Message: {0}, The delivery_tag was sent\n".format(method_frame.message_count))
+                return body
             else:
                 if self.debug: print("Number of Message: {0}, No Message in the queue\n".format(method_frame.message_count))
+                return body
         except Exception as e:
             print("receiveMsg method error, message: {0}".format(e))
+
+    def msgCompare(self):
+        pass
 
 
 if __name__ == '__main__':
