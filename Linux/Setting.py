@@ -11,7 +11,7 @@ class DataSet():
             self.is_run = False
 
             # Set xpad files
-            self.files = self.search.listfile()
+            self.files = self.search.listFile(dir=self.path)
         except Exception as e:
             print(e)
 
