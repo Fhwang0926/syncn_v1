@@ -39,6 +39,8 @@ class EmailCert():
                 self.code = postUrl.json()['res']
                 if self.debug: print("State code: {0}, message: {1}".format(postUrl.status_code, self.code))
                 return True
+            else:
+                print("Status code: {0}, Can not post to server, restart\n".format(postUrl.status_code))
         except Exception as e:
             print("sendUrl method error, message: {0}".format(e))
         return False

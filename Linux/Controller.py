@@ -1,5 +1,5 @@
 import Auth, Conf, MQ, Search, Setting
-import time
+import json, threading
 
 class Control():
     def __init__(self, debug=True):
@@ -17,10 +17,12 @@ class Control():
         # self.auth.getServerInfo()
 
         # Set the setting file data
-        setFile = self.conf.read()
-        self.mq.build(setFile)
-        self.result = self.setting.run()
-        self.mq.run(msg=self.result)
+        # setFile = self.conf.read()
+        # self.mq.build(setFile)
+        # self.result = self.setting.run()
+        # self.mq.run(msg=json.dumps(self.result))
+        self.mq.sendMsg(exchange="msg", routing_key="test", msg="tsdjajsdgjsdjagja")
+        print(self.mq.receiveMsg(queue="test"))
 
 
 

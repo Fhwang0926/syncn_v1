@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="726b8c84-0a95-49a9-ad7c-ddd2e18e38fd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Agent/Lib/Linux_GetData.py" afterDir="false" />
+    </list>
+=======
     <list default="true" id="faad7c67-5864-45f4-a04c-cf77e9c47c38" name="Default Changelist" comment="" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
+  <component name="FUSProjectUsageTrigger">
+    <session id="-683518882">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="3" />
+=======
   <component name="DockManager">
     <window id="1">
       <content type="file-editors">
@@ -55,27 +72,54 @@
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="3" />
           <entry key="project.open.time.9" value="1" />
+<<<<<<< HEAD
           <entry key="project.opened" value="10" />
+=======
+          <entry key="project.opened" value="9" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+<<<<<<< HEAD
+          <entry key="py" value="11" />
+          <entry key="rtf" value="1" />
+=======
           <entry key="py" value="40" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+<<<<<<< HEAD
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="Python" value="11" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.vcs.git.usages" />
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="1761" />
+          <entry key="rtf" value="1" />
+=======
           <entry key="Python" value="40" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="py" value="8214" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+<<<<<<< HEAD
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="Python" value="1761" />
+=======
           <entry key="Python" value="8214" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
         </counts>
       </usages-collector>
     </session>
@@ -83,15 +127,42 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file:///Python_Project/EmailRequest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+=======
         <entry file="file://$PROJECT_DIR$/Linux/MQ.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="2037">
               <caret line="97" column="25" selection-start-line="97" selection-start-column="25" selection-end-line="97" selection-end-column="25" />
+=======
+            <state relative-caret-position="583">
+              <caret line="97" column="25" lean-forward="true" selection-start-line="97" selection-start-column="25" selection-end-line="97" selection-end-column="25" />
+              <folding>
+                <marker date="1541039523176" expanded="true" signature="994:1195" ph="..." />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+              </folding>
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file:///Python_Project/EmailAuth.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Agent/Lib/Auth.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-55">
+              <caret line="26" column="28" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="28" />
+=======
         <entry file="file://$PROJECT_DIR$/Linux/Auth.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="987">
@@ -109,19 +180,44 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="672">
               <caret line="32" column="8" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file:///Python_Project/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="314">
+              <caret line="20" column="33" lean-forward="true" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+=======
         <entry file="file://$PROJECT_DIR$/Agent/Lib/Auth.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1869">
               <caret line="89" column="26" selection-start-line="89" selection-start-column="26" selection-end-line="89" selection-end-column="26" />
+=======
+            <state relative-caret-position="275">
+              <caret line="89" column="26" lean-forward="true" selection-start-line="89" selection-start-column="26" selection-end-line="89" selection-end-column="26" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Agent/Lib/Linux_GetData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="361">
+              <caret line="19" column="11" lean-forward="true" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+=======
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Linux/Search.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -130,21 +226,45 @@
               <folding>
                 <marker date="1540875515673" expanded="true" signature="31:36" ph="..." />
                 <marker date="1540875515673" expanded="true" signature="67:103" ph="..." />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file:///Python_Project/info.rtf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="1" selection-start-column="1" selection-end-column="1" />
+=======
         <entry file="file://$PROJECT_DIR$/Linux/Setting.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="126">
               <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
+=======
+            <state relative-caret-position="-693">
+              <caret line="6" column="32" lean-forward="true" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/Agent/Lib/Setting.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///Python_Project/test2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="57">
+              <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="4" selection-end-column="35" />
+=======
         <entry file="file://$PROJECT_DIR$/Linux/Conf.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
@@ -153,19 +273,34 @@
                 <marker date="1541038911050" expanded="true" signature="31:36" ph="..." />
                 <marker date="1541038911050" expanded="true" signature="430:442" ph="..." />
               </folding>
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/Agent/Lib/MQ.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1900">
+              <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
+=======
         <entry file="file://$PROJECT_DIR$/Agent/Lib/Core.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="147">
               <caret line="7" selection-start-line="7" selection-end-line="7" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Agent/Lib/Core.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1444">
+              <caret line="80" column="32" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="32" />
+=======
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Linux/Observer.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -175,6 +310,7 @@
                 <marker date="1541060336999" expanded="true" signature="34:678" ph="..." />
                 <marker date="1541060336999" expanded="true" signature="262:275" ph="..." />
               </folding>
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
             </state>
           </provider>
         </entry>
@@ -190,6 +326,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
+      <find>publish</find>
+      <find>basic_ack</find>
+      <find>method_frame</find>
+      <find>emailChecker</find>
+=======
       <find>Auth</find>
       <find>disconnectCMD</find>
       <find>self.UI</find>
@@ -198,6 +340,7 @@
       <find>self.OTP</find>
       <find>emailChecker</find>
       <find>self.search</find>
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -207,6 +350,21 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Agent/Lib/MQ.py" />
+<<<<<<< HEAD
+        <option value="/Python_Project/test2.py" />
+        <option value="/Python_Project/info.rtf" />
+        <option value="/Python_Project/test.py" />
+        <option value="$PROJECT_DIR$/Agent/Lib/Linux_GetData.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="width" value="1680" />
+    <option name="height" value="1050" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+=======
         <option value="$PROJECT_DIR$/Agent/SyncN.py" />
         <option value="$PROJECT_DIR$/Linux/Search.py" />
         <option value="$PROJECT_DIR$/Linux/Core.py" />
@@ -225,17 +383,38 @@
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="Scope" />
+=======
+<<<<<<< HEAD
+      <pane id="Scope" />
+=======
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
+<<<<<<< HEAD
+              <item name="Remote_Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Remote_Project" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Remote_Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Remote_Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Agent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Remote_Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Remote_Project" type="462c0819:PsiDirectoryNode" />
+=======
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -247,22 +426,44 @@
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
               <item name="Agent" type="462c0819:PsiDirectoryNode" />
               <item name="Lib" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
+<<<<<<< HEAD
+              <item name="Remote_Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Remote_Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Image" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Remote_Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Python_Project" type="462c0819:PsiDirectoryNode" />
+=======
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="Linux" type="462c0819:PsiDirectoryNode" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+=======
+      <pane id="Scope" />
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -276,6 +477,11 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
+  <component name="RunManager" selected="Python.test">
+    <configuration name="SyncN" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Remote_Project" />
+=======
   <component name="RunManager" selected="Python.Controller">
     <configuration name="Auth (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
@@ -300,17 +506,26 @@
     </configuration>
     <configuration name="Auth" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+<<<<<<< HEAD
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Agent" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Agent/SyncN.py" />
+=======
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Linux" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Linux/Auth.py" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -319,19 +534,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+<<<<<<< HEAD
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Python_Project" />
+=======
     <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+<<<<<<< HEAD
+      <option name="WORKING_DIRECTORY" value="/Python_Project" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="/Python_Project/test.py" />
+=======
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Linux" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Linux/Controller.py" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -340,14 +568,26 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+<<<<<<< HEAD
+    <configuration name="test2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Python_Project" />
+=======
     <configuration name="MQ" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+<<<<<<< HEAD
+      <option name="WORKING_DIRECTORY" value="/Python_Project" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="/Python_Project/test2.py" />
+=======
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Linux" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -374,6 +614,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Linux/Search.py" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -383,6 +624,17 @@
       <method v="2" />
     </configuration>
     <list>
+<<<<<<< HEAD
+      <item itemvalue="Python.SyncN" />
+      <item itemvalue="Python.test" />
+      <item itemvalue="Python.test2" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test2" />
+        <item itemvalue="Python.SyncN" />
+=======
       <item itemvalue="Python.MQ" />
       <item itemvalue="Python.Auth" />
       <item itemvalue="Python.Search" />
@@ -396,6 +648,7 @@
         <item itemvalue="Python.Auth (1)" />
         <item itemvalue="Python.Auth" />
         <item itemvalue="Python.Search" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       </list>
     </recent_temporary>
   </component>
@@ -404,35 +657,60 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+<<<<<<< HEAD
+      <changelist id="726b8c84-0a95-49a9-ad7c-ddd2e18e38fd" name="Default Changelist" comment="" />
+      <created>1540013389399</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1540013389399</updated>
+=======
       <changelist id="faad7c67-5864-45f4-a04c-cf77e9c47c38" name="Default Changelist" comment="" />
       <created>1540443910214</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1540443910214</updated>
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
+    <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1814346" />
+=======
     <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18162394" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+<<<<<<< HEAD
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32959184" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+=======
       <window_info anchor="bottom" id="Run" order="2" weight="0.32894737" />
       <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.26754385" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
+<<<<<<< HEAD
+      <window_info anchor="bottom" id="Terminal" order="8" />
+=======
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32899022" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+<<<<<<< HEAD
+=======
     <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18162394" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -452,6 +730,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout-to-restore>
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -460,6 +739,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+<<<<<<< HEAD
+          <url>file:///Python_Project/test.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file:///Python_Project/test2.py</url>
+          <line>5</line>
+          <option name="timeStamp" value="11" />
+=======
           <url>file://$PROJECT_DIR$/Linux/Auth.py</url>
           <line>48</line>
           <option name="timeStamp" value="6" />
@@ -483,10 +772,20 @@
           <url>file://$PROJECT_DIR$/Linux/Controller.py</url>
           <line>19</line>
           <option name="timeStamp" value="21" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
+<<<<<<< HEAD
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Agent/SyncN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3059">
+          <caret line="180" column="4" selection-start-line="180" selection-start-column="4" selection-end-line="180" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+=======
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
@@ -557,9 +856,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
+<<<<<<< HEAD
+=======
+          <folding>
+            <element signature="e#119#130#0" expanded="true" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+          </folding>
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file:///Python_Project/ReceiveQueue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+=======
     <entry file="file://$PROJECT_DIR$/Agent/Lib/NoteSql.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -574,6 +887,34 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1677">
           <caret line="33" column="16" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="16" />
+<<<<<<< HEAD
+=======
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+          </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1444">
+          <caret line="80" column="32" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Python_Project/EmailRequest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/Auth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="89" column="26" lean-forward="true" selection-start-line="89" selection-start-column="26" selection-end-line="89" selection-end-column="26" />
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
         </state>
       </provider>
     </entry>
@@ -597,13 +938,65 @@
         <state relative-caret-position="987">
           <caret line="48" selection-start-line="48" selection-end-line="48" />
           <folding>
+<<<<<<< HEAD
             <element signature="e#0#19#0" expanded="true" />
             <marker date="1541033874520" expanded="true" signature="51:56" ph="..." />
+=======
+            <marker date="1540875515673" expanded="true" signature="31:36" ph="..." />
+            <marker date="1540875515673" expanded="true" signature="67:103" ph="..." />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/Agent/Lib/MQ.py">
+=======
+<<<<<<< HEAD
+    <entry file="file:///Python_Project/EmailAuth.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///Python_Project/test2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="4" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/Auth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-55">
+          <caret line="26" column="28" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/Setting.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/MQ.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1900">
+          <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Python_Project/info.rtf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Python_Project/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="20" column="33" lean-forward="true" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/Linux/Conf.py">
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="672">
           <caret line="32" column="8" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
@@ -669,18 +1062,41 @@
         <state relative-caret-position="21">
           <caret line="19" column="20" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
           <folding>
+<<<<<<< HEAD
             <element signature="e#93#118#0" expanded="true" />
+=======
+            <marker date="1541039523176" expanded="true" signature="994:1195" ph="..." />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/Linux/Controller.py">
+=======
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/Agent/Lib/Linux_GetData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="19" column="11" lean-forward="true" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/Linux/Observer.py">
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
           <folding>
+<<<<<<< HEAD
             <element signature="e#0#38#0" expanded="true" />
             <marker date="1541039523145" expanded="true" signature="68:73" ph="..." />
+=======
+            <marker date="1541060336999" expanded="true" signature="34:678" ph="..." />
+            <marker date="1541060336999" expanded="true" signature="262:275" ph="..." />
+>>>>>>> f66ad5b59e3d3d9f97f8fe8f927b2c7815bf8230
+>>>>>>> 555b4628dbac22e42382fdcb851e5741f34abd8d
           </folding>
         </state>
       </provider>
