@@ -83,7 +83,7 @@ class DataSet():
             print(e)
 
 class DataApply():
-    def __init__(self, debug=True):
+    def __init__(self, debug=False):
         self.debug = debug
         # self.search = search
         self.path = os.environ['HOME'] + "/.config/xpad"
@@ -93,7 +93,7 @@ class DataApply():
 
     # A number of Xpad counter
     def noteNum(self):
-        return len(self.data) + 1
+        return len(self.data)
 
     # Distribute key and value
     def dataParse(self, data):
@@ -116,14 +116,20 @@ class DataApply():
             print("dataParse method error, message: {0}\n".format(e))
 
     def dataApply(self):
-        keyList = self.getKeyList()
-        valueList = self.getValueList()
-        for i in range(self.noteNum()):
-            self.dataSet(keyList[i], valueList[i])
-            with open(self.path + "/" + self.infoName, "w") as f:
-                f.write(self.infoData)
-            with open(self.path + "/" + self.contentName, "w") as f:
-                f.write(self.contentData)
+        try:
+            # pdb.set_trace()
+            keyList = self.getKeyList()
+            valueList = self.getValueList()
+            for i in range(self.noteNum()):
+                self.dataSet(keyList[i], valueList[i])
+                with open(self.path + "/" + self.infoName, "w") as f:
+                    f.write(self.infoData)
+                    if self.debug: print("made file: {0}".format(self.path + "/" + self.infoName))
+                with open(self.path + "/" + self.contentName, "w") as f:
+                    f.write(self.contentData)
+                    if self.debug: print("made file: {0}".format(self.path + "/" + self.contentName))
+        except Exception as e:
+            print("dataApply method error, message: {0}\n".format(e))
 
     def dataSet(self, key, value):
         try:
@@ -133,6 +139,7 @@ class DataApply():
             self.contentData = value['data']
             self.infoExtension = value['infoExtension']
             self.contentExtension = value['contentExtension']
+            if self.debug: print("Setting data: {0}{1}{2}{3}{4}{5}\n".format(self.infoName, self.contentName, self.infoData, self.contentData, self.infoExtension, self.contentExtension))
         except Exception as e:
             print("dataSet method error, message: {0}\n".format(e))
 
