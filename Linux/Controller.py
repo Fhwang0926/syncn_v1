@@ -1,5 +1,5 @@
 import Auth, Conf, MQ, Search, Setting
-import json, threading, pdb
+import json, itertools ,threading, pdb
 
 class Control():
     def __init__(self, debug=True):
@@ -30,13 +30,23 @@ class Control():
         self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=True)
         self.receiveData = json.loads(self.receiveData.decode())
 
-        #
+        # Apply the data
         # pdb.set_trace()
         self.applySetting.dataParse(self.receiveData)
         self.applySetting.dataApply()
 
     def compareData(self):
-        for key in self.sendData.keys():
-            
+        items = list(itertools.product(self.sendData, self.receiveData))
+        fil = [i == j for (i,j) in items]
+        filItem = list(itertools.compress(items, fil)) # filItem = list(set(self.sendData).intersection(self.receiveData))
+        # true index = list(itertools.compress(range(len(fil)),fil))
+        self.matchList = [k[0] for k in filItem]
+        self.mismatchList = list(set(self.sendData + self.receiveData))
+        for i in list(set(self.sendData + self.receiveData)):
+            for j in self.matchList:
+                if i == j:
+                    self.mismatchList.remove(j)
+                    break
+
 if __name__ == '__main__':
     test = Control()
