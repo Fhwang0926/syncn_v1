@@ -86,7 +86,7 @@ class MQ():
         try:
             ch = self.createChannel()
             ch.basic_publish(exchange=exchange, routing_key=routing_key, body=msg, properties=None, mandatory=False, immediate=False)
-            if self.debug: print("Send Message: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
+            if self.debug: print("Send Message to MQ server: {0}\nrouting_key: {1}\nexchange: {2}\n".format(msg, routing_key, exchange))
             return True
         except Exception as e:
             print("sendMsg method error, message: {0}".format(e))
@@ -95,6 +95,7 @@ class MQ():
         try:
             ch = self.createChannel()
             self.method_frame, self.header_frame, self.body = ch.basic_get(queue=queue)
+            if self.body == None: return False
             if self.method_frame.message_count == 0:
                 if self.debug:
                     print("Number of Message: {0}, The delivery_tag was not sent\n".format(self.method_frame.message_count))
@@ -103,7 +104,8 @@ class MQ():
             elif self.method_frame.message_count > 0:
                 if ack == True:
                     ch.basic_ack(self.method_frame.delivery_tag)
-                if self.debug: print("Number of Message: {0}, The delivery_tag was sent\n".format(self.method_frame.message_count))
+                    if self.debug: print("The delivery_tag was sent\n")
+                if self.debug: print("Number of Message: {0}\n".format(self.method_frame.message_count))
                 return self.body
             else:
                 if self.debug: print("Number of Message: {0}, No Message in the queue\n".format(self.method_frame.message_count))

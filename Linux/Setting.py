@@ -36,7 +36,7 @@ class DataSet():
                                 "contentExtension": self.getExtension(contentPath)})
                 index = infoFile + "/" + contentName
                 self.result.update({index: data})
-            if self.debug: print("Get Data: {0}\n\nNumber of Note: {1}".format(self.result, len(self.result)))
+            if self.debug: print("Xpad Data: {0}\n\nNumber of Note: {1}".format(self.result, len(self.result)))
             return self.result
         except Exception as e:
             print(e)

@@ -14,7 +14,7 @@ class Conf():
             if self.debug: print("setting file path: {0}\n".format(self.path))
             with open(self.file, 'r') as f:
                 self.data = json.loads(f.read())
-                if self.debug: print("file data: {0}\n".format(self.data))
+                if self.debug: print("Setting file data: {0}\n".format(self.data))
             return self.data
         except Exception as e:
             print("read method error, message: {0}\n".format(e))
