@@ -6,7 +6,7 @@ class Observer():
         self.is_send = False
         self.thread_run = False
         self.debug = debug
-        self.path = path
+        self.path = path.dirSearch(dir="xpad", detailPath=os.environ['HOME'])
         self.send_signal = False
         self.cnt = 0
         self.timestamp = os.path.getmtime(self.path)

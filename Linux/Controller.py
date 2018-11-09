@@ -1,4 +1,4 @@
-import Auth, Conf, MQ, Search, Setting
+import Auth, Conf, MQ, Search, Setting, Observer
 import json, itertools ,threading, pdb
 
 class Control():
@@ -11,13 +11,14 @@ class Control():
         self.mq = MQ.MQ(debug=debug)
         self.getSetting = Setting.DataSet(search=self.search, debug=debug)
         self.applySetting = Setting.DataApply(debug=debug)
-
+        self.observer = Observer(path = self.search, debug=debug)
         # Email auth
         # self.auth.build("wdt0818@naver.com")
         # self.auth.sendUrl()
         # time.sleep(15)
         # self.auth.getServerInfo()
 
+    def run(self):
         # Set the setting file data
         setFile = self.conf.read()
         self.mq.build(setFile)
@@ -72,3 +73,4 @@ class Control():
 
 if __name__ == '__main__':
     test = Control()
+    
