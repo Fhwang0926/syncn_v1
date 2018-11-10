@@ -8,6 +8,7 @@ class MQ():
             # self.Msg = Setting.DataSet()
 
             self.debug = debug
+            self.debug = debug
             self.para = None
             self.con = None
             self.ch = None

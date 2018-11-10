@@ -56,7 +56,7 @@ class PathSearch():
             for dirname in dirnames:
                 if dirname.upper() == self.dir:
                     if self.debug: print("%s\%s" % (path, dirname))
-                    self.searchDirList.append(path + "\\" + dirname)
+                    self.searchDirList.append(path + "/" + dirname)
         return self.searchDirList
 
 if __name__ == '__main__':

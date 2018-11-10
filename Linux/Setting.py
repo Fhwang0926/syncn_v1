@@ -139,7 +139,7 @@ class DataApply():
             self.contentData = value['data']
             self.infoExtension = value['infoExtension']
             self.contentExtension = value['contentExtension']
-            if self.debug: print("Setting data: {0}{1}{2}{3}{4}{5}\n".format(self.infoName, self.contentName, self.infoData, self.contentData, self.infoExtension, self.contentExtension))
+            #if self.debug: print("Setting data: {0}{1}{2}{3}{4}{5}\n".format(self.infoName, self.contentName, self.infoData, self.contentData, self.infoExtension, self.contentExtension))
         except Exception as e:
             print("dataSet method error, message: {0}\n".format(e))
 

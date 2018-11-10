@@ -1,5 +1,6 @@
 import Auth, Conf, MQ, Search, Setting, Observer
-import json, itertools ,threading, pdb
+import json, itertools ,threading, pdb, time
+from PyQt5.QtCore import QThread
 
 class Control():
     def __init__(self, debug=True):
@@ -11,17 +12,17 @@ class Control():
         self.mq = MQ.MQ(debug=debug)
         self.getSetting = Setting.DataSet(search=self.search, debug=debug)
         self.applySetting = Setting.DataApply(debug=debug)
-        self.observer = Observer(path = self.search, debug=debug)
-        # Email auth
-        # self.auth.build("wdt0818@naver.com")
-        # self.auth.sendUrl()
-        # time.sleep(15)
-        # self.auth.getServerInfo()
+
+        # set
+        self.setFile = self.conf.read()
+        self.mq.build(self.setFile)
+        self.sendData = self.getSetting.run()
+        self.mq.connection()
 
     def run(self):
         # Set the setting file data
-        setFile = self.conf.read()
-        self.mq.build(setFile)
+        self.setFile = self.conf.read()
+        self.mq.build(self.setFile)
 
         # Get xpad data
         self.sendData = self.getSetting.run()
@@ -51,7 +52,18 @@ class Control():
         # pdb.set_trace()
         self.applySetting.dataParse(self.receiveData)
         self.applySetting.dataApply()
-        
+
+    # New user access
+    def firstLogin(self):
+        self.sendData = self.getSetting.run()
+        self.mq.connection()
+
+    # Email auth
+    def emailAuth(self):
+        self.auth.build("wdt0818@naver.com")
+        self.auth.sendUrl()
+        time.sleep(15)
+        self.auth.getServerInfo()
 
     def compareData(self):
         # items = list(itertools.product(self.sendData, self.receiveData))
@@ -71,6 +83,28 @@ class Control():
             print("mathList: {0}".format(self.matchList))
             print("mismathList: {0}\n".format(self.mismatchList))
 
+class signalThread(QThread):
+    def __init__(self,search, debug=True):
+        super().__init__()
+        self.debug = debug
+        self.search = Search.PathSearch(debug=debug)
+        self.observer = Observer.Observer(path="/Users/jeoninsuck/test.rtf", debug=self.debug)
+        self.is_run = False
+        self.is_send = False
+
+    def run(self):
+        try:
+            self.is_run = True
+            self.observer.start()
+            while True:
+                if self.observer.send_signal == True:
+                    if self.debug: print("Get the Signal\n")
+                    self.observer.send_signal = False
+        except Exception as e:
+            print("signalTread run() method error, message: {0}\n".format(e))
+
 if __name__ == '__main__':
     test = Control()
-    
+    sig = signalThread(search='')
+    sig.run()
+    #test.run()
