@@ -18,6 +18,7 @@ class DataSet():
     # This method pack the data on dictionary format
     def run(self):
         try:
+            self.files = self.search.listFile(dir=self.path)
             self.result = {}
             self.is_run = True
             infoFiles = self.getInfo()

@@ -4,15 +4,15 @@ from PyQt5.QtCore import QThread, pyqtSignal
 class Observer(QThread):
     # sendSignal = pyqtSignal()
 
-    def __init__(self, path, debug=False):
+    def __init__(self, path='', debug=False):
         super().__init__()
         self.is_run = False
         self.reset = False
         self.thread_run = False
         self.send_signal = False
         self.debug = debug
-        self.path = path
-        # self.path = path.dirSearch(dir="xpad", detailPath=os.environ['HOME'])[0]
+        # self.path = path
+        self.path = path.dirSearch(dir="xpad", detailPath=os.environ['HOME'])[0]
         self.cnt = 0
         self.timestamp = os.path.getmtime(self.path)
 

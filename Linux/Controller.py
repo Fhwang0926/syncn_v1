@@ -1,32 +1,55 @@
-import Auth, Conf, MQ, Search, Setting, Observer
-import json, itertools ,threading, pdb, time
-from PyQt5.QtCore import QThread
+import Auth, Conf, MQ, Search, Setting, Observer, NoteSql
+import json, itertools, pdb, time, sys
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import *
 
-class Control():
+class Control(QWidget):
     def __init__(self, debug=True):
+        super().__init__()
         # init
         self.debug = debug
         self.search = Search.PathSearch(debug=debug)
         self.auth = Auth.EmailCert(debug=debug)
         self.conf = Conf.Conf(search=self.search,debug=debug)
         self.mq = MQ.MQ(debug=debug)
-        self.getSetting = Setting.DataSet(search=self.search, debug=debug)
-        self.applySetting = Setting.DataApply(debug=debug)
+        self.xpadGet= Setting.DataSet(search=self.search, debug=debug)
+        self.xpadApply= Setting.DataApply(debug=debug)
+        self.sticyOb = NoteSql.DAO(fullpath=self.search, debug=debug )
 
         # set
         self.setFile = self.conf.read()
         self.mq.build(self.setFile)
-        self.sendData = self.getSetting.run()
         self.mq.connection()
 
     def run(self):
+        oscheck = sys.platform
+        if oscheck == "linux" or oscheck == "linux2":
+            self.firstLogin()
+# signal 받아서 동기화 과정 들어가야 됨
+        elif oscheck == "win32":
+            pass
+
+
+    def sync(self):
+        self.sendData = self.xpadGet.run()
+        self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=True)
+        if self.receiveData:
+            self.receiveData = json.loads(self.receiveData.decode())
+        else:
+            print("No message in the queue")
+            return
+        self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.sendData))
+
+    # New user access
+    def firstLogin(self):
         # Set the setting file data
         self.setFile = self.conf.read()
+        # if new user, email auth first
+        if self.setFile == False:
+            self.emailAuth()
         self.mq.build(self.setFile)
-
         # Get xpad data
-        self.sendData = self.getSetting.run()
-
+        self.sendData = self.xpadGet.run()
         # Receive message because of data comparing
         self.mq.connection()
         # self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.sendData))
@@ -36,27 +59,16 @@ class Control():
         else:
             print("No message in the queue")
             return
-
         # Compare between server data and local data
         self.compareData()
-        print("origin: ",len(self.sendData))
-
         # Add the new data and Send the message to MQ server
         self.sendData.update(self.receiveData)
         self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.sendData))
-        print("added: ",len(self.sendData))
-
         self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=False)
         self.receiveData = json.loads(self.receiveData.decode())
         # Apply the data
-        # pdb.set_trace()
-        self.applySetting.dataParse(self.receiveData)
-        self.applySetting.dataApply()
-
-    # New user access
-    def firstLogin(self):
-        self.sendData = self.getSetting.run()
-        self.mq.connection()
+        self.xpadApply.dataParse(self.receiveData)
+        self.xpadApply.dataApply()
 
     # Email auth
     def emailAuth(self):
@@ -84,27 +96,31 @@ class Control():
             print("mismathList: {0}\n".format(self.mismatchList))
 
 class signalThread(QThread):
+    sendSignal = pyqtSignal(bool)
     def __init__(self,search, debug=True):
         super().__init__()
         self.debug = debug
         self.search = Search.PathSearch(debug=debug)
-        self.observer = Observer.Observer(path="/Users/jeoninsuck/test.rtf", debug=self.debug)
+        # self.observer = Observer.Observer(path=self.search, debug=self.debug)
         self.is_run = False
         self.is_send = False
 
     def run(self):
         try:
+            test = Control()
             self.is_run = True
             self.observer.start()
             while True:
                 if self.observer.send_signal == True:
                     if self.debug: print("Get the Signal\n")
+                    # test.sync()
+                    self.sendSignal(True)
                     self.observer.send_signal = False
         except Exception as e:
             print("signalTread run() method error, message: {0}\n".format(e))
 
 if __name__ == '__main__':
-    test = Control()
+    # test = Control()
     sig = signalThread(search='')
     sig.run()
-    #test.run()
+

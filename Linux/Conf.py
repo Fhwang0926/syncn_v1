@@ -18,6 +18,7 @@ class Conf():
             return self.data
         except Exception as e:
             print("read method error, message: {0}\n".format(e))
+            return False
 
     def write(self, source):
         try:

@@ -1,18 +1,7 @@
-def generate_nums():
-    num = 0
-    while True:
-        yield num
-        num = num + 1
+import sys, os, platform
 
 
-nums = generate_nums()
-
-print(next(nums))
-print(next(nums))
-print(next(nums))
-# for x in nums:
-#     print(x)
-#
-#     if x > 9:
-#         break
-
+print(os.name)
+print(sys.platform)
+print(platform.platform())
+print(platform.system())
