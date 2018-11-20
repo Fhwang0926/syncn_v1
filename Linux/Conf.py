@@ -1,5 +1,5 @@
 import json, os
-
+# import Search
 
 class Conf():
     def __init__(self, search, debug=True):
@@ -31,5 +31,5 @@ class Conf():
             print("write method error, message: {0}\n".format(e))
 
 if __name__ == '__main__':
-    test = Conf()
+    test = Conf(search=Search.PathSearch())
     test.read()

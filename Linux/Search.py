@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 
 class PathSearch():
@@ -17,13 +17,16 @@ class PathSearch():
         except Exception as e:
             print(e)
 
-    def fileSearch(self, file, extension='', drive="/", detailPath = ''):
+    def fileSearch(self, file, extension='', detailPath = ''):
         try:
             self.file = file
             self.extension = extension
             self.searchFileList = []
             if detailPath == '':
-                detailPath = drive
+                if sys.platform == "linux" or sys.platform == "linux2":
+                    detailPath = "/"
+                elif sys.platform == "win32":
+                    detailPath = "c:/"
             else:
                 detailPath = detailPath
             if self.extension is '':
@@ -62,4 +65,6 @@ class PathSearch():
 if __name__ == '__main__':
     test = PathSearch()
     # print(test.fileSearch(file="settin3757358g", extension="syncn",detailPath="c:\\python"))
-    print(test.dirSearch(dir="Desktop", detailPath=os.environ['HOME']))
+    # print(test.dirSearch(dir="Desktop", detailPath=os.environ['HOME']))
+    test2 = test.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])
+    print(test2)

@@ -1,4 +1,4 @@
-import os, re, pdb
+import os, re, pdb, sys
 
 class DataSet():
     def __init__(self, search, debug=True):
@@ -87,7 +87,10 @@ class DataApply():
     def __init__(self, debug=False):
         self.debug = debug
         # self.search = search
-        self.path = os.environ['HOME'] + "/.config/xpad"
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.path = os.environ['HOME'] + "/.config/xpad"
+        elif sys.platform == "win32":
+            self.path = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + "\AppData\Local\Packages"
         self.data = ''
         self.keyList = []
         self.valueList = []

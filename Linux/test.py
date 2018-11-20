@@ -1,7 +1,5 @@
 import sys, os, platform
+import NoteSql
 
 
-print(os.name)
-print(sys.platform)
-print(platform.platform())
-print(platform.system())
+print(os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])

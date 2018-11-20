@@ -18,11 +18,11 @@ class DAO():
         self.noteCnt = 0
         self.temp = None
         self.debug = debug
-        self.is_dbFile = False
+        self.is_dbFile = True
         self.is_textFile = False
 
         # file type check
-        self.fileCheck(self.fullpath)
+        # self.fileCheck(self.fullpath)
         if self.is_dbFile:
             # set function
             self.initDb(self.fullpath)
