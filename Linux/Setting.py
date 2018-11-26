@@ -83,6 +83,7 @@ class DataSet():
         except Exception as e:
             print(e)
 
+
 class DataApply():
     def __init__(self, debug=False):
         self.debug = debug
@@ -152,6 +153,41 @@ class DataApply():
 
     def getValueList(self):
         return self.valueList
+
+
+class DataParse():
+    def __init__(self):
+        pass
+
+    def run(self, data):
+        try:
+            self.textList = []
+            self.result = []
+            try:
+                self.msg= data['res']
+                for i in self.msg:
+                    self.textList.append(self.msg[i]['Text'])
+            except KeyError:
+                self.msg = data
+                for i in self.msg:
+                    self.textList.append(self.msg[i]['data'])
+            if sys.platform == "linux" or sys.platform == "linux2":
+                for text in self.textList:
+                    pass
+            elif sys.platform == "win32":
+                for text in self.textList:
+                    pass
+            except Exception as e:
+                print("run method error in DataParse class, message: {0}\n".format(e))
+
+        except Exception as e:
+            print("run method error in DataParse class, message: {0}\n".format(e))
+
+    def winBuild(self):
+        pass
+
+    def linuxBuild(self):
+        pass
 
 if __name__ == '__main__':
     test = DataApply(data={"info-C9MPRZ/content-ABNPRZ": {"data": "#!@#!@%!@$!$", "content": "content-ABNPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 257\ny 649\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-ABNPRZ\n"}, "info-IMSZRZ/content-0NXZRZ": {"data": "sdfsdfsdf", "content": "content-0NXZRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 105\ny 160\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0NXZRZ\n"}, "info-86NPRZ/content-VZPPRZ": {"data": "vzxcvzxcvzxcv", "content": "content-VZPPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 182\ny 769\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 0\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-VZPPRZ\n"}, "info-G6MPRZ/content-0ZOPRZ": {"data": "23414234242424", "content": "content-0ZOPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 362\ny 383\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0ZOPRZ\n"}}
