@@ -1,4 +1,4 @@
-import os, re, pdb, sys
+import os, re, pdb, sys, random, string
 
 class DataSet():
     def __init__(self, search, debug=True):
@@ -162,22 +162,34 @@ class DataParse():
     def run(self, data):
         try:
             self.textList = []
-            self.result = []
-            try:
-                self.msg= data['res']
-                for i in self.msg:
-                    self.textList.append(self.msg[i]['Text'])
-            except KeyError:
-                self.msg = data
-                for i in self.msg:
-                    self.textList.append(self.msg[i]['data'])
+            self.result = {}
             if sys.platform == "linux" or sys.platform == "linux2":
-                for text in self.textList:
-                    pass
+                try:
+                    self.msg = data['res']
+                    for i in self.msg:
+                        self.textList.append(self.msg[i]['Text'])
+
+                    for textList in self.textList:
+                        self.linuxBuild(textList)
+                        key = self.info + "/" + self.content
+                        source = {"data": self.text,
+                                  "content": self.content,
+                                  "contentExtension": "txt",
+                                  "infoExtension": "txt",
+                                  "info": self.width + self.height + self.x + self.y + self.follow_font + self.follow_color + self.sticky + self.hidden + self.backrgb + self.textrgb + self.fontname + self.content}
+                        self.result.update({key:source})
+                except KeyError:
+                    return data
             elif sys.platform == "win32":
-                for text in self.textList:
-                    pass
-            except Exception as e:
+                try:
+                    self.msg = data['res']
+                    return data
+                except KeyError:
+                    self.msg = data
+                    for i in self.msg:
+                        self.textList.append(self.msg[i]['data'])
+
+        except Exception as e:
                 print("run method error in DataParse class, message: {0}\n".format(e))
 
         except Exception as e:
@@ -186,11 +198,25 @@ class DataParse():
     def winBuild(self):
         pass
 
-    def linuxBuild(self):
-        pass
+    def linuxBuild(self, text):
+        self.width = "width 300\n"
+        self.height = "height 200\n"
+        self.x = "x 0\n"
+        self.y = "y 0\n"
+        self.follow_font = "follow_font 1\n"
+        self.follow_color = "follow_color 1\n"
+        self.sticky = "sticky 0\n"
+        self.hidden = "hidden 0\n"
+        self.backrgb = "back rgb (255,238,153)\n"
+        self.textrgb = "text rgb (0,0,0)\n"
+        self.fontname = "fontname Ubuntu 11\n"
+        randomName = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        self.content = "content content-" + randomName + "\n"
+        randomName = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        self.info = "info-" + randomName
+        self.text = text
 
 if __name__ == '__main__':
-    test = DataApply(data={"info-C9MPRZ/content-ABNPRZ": {"data": "#!@#!@%!@$!$", "content": "content-ABNPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 257\ny 649\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-ABNPRZ\n"}, "info-IMSZRZ/content-0NXZRZ": {"data": "sdfsdfsdf", "content": "content-0NXZRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 105\ny 160\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0NXZRZ\n"}, "info-86NPRZ/content-VZPPRZ": {"data": "vzxcvzxcvzxcv", "content": "content-VZPPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 182\ny 769\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 0\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-VZPPRZ\n"}, "info-G6MPRZ/content-0ZOPRZ": {"data": "23414234242424", "content": "content-0ZOPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 362\ny 383\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0ZOPRZ\n"}}
-)
-    test.dataParse()
-    test.dataApply()
+    test = DataParse()
+    test.run(data={"info-C9MPRZ/content-ABNPRZ": {"data": "#!@#!@%!@$!$", "content": "content-ABNPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 257\ny 649\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-ABNPRZ\n"}, "info-IMSZRZ/content-0NXZRZ": {"data": "sdfsdfsdf", "content": "content-0NXZRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 105\ny 160\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0NXZRZ\n"}, "info-86NPRZ/content-VZPPRZ": {"data": "vzxcvzxcvzxcv", "content": "content-VZPPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 182\ny 769\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 0\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-VZPPRZ\n"}, "info-G6MPRZ/content-0ZOPRZ": {"data": "23414234242424", "content": "content-0ZOPRZ", "contentExtension": "txt", "infoExtension": "txt", "info": "width 308\nheight 200\nx 362\ny 383\nfollow_font 1\nfollow_color 1\nsticky 0\nhidden 1\nback rgb(255,238,153)\ntext rgb(0,0,0)\nfontname Ubuntu 11\ncontent content-0ZOPRZ\n"}})
+

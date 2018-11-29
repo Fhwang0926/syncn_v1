@@ -155,7 +155,7 @@ if __name__ == '__main__':
         # print("send!!")
         # # print("start consume")
         # # mq.worker(queue='mail')
-        mq.get()
+        mq.get(isAck=False)
     except Exception as e:
         print("Error, check this {0}".format(e))
         pass
