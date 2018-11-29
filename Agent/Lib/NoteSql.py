@@ -176,7 +176,7 @@ if __name__ == '__main__':
     # msg += "\n"
 
     # print(msg)
-    dao = DAO(fullpath="C:\\Users\\전인석\\Desktop\\SyncN.spec")
+    dao = DAO(fullpath="C:\\Users\\user\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
     print(dao.read())
 
     pass
