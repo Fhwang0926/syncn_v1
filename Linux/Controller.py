@@ -1,5 +1,5 @@
 import Auth, Conf, MQ, Search, Setting, Observer, NoteSql
-import json, itertools, pdb, time, sys, os
+import json, pdb, time, sys, os, subprocess
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import *
 
@@ -14,7 +14,8 @@ class Control(QWidget):
         self.mq = MQ.MQ(debug=debug)
         self.xpadGet= Setting.DataSet(search=self.search, debug=debug)
         self.xpadApply= Setting.DataApply(debug=debug)
-        self.sticyOb = NoteSql.DAO(fullpath=self.search.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0], debug=debug )
+        self.sticyOb = NoteSql.DAO(fullpath=self.search.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0], debug=debug)
+        self.parser = Setting.DataParse(debug=debug)
 
         # set
         self.setFile = self.conf.read()
@@ -57,6 +58,10 @@ class Control(QWidget):
         else:
             print("No message in the queue")
             return
+        receiveData = self.parser.run(data=receiveData)
+        self.sticyOb.sync(notes=receiveData['res'])
+        self.closeNote()
+        self.openNote()
 
     # New user access linux version
     def linuxFirst(self):
@@ -77,16 +82,18 @@ class Control(QWidget):
         else:
             print("No message in the queue")
             return
+        self.receiveData = self.parser.run(data=self.receiveData)
         # Compare between server data and local data
         self.compareData()
         # Add the new data and Send the message to MQ server
         self.sendData.update(self.receiveData)
         self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.sendData))
-        self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=False)
+        self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=True)
         self.receiveData = json.loads(self.receiveData.decode())
         # Apply the data
         self.xpadApply.dataParse(self.receiveData)
         self.xpadApply.dataApply()
+
 
     # Email auth
     def emailAuth(self):
@@ -112,6 +119,14 @@ class Control(QWidget):
         if self.debug:
             print("mathList: {0}".format(self.matchList))
             print("mismathList: {0}\n".format(self.mismatchList))
+
+    def openNote(self):
+        subprocess.call("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_{0}!App".format('8wekyb3d8bbwe'),
+                        creationflags=0x08000000)
+
+    def closeNote(self):
+        subprocess.call('taskkill /f /im Microsoft.Notes.exe', creationflags=0x08000000)
+        subprocess.call('taskkill /f /im Microsoft.StickyNotes.exe', creationflags=0x08000000)
 
 class signalThread(QThread):
     sendSignal = pyqtSignal(bool)

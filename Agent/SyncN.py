@@ -198,5 +198,5 @@ class SyncN(object):
 if __name__ == '__main__':
     main = SyncN()
     # main.checkProcessMe()
-    main.run()
+    main.openNote()
     
