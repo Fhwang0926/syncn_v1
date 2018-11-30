@@ -185,7 +185,7 @@ class DataParse():
             elif sys.platform == "win32":
                 try:
                     self.msg = data['res']
-                    self.debug: print("Input: Window / Output: window===> Data parsing completed!\n Result: {0}".format(self.result))
+                    if self.debug: print("Input: window / Output: window ===> Data parsing completed!\n Result: {0}".format(self.result))
                     return data
                 except KeyError:
                     self.msg = data

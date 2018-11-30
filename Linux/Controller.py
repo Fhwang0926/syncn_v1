@@ -14,7 +14,7 @@ class Control(QWidget):
         self.mq = MQ.MQ(debug=debug)
         self.xpadGet= Setting.DataSet(search=self.search, debug=debug)
         self.xpadApply= Setting.DataApply(debug=debug)
-        self.sticyOb = NoteSql.DAO(fullpath=self.search.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0], debug=debug)
+        if sys.platform == "win32": self.sticyOb = NoteSql.DAO(fullpath=self.search.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0], debug=debug)
         self.parser = Setting.DataParse(debug=debug)
 
         # set
@@ -92,7 +92,8 @@ class Control(QWidget):
         # Apply the data
         self.xpadApply.dataParse(self.receiveData)
         self.xpadApply.dataApply()
-
+        self.closeXpad()
+        self.openXpad()
 
     # Email auth
     def emailAuth(self):
@@ -127,6 +128,12 @@ class Control(QWidget):
         subprocess.call('taskkill /f /im Microsoft.Notes.exe', creationflags=0x08000000)
         subprocess.call('taskkill /f /im Microsoft.StickyNotes.exe', creationflags=0x08000000)
 
+    def openXpad(self):
+        subprocess.call("xpad", shell=True)
+
+    def closeXpad(self):
+        subprocess.call("pkill -9 -ef xpad",shell=True)
+
 class signalThread(QThread):
     sendSignal = pyqtSignal(bool)
     def __init__(self,search, debug=True):
@@ -155,4 +162,5 @@ if __name__ == '__main__':
     test = Control()
     # sig = signalThread(search='')
     # sig.run()
-    test.sync()
+    # test.sync()
+    test.run()

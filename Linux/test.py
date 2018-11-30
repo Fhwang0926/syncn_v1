@@ -1,10 +1,4 @@
 import string, random, sys
 
-def test():
-    return True
-
-
-if test():
-    print("True")
-else:
-    print("False")
+randomName = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+print(randomName)
