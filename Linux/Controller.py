@@ -30,15 +30,14 @@ class Control(QWidget):
         elif oscheck == "win32":
             self.windowFirst()
 
-
+    # if receive the signal, start to sync
     def sync(self):
-        self.sendData = self.xpadGet.run()
-        self.receiveData = self.mq.receiveMsg(queue=self.mq.queue, ack=True)
-        if self.receiveData:
-            self.receiveData = json.loads(self.receiveData.decode())
-        else:
-            print("No message in the queue")
-            return
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.sendData = self.xpadGet.run()
+        elif sys.platform == "win32":
+            self.sendData = self.sticyOb.read()
+        oldData = self.mq.receiveMsg(queue=self.mq.queue, ack=True)
+        oldData = json.loads(oldData.decode())
         self.mq.sendMsg(exchange="msg", routing_key=self.mq.queue, msg=json.dumps(self.sendData))
 
     # 기존 메세지랑 비교하는거 아직 적용 안함
@@ -60,8 +59,8 @@ class Control(QWidget):
             return
         receiveData = self.parser.run(data=receiveData)
         self.sticyOb.sync(notes=receiveData['res'])
-        self.closeNote()
-        self.openNote()
+        self.closeSticy()
+        self.openSticy()
 
     # New user access linux version
     def linuxFirst(self):
@@ -120,11 +119,11 @@ class Control(QWidget):
             print("mathList: {0}".format(self.matchList))
             print("mismathList: {0}\n".format(self.mismatchList))
 
-    def openNote(self):
+    def openSticy(self):
         subprocess.call("explorer.exe shell:appsFolder\Microsoft.MicrosoftStickyNotes_{0}!App".format('8wekyb3d8bbwe'),
                         creationflags=0x08000000)
 
-    def closeNote(self):
+    def closeSticy(self):
         subprocess.call('taskkill /f /im Microsoft.Notes.exe', creationflags=0x08000000)
         subprocess.call('taskkill /f /im Microsoft.StickyNotes.exe', creationflags=0x08000000)
 
@@ -156,4 +155,4 @@ if __name__ == '__main__':
     test = Control()
     # sig = signalThread(search='')
     # sig.run()
-    test.run()
+    test.sync()
