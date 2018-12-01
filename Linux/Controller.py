@@ -129,7 +129,7 @@ class Control(QWidget):
         subprocess.call('taskkill /f /im Microsoft.StickyNotes.exe', creationflags=0x08000000)
 
     def openXpad(self):
-        subprocess.call("xpad", shell=True)
+        subprocess.call("xpad &", shell=True)
 
     def closeXpad(self):
         subprocess.call("pkill -9 -ef xpad",shell=True)
