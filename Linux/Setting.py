@@ -1,4 +1,4 @@
-import os, re, pdb, sys, random, string
+import os, re, pdb, sys, random, string, subprocess
 
 class DataSet():
     def __init__(self, search, debug=True):
@@ -120,6 +120,10 @@ class DataApply():
         except Exception as e:
             print("dataParse method error, message: {0}\n".format(e))
 
+    def resetDir(self):
+        subprocess.call("rm -r " + self.path, shell=True)
+        subprocess.call("mkdir " + self.path, shell=True)
+
     def dataApply(self):
         try:
             # pdb.set_trace()
@@ -207,6 +211,9 @@ class DataParse():
 
         except Exception as e:
             print("run method error in DataParse class, message: {0}\n".format(e))
+
+    def filtering(self):
+        
 
     def winBuild(self, Text):
         try:

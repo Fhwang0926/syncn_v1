@@ -91,6 +91,7 @@ class Control(QWidget):
         self.receiveData = json.loads(self.receiveData.decode())
         # Apply the data
         self.xpadApply.dataParse(self.receiveData)
+        self.xpadApply.resetDir()
         self.xpadApply.dataApply()
         self.closeXpad()
         self.openXpad()

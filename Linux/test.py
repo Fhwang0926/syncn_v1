@@ -1,4 +1,8 @@
 import string, random, sys
 
-a = "content content-SY7ONE\n"
-print(a.split()[1])
+def test():
+    a = ["1","2","3","4","5","6"]
+    return a
+
+for i in test():
+    print(i)
