@@ -38,7 +38,7 @@ class MQ():
             self.vhost = self.config['vhost']
             # self.init = self.config['init']
         except Exception as e:
-            print("build method error, message: {0}".format(e))
+            print("build method of MQ Class error, message: {0}".format(e))
 
     # def run(self, msg):
     #     try:
@@ -119,6 +119,7 @@ class MQ():
 if __name__ == '__main__':
     test = MQ()
     # test.connection()
-    test.sendMsg(routing_key="test", msg=" It's a test MSG")
+    #test.sendMsg(routing_key="test", msg=" It's a test MSG")
     # test.sendMsg(routing_key="test", msg="Please get the MSG")
     # test.receiveMsg(queue="test")
+    test.build()

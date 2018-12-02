@@ -1,11 +1,11 @@
-import Auth, Conf, MQ, Search, Setting, Observer, NoteSql
+import Auth, Conf, MQ, Search, Setting, Observer, NoteSql, Signal
 import json, pdb, time, sys, os, subprocess
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import *
 
-class Control(QWidget):
+class Control(QThread):
     def __init__(self, debug=True):
-        # super().__init__()
+        super().__init__()
         # init
         self.debug = debug
         self.search = Search.PathSearch(debug=debug)
@@ -17,12 +17,14 @@ class Control(QWidget):
         if sys.platform == "win32": self.sticyOb = NoteSql.DAO(fullpath=self.search.fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0], debug=debug)
         self.parser = Setting.DataParse(debug=debug)
 
-        # set
-        self.setFile = self.conf.read()
-        self.mq.build(self.setFile)
-        self.mq.connection()
+
 
     def run(self):
+        # set
+        self.setFile = self.conf.read()
+        self.mq.build(self.setFile['res'])
+        self.mq.connection()
+
         oscheck = sys.platform
         if oscheck == "linux" or oscheck == "linux2":
             self.linuxFirst()
@@ -69,7 +71,7 @@ class Control(QWidget):
         # if new user, email auth first
         if self.setFile == False:
             self.emailAuth()
-        self.mq.build(self.setFile)
+        self.mq.build(self.setFile['res'])
         # Get xpad data
         self.sendData = self.xpadGet.run()
         # Receive message because of data comparing
@@ -97,11 +99,24 @@ class Control(QWidget):
         self.openXpad()
 
     # Email auth
-    def emailAuth(self):
-        self.auth.build("wdt0818@naver.com")
-        self.auth.sendUrl()
-        time.sleep(15)
-        self.auth.getServerInfo()
+    def settingFileCheck(self):
+        if self.search.fileSearch(file="setting", extension="syncn", detailPath=os.path.abspath(__file__ + "/../../")):
+            return True
+        else:
+            return False
+
+    def emailSend(self, email):
+        if self.auth.build(email):
+            self.auth.sendUrl()
+            return True
+        return False
+
+    def emailconfirm(self):
+        if self.auth.getServerInfo():
+            serverData = self.auth.getServerInfo()
+            self.conf.write(serverData)
+            return True
+        return False
 
     def compareData(self):
         # items = list(itertools.product(self.sendData, self.receiveData))
@@ -135,13 +150,13 @@ class Control(QWidget):
     def closeXpad(self):
         subprocess.call("pkill -9 -ef xpad",shell=True)
 
-class signalThread(QThread):
+class xpadSignal(QThread):
     sendSignal = pyqtSignal(bool)
-    def __init__(self,search, debug=True):
+    def __init__(self, debug=True):
         super().__init__()
         self.debug = debug
         self.search = Search.PathSearch(debug=debug)
-        # self.observer = Observer.Observer(path=self.search, debug=self.debug)
+        self.observer = Observer.Observer(path=self.search, debug=self.debug)
         self.is_run = False
         self.is_send = False
 
@@ -154,14 +169,51 @@ class signalThread(QThread):
                 if self.observer.send_signal == True:
                     if self.debug: print("Get the Signal\n")
                     # test.sync()
-                    self.sendSignal(True)
+                    self.sendSignal.emit(True)
                     self.observer.send_signal = False
         except Exception as e:
-            print("signalTread run() method error, message: {0}\n".format(e))
+            print("xpadSignal thread run() method error, message: {0}\n".format(e))
+
+
+class sticySignal(QThread):
+    syncSignal = pyqtSignal(bool)
+
+    def __init__(self, debug=False):
+        super().__init__()
+        self.isRun = False
+        self.debug = debug
+        self.target = Search.PathSearch().fileSearch(file="plum", detailPath=os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'])[0]
+        self.signal = Signal.signal(target=self.target, debug=self.debug)
+        # self.signalRunner = self.signal.connect()
+
+    def __del__(self):
+        if self.debug: print(".... signalThread end.....")
+        self.wait()
+
+    def stop(self):
+        self.isRun = False
+        self.signal.disconnect()
+
+    def run(self):
+        self.signalRunner = self.signal.connect()
+        try:
+            self.isRun = next(self.signalRunner)
+            while self.isRun:
+                if self.debug: print("get send signal from sticky note")
+                pdb.set_trace()
+                self.syncSignal.emit(True)
+                self.signalRunner.send(0)
+                time.sleep(1)
+        except Exception as e:
+            self.stop()
+            print("signalThread, check this {0}".format(e))
+
 
 if __name__ == '__main__':
-    test = Control()
-    # sig = signalThread(search='')
-    # sig.run()
-    # test.sync()
-    test.run()
+    # test = Control()
+    sig = xpadSignal()
+    sig.run()
+    # test.emailAuth()
+    #test.emailAuth()
+    #test = sticySignal(target="C:\\Users\\jis\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite", debug=True)
+    #test.run()

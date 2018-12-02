@@ -127,7 +127,7 @@ class SyncN(object):
         if self.UI.auth: return self.UI.windowTrigger()
         if not self.OTP.isCreateOTP:
             # need create OTP
-            if not self.OTP.build(self.UI.input_info.text(), "syncn.club:9759"):
+            if not self.OTP.build(self.UI.input_info.text(), "jis5376.iptime.org:9759"):
                 self.UI.l_info.setText("Check Email Address\n%")
                 self.UI.l_info.setStyleSheet("color:red;\n")
                 return

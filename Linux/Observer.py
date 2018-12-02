@@ -24,6 +24,7 @@ class Observer(QThread):
         try:
             self.is_run = True
             while self.is_run:
+                time.sleep(0.5)
                 # file changing check
                 if self.timestamp != os.path.getmtime(self.path):
                     # self.cnt = 0

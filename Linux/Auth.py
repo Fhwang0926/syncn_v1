@@ -15,7 +15,7 @@ class EmailCert():
         try:
             if self.emailCheck(email):
                 self.email = email
-                self.server = "http://syncn.club:9759"
+                self.server = "http://jis5376.iptime.org:9759"
                 return True
             else:
                 return False

@@ -4,7 +4,7 @@
 const nodemailer = require('nodemailer');
 const smtpPool = require('nodemailer-smtp-pool');
 const fs = require('fs');
-const auth_url = 'http://syncn.club:9759/code/'
+const auth_url = 'http://jis5376.iptime.org:9759/code/'
 let auth_html = '';
 // smtpPool는 smtp서버를 사용하기 위한 모듈로
 // transporter객체를 만드는 nodemailer의 createTransport메소드의 인자로 사용된다.

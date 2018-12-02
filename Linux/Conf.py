@@ -1,4 +1,4 @@
-import json, os
+import json, os, sys
 # import Search
 
 class Conf():
@@ -24,12 +24,18 @@ class Conf():
         try:
             # if one file
             # self.path = os.getcwd()
-            with open(self.path + "\\setting.syncn", 'w') as f:
-                source = json.dumps(source)
-                f.write(source)
+            if sys.platform == "win32":
+                with open(self.path + "\\setting.syncn", 'w') as f:
+                    source = json.dumps(source)
+                    f.write(source)
+            elif sys.platform == "linux" or sys.platform == "linux2":
+                with open(self.path + "/setting.syncn", 'w') as f:
+                    source = json.dumps(source)
+                    f.write(source)
         except Exception as e:
             print("write method error, message: {0}\n".format(e))
 
 if __name__ == '__main__':
-    test = Conf(search=Search.PathSearch())
-    test.read()
+    # test = Conf(search=Search.PathSearch())
+    # test.read()
+    test = Conf(search='')

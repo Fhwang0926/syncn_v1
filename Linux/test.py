@@ -1,8 +1,3 @@
-import string, random, sys
+import os
 
-def test():
-    a = ["1","2","3","4","5","6"]
-    return a
-
-for i in test():
-    print(i)
+print(type(os.environ['HOMEDRIVE'] + os.environ['HOMEPATH']))
