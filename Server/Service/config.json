@@ -22,7 +22,7 @@
     },
     "service": {
         "port": 9759,
-        "host": "syncn.club",
+        "host": "jis5376.iptime.org",
         "protocol": "http"
     }
 }

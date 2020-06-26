@@ -4,15 +4,13 @@
 
 import sqlite3, uuid, json, time
 import pydash as _
-try:
-    from Lib import Search
-except ImportError:
-    import Search
+
 
 class DAO():
     def __init__(self, fullpath='', debug=False):
         # set variables
-        self.fullpath = fullpath if fullpath else Search.PathSearcher().run(file="plum", detailPath=Search.PathSearcher().getPath())[0]
+        self.fullpath = fullpath
+        # if fullpath else Search.PathSearcher().run(file="plum", detailPath=Search.PathSearcher().getPath())[0]
         self.path = ''
         self.db = None
         self.conn = None
@@ -20,11 +18,11 @@ class DAO():
         self.noteCnt = 0
         self.temp = None
         self.debug = debug
-        self.is_dbFile = False
+        self.is_dbFile = True
         self.is_textFile = False
 
         # file type check
-        self.fileCheck(self.fullpath)
+        # self.fileCheck(self.fullpath)
         if self.is_dbFile:
             # set function
             self.initDb(self.fullpath)
@@ -176,7 +174,7 @@ if __name__ == '__main__':
     # msg += "\n"
 
     # print(msg)
-    dao = DAO(fullpath="C:\\Users\\user\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
+    dao = DAO(fullpath="C:\\Users\\jis\\AppData\\Local\\Packages\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\\LocalState\\plum.sqlite")
     print(dao.read())
 
     pass

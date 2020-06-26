@@ -12,3 +12,9 @@ Server/Service/node_modules/
 Agent/build/
 Agent/dist/
 *.spec
+Linux/Auth.pyc
+Linux/Conf.pyc
+Linux/MQ.pyc
+Linux/Search.pyc
+Linux/Setting.pyc
+Linux/__pycache__/NoteSql.cpython-36.pyc

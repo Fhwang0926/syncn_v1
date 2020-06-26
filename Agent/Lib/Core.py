@@ -241,8 +241,16 @@ class authTimer(QThread):
 
 if __name__ == "__main__":
     # here is test area in Qthread class
-    th_mail = authTimer()
-    th_mail.start()
-    while 1:
-        time.sleep(1)
-        print("is main")
+    # th_mail = authTimer()
+    # th_mail.start()
+    # while 1:
+    #     time.sleep(1)
+    #     print("is main")
+    # This is the test of mqSenThread()
+    # test = mqSendThread(target="C:\\Users\\전인석\\Desktop\\SyncN.spec")
+    # test.run()
+    # This is the test of mqReceiveThread()
+    target = Search.PathSearcher()
+    test = mqReciveThread(target=target.run(file="plum", detailPath=target.getPath())[0])
+    test.run()
+
